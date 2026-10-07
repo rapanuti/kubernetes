@@ -1,0 +1,16 @@
+# Configuración de proveedores de hosting/IA (OpenAI, etc.)
+.openai/
+**/.openai/
+
+# Variables de entorno y credenciales locales
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Ajustes locales de Claude Code
+.claude/settings.local.json
+
+# Sistema
+.DS_Store
