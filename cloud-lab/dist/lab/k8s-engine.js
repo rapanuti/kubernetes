@@ -31,6 +31,8 @@ const resolveKind=t=>{const s=String(t||'').toLowerCase();return KIND_BY_NAME[s]
 // Imágenes conocidas: con cualquier otra el Pod falla al descargar la imagen (ErrImagePull), como ocurre con un nombre mal escrito.
 const KNOWN_IMAGES=['nginx','httpd','apache','redis','memcached','postgres','mysql','mariadb','mongo','rabbitmq','busybox','alpine','ubuntu','debian','centos','fedora','node','python','golang','openjdk','eclipse-temurin','tomcat','traefik','caddy','haproxy','wordpress','ghost','grafana/grafana','prom/prometheus','registry','hello-world','nicolaka/netshoot','curlimages/curl','jenkins/jenkins','elasticsearch','kibana','consul','vault','nats','php','ruby','rust','perl','bitnami/nginx','bitnami/redis','gcr.io/google-samples/hello-app','k8s.gcr.io/echoserver','registry.k8s.io/echoserver','hashicorp/http-echo','kennethreitz/httpbin','mcr.microsoft.com/dotnet/aspnet','mcr.microsoft.com/azuredocs/aks-helloworld','nginxdemos/hello','paulbouwer/hello-kubernetes','stefanprodan/podinfo','ealen/echo-server','k8s.gcr.io/pause','registry.k8s.io/pause'];
 const ONE_SHOT=['busybox','alpine','ubuntu','debian','centos','fedora','hello-world','curlimages/curl','nicolaka/netshoot','python','node','golang','perl','ruby','php'];
+// Registros de Azure Container Registry (los publica la terminal de Azure). acrPull(img) dice si el clúster actual puede descargarla.
+let acrPull=()=>'unauthorized';
 function imageInfo(image){
   const img=String(image||'');
   if(!/^[a-z0-9]([a-z0-9._\/:-]*[a-z0-9])?(@sha256:[a-f0-9]{64})?$/.test(img))return{valid:false,invalidRef:true};
@@ -39,6 +41,7 @@ function imageInfo(image){
   let tag='latest';
   if(lastColon>repo.lastIndexOf('/')){tag=repo.slice(lastColon+1);repo=repo.slice(0,lastColon)}
   const bare=repo.replace(/^docker\.io\//,'').replace(/^library\//,'');
+  if(/^[a-z0-9]+\.azurecr\.io\//.test(bare)){const r=acrPull(`${bare}:${tag}`);return{valid:r==='ok',repo:bare,tag,acr:r,oneShot:false}}
   const known=KNOWN_IMAGES.includes(bare)||/^(mcr\.microsoft\.com|registry\.k8s\.io|k8s\.gcr\.io|gcr\.io|quay\.io|ghcr\.io|public\.ecr\.aws)\//.test(bare);
   const badTag=/(notexist|doesnotexist|nonexistent|invalid|xyz)/.test(tag);
   return{valid:known&&!badTag,repo:bare,tag,oneShot:ONE_SHOT.includes(bare)};
@@ -295,6 +298,14 @@ function create(opts={}){
     }
     syncAksNodes();
   }
+  // Una imagen de ACR se descarga si existe en el registro y el clúster AKS actual lo tiene asociado (az aks update --attach-acr).
+  acrPull=img=>{
+    const reg=img.split('/')[0].split('.')[0],r=((aks&&aks.acr)||[]).find(x=>x.name===reg);
+    if(!r)return'unauthorized';
+    const i=aksInfo(S.cluster);
+    if(!isAks()||!i||!(i.acr||[]).includes(reg))return'unauthorized';
+    return r.images.includes(img.replace(/^[^/]+\//,''))?'ok':'notfound';
+  };
   const server=()=>{const i=aksInfo(S.cluster);return isAks()&&i?`https://${i.fqdn}:443`:'https://192.168.49.2:8443'};
   const serverVersion=()=>{const i=aksInfo(S.cluster);return isAks()&&i?'v'+i.version:VERSION};
   // Elige el clúster del contexto actual (o de --context). Falla como kubectl si el clúster AKS ya no existe.
@@ -370,6 +381,7 @@ function create(opts={}){
     for(const c of p.spec.containers){
       const info=imageInfo(c.image);
       if(info.valid){event(p,'Normal','Pulling',`Pulling image "${c.image}"`);event(p,'Normal','Pulled',`Successfully pulled image "${c.image}" in 1.2s`);event(p,'Normal','Created',`Created container: ${c.name}`);event(p,'Normal','Started',`Started container ${c.name}`)}
+      else if(info.acr){const reg=info.repo.split('/')[0],repo=info.repo.split('/').slice(1).join('/');event(p,'Normal','Pulling',`Pulling image "${c.image}"`);event(p,'Warning','Failed',info.acr==='unauthorized'?`Failed to pull image "${c.image}": failed to pull and unpack image "${c.image}": failed to resolve reference "${c.image}": failed to authorize: failed to fetch anonymous token: unexpected status from GET request to https://${reg}/oauth2/token?scope=repository%3A${repo}%3Apull&service=${reg}: 401 Unauthorized`:`Failed to pull image "${c.image}": rpc error: code = NotFound desc = failed to pull and unpack image "${c.image}": failed to resolve reference "${c.image}": ${c.image}: not found`);event(p,'Warning','Failed','Error: ErrImagePull')}
       else{event(p,'Normal','Pulling',`Pulling image "${c.image}"`);event(p,'Warning','Failed',`Failed to pull image "${c.image}": Error response from daemon: pull access denied for ${info.repo||c.image}, repository does not exist or may require 'docker login'`);event(p,'Warning','Failed','Error: ErrImagePull')}
     }
     return true;

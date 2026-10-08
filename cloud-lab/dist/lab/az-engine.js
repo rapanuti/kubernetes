@@ -24,7 +24,7 @@ const sizeName=s=>Object.keys(SIZES).find(k=>k.toLowerCase()===String(s).toLower
 const IMAGES={CentOS85Gen2:'OpenLogic:CentOS:8_5-gen2:latest',Debian11:'Debian:debian-11:11-backports-gen2:latest',Debian12:'Debian:debian-12:12-gen2:latest',FlatcarLinuxFreeGen2:'kinvolk:flatcar-container-linux-free:stable-gen2:latest',OpenSuseLeap154Gen2:'SUSE:openSUSE-leap-15-4:gen2:latest',RHELRaw8LVMGen2:'RedHat:RHEL:8-lvm-gen2:latest',SuseSles15SP5:'SUSE:sles-15-sp5:gen2:latest',Ubuntu2204:'Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest',Ubuntu2404:'Canonical:ubuntu-24_04-lts:server:latest',Win2025Datacenter:'MicrosoftWindowsServer:WindowsServer:2025-datacenter-g2:latest',Win2022Datacenter:'MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest',Win2022AzureEditionCore:'MicrosoftWindowsServer:WindowsServer:2022-datacenter-azure-edition-core:latest',Win2019Datacenter:'MicrosoftWindowsServer:WindowsServer:2019-datacenter-gensecond:latest',Win2016Datacenter:'MicrosoftWindowsServer:WindowsServer:2016-datacenter-gensecond:latest',Win2012R2Datacenter:'MicrosoftWindowsServer:WindowsServer:2012-r2-datacenter-gensecond:latest',Win2012Datacenter:'MicrosoftWindowsServer:WindowsServer:2012-datacenter-gensecond:latest'};
 const RESERVED_USERS=['administrator','admin','user','user1','test','user2','test1','user3','admin1','1','123','a','actuser','adm','admin2','aspnet','backup','console','david','guest','john','owner','root','server','sql','support','support_388945a0','sys','test2','test3','user4','user5'];
 // Roles integrados de Azure (los identificadores son los reales).
-const ROLES={'Owner':'8e3af657-a8ff-443c-a75c-2fe8c4bcb635','Contributor':'b24988ac-6180-42a0-ab88-20f7382dd24c','Reader':'acdd72a7-3385-48ef-bd42-f606fba81ae7','User Access Administrator':'18d7d88d-d35e-4fb5-a5c3-7773c20a72d9','Role Based Access Control Administrator':'f58310d9-a9f6-439a-9e8d-f62e7b41a168','Virtual Machine Contributor':'9980e02c-c2be-4d73-94e8-173b1dc7cf3c','Network Contributor':'4d97b98b-1d4f-4787-a291-c67834d212e7','Storage Account Contributor':'17d1049b-9a84-46fb-8f53-869881c3d3ab','Storage Blob Data Contributor':'ba92f5b4-2d11-453d-a403-e96b0029c9fe','Storage Blob Data Reader':'2a2b9908-6ea1-4ae2-8e65-a410df84e7d1','Website Contributor':'de139f84-1756-47ae-9be6-808fbbe84772','Azure Kubernetes Service Cluster User Role':'4abbcc35-e782-43d8-92c5-2d3f1bd2253f','Azure Kubernetes Service RBAC Reader':'7f6c6a51-bcf8-42ba-9220-52d62157d7db','Storage Blob Data Owner':'b7e6dc6d-f1e8-4753-8033-0f276bb0955b','Key Vault Administrator':'00482a5a-887f-4fb3-b363-3b7fe8e74483','Key Vault Secrets Officer':'b86a8fe4-44ce-4948-aee5-eccb2c155cd7','Key Vault Secrets User':'4633458b-17de-408a-b874-0445c86b69e6','Key Vault Reader':'21090545-7ca7-4776-b22c-e363652d74d2'};
+const ROLES={'Owner':'8e3af657-a8ff-443c-a75c-2fe8c4bcb635','Contributor':'b24988ac-6180-42a0-ab88-20f7382dd24c','Reader':'acdd72a7-3385-48ef-bd42-f606fba81ae7','User Access Administrator':'18d7d88d-d35e-4fb5-a5c3-7773c20a72d9','Role Based Access Control Administrator':'f58310d9-a9f6-439a-9e8d-f62e7b41a168','Virtual Machine Contributor':'9980e02c-c2be-4d73-94e8-173b1dc7cf3c','Network Contributor':'4d97b98b-1d4f-4787-a291-c67834d212e7','Storage Account Contributor':'17d1049b-9a84-46fb-8f53-869881c3d3ab','Storage Blob Data Contributor':'ba92f5b4-2d11-453d-a403-e96b0029c9fe','Storage Blob Data Reader':'2a2b9908-6ea1-4ae2-8e65-a410df84e7d1','Website Contributor':'de139f84-1756-47ae-9be6-808fbbe84772','Azure Kubernetes Service Cluster User Role':'4abbcc35-e782-43d8-92c5-2d3f1bd2253f','Azure Kubernetes Service RBAC Reader':'7f6c6a51-bcf8-42ba-9220-52d62157d7db','Storage Blob Data Owner':'b7e6dc6d-f1e8-4753-8033-0f276bb0955b','Key Vault Administrator':'00482a5a-887f-4fb3-b363-3b7fe8e74483','Key Vault Secrets Officer':'b86a8fe4-44ce-4948-aee5-eccb2c155cd7','Key Vault Secrets User':'4633458b-17de-408a-b874-0445c86b69e6','Key Vault Reader':'21090545-7ca7-4776-b22c-e363652d74d2','AcrPull':'7f951dda-4ed3-4680-a7ca-43fe172d538d','Monitoring Reader':'43d0d8ad-25c7-4714-9337-8ba259a9fe05','Cost Management Reader':'72fafb9e-0641-4937-9268-a91bfd8191a3'};
 const DOMAIN='cloudlabdemo.onmicrosoft.com';
 const USERS=[['user','Cloud Lab User','Cloud Lab','User'],['ana.garcia','Ana García','Ana','García'],['luis.perez','Luis Pérez','Luis','Pérez'],['marta.ruiz','Marta Ruiz','Marta','Ruiz']].map(([u,d,g,s],i)=>({upn:`${u}@${DOMAIN}`,displayName:d,givenName:g,surname:s,id:['3b0f9d6e-6c1a-4a8e-9f4a-2f1c0d7b8e11','5c2e4a7d-1b3f-4c6e-8a9d-0e1f2a3b4c5d','7d4f6b8e-2c5a-4d7f-9b1e-1f2a3b4c5d6e','9e6a8c0f-3d7b-4e8a-a2c3-2a3b4c5d6e7f'][i]}));
 const RUNTIMES={linux:['NODE:22-lts','NODE:20-lts','PYTHON:3.13','PYTHON:3.12','PYTHON:3.11','DOTNETCORE:9.0','DOTNETCORE:8.0','JAVA:21-java21','JAVA:17-java17','PHP:8.4','PHP:8.3'],windows:['dotnet:9','dotnet:8','ASPNET:V4.8','NODE:22LTS','NODE:20LTS','JAVA:21','JAVA:17','PYTHON:3.12']};
@@ -33,7 +33,7 @@ const STORAGE_SKUS=['Premium_LRS','Premium_ZRS','Standard_GRS','Standard_GZRS','
 // Nombres globales que "ya usa otra persona" en Azure (storage y web apps son únicos en todo Azure).
 const TAKEN_STORAGE=['storage','mystorage','mystorageaccount','storageaccount','teststorage','test','azure','demo','cloudlab','backup','data','images','logs','prod','dev','files','media'];
 const TAKEN_SITES=['portal','myapp','webapp','test','app','demo','hello','azure','cloudlab','api','www','helloworld','mywebapp'];
-const TYPES={group:'Microsoft.Resources/resourceGroups',vm:'Microsoft.Compute/virtualMachines',disk:'Microsoft.Compute/disks',storage:'Microsoft.Storage/storageAccounts',vnet:'Microsoft.Network/virtualNetworks',nsg:'Microsoft.Network/networkSecurityGroups',pip:'Microsoft.Network/publicIPAddresses',nic:'Microsoft.Network/networkInterfaces',plan:'Microsoft.Web/serverFarms',webapp:'Microsoft.Web/sites',aks:'Microsoft.ContainerService/managedClusters',vmss:'Microsoft.Compute/virtualMachineScaleSets',lb:'Microsoft.Network/loadBalancers',kv:'Microsoft.KeyVault/vaults'};
+const TYPES={group:'Microsoft.Resources/resourceGroups',vm:'Microsoft.Compute/virtualMachines',disk:'Microsoft.Compute/disks',storage:'Microsoft.Storage/storageAccounts',vnet:'Microsoft.Network/virtualNetworks',nsg:'Microsoft.Network/networkSecurityGroups',pip:'Microsoft.Network/publicIPAddresses',nic:'Microsoft.Network/networkInterfaces',plan:'Microsoft.Web/serverFarms',webapp:'Microsoft.Web/sites',aks:'Microsoft.ContainerService/managedClusters',vmss:'Microsoft.Compute/virtualMachineScaleSets',lb:'Microsoft.Network/loadBalancers',kv:'Microsoft.KeyVault/vaults',sqlserver:'Microsoft.Sql/servers',acr:'Microsoft.ContainerRegistry/registries',ag:'Microsoft.Insights/actionGroups',alert:'Microsoft.Insights/metricAlerts'};
 
 // ---------- Utilidades ----------
 const hexs=n=>Array.from({length:n},()=>'0123456789abcdef'[Math.random()*16|0]).join('');
@@ -245,6 +245,7 @@ const GLOBAL=[
 const GROUPS={
   '':'',account:'Manage Azure subscription information.',group:'Manage resource groups and template deployments.',vm:'Manage Linux or Windows virtual machines.','vm image':'Information on available virtual machine images.',storage:'Manage Azure Cloud Storage resources.','storage account':'Manage storage accounts.',network:'Manage Azure Network resources.','network vnet':'Check if a private IP address is available for use within a virtual network.','network vnet subnet':'Manage subnets in an Azure Virtual Network.',appservice:'Manage App Service plans.','appservice plan':'Manage app service plans.',webapp:'Manage web apps.',aks:'Azure Kubernetes Service.',role:'Manage Azure role-based access control (Azure RBAC).','role assignment':'Manage role assignments.','role definition':'Manage role definitions.',ad:'Manage Microsoft Entra ID (formerly known as Azure Active Directory, Azure AD, AAD) entities needed for Azure role-based access control (Azure RBAC) through Microsoft Graph API.','ad user':'Manage Microsoft Entra users.',resource:'Manage Azure resources.',
   'storage container':'Manage blob storage containers.','storage blob':'Manage object storage for unstructured data (blobs).','storage account keys':'Manage storage account keys.','network nsg':'Manage Azure Network Security Groups (NSGs).','network nsg rule':'Manage network security group rules.','network public-ip':'Manage public IP addresses.',lock:'Manage Azure locks.',policy:'Manage resources defined and used by the Azure Policy service.','policy definition':'Manage resource policy definitions.','policy assignment':'Manage resource policy assignments.','policy state':'Manage policy compliance states.',keyvault:'Manage KeyVault keys, secrets, and certificates.','keyvault secret':'Manage secrets.',
+  sql:'Manage Azure SQL Databases and Data Warehouses.','sql server':'Manage SQL servers.','sql server firewall-rule':'Manage a server\'s firewall rules.','sql db':'Manage databases.',acr:'Manage private registries with Azure Container Registries.','acr repository':'Manage repositories (image names) for Azure Container Registries.',monitor:'Manage the Azure Monitor Service.','monitor activity-log':'Manage activity logs.','monitor metrics':'View Azure resource metrics.','monitor metrics alert':'Manage near-realtime metric alert rules.','monitor action-group':'Manage action groups.',consumption:'Manage consumption of Azure resources.','consumption usage':'Inspect the usage of Azure resources.','consumption budget':'Manage budgets for an Azure subscription.',
 };
 const ROOT_EXTRA={login:'Log in to Azure.',logout:'Log out to remove access to Azure subscriptions.',configure:'Manage Azure CLI configuration. This command is interactive.',find:'I\'m an AI robot, my advice is based on our Azure documentation as well as the usage patterns of Azure CLI and Azure ARM users. Using me improves Azure products and documentation.',version:'Show the versions of Azure CLI modules and extensions in JSON format by default or format configured by --output.'};
 // Comandos reales de Azure CLI que existen pero no se simulan (para un mensaje honesto en lugar de "no existe").
@@ -260,6 +261,9 @@ const REAL={'':['account','acr','ad','advisor','afd','aks','ams','apim','appconf
   lock:['create','delete','list','show','update'],policy:['assignment','definition','event','exemption','metadata','remediation','set-definition','state'],'policy assignment':['create','delete','identity','list','non-compliance-message','show','update'],'policy definition':['create','delete','list','show','update'],'policy state':['list','summarize','trigger-scan'],
   keyvault:['backup','certificate','check-name','create','delete','delete-policy','key','list','list-deleted','network-rule','private-endpoint-connection','purge','recover','region','restore','role','secret','security-domain','set-policy','show','show-deleted','update','wait'],'keyvault secret':['backup','delete','download','list','list-deleted','list-versions','purge','recover','restore','set','set-attributes','show','show-deleted'],
   'storage container':['create','delete','exists','generate-sas','immutability-policy','legal-hold','lease','list','metadata','policy','restore','set-permission','show','show-permission'],'storage blob':['copy','delete','delete-batch','download','download-batch','exists','generate-sas','immutability-policy','lease','list','metadata','query','restore','service-properties','set-legal-hold','set-tier','show','snapshot','sync','tag','undelete','update','upload','upload-batch','url'],'storage account keys':['list','renew'],
+  sql:['db','dw','elastic-pool','failover-group','instance-pool','list-usages','mi','midb','server','show-usage','stg','vm'],'sql server':['ad-admin','ad-only-auth','audit-policy','conn-policy','create','delete','dns-alias','firewall-rule','identity','ipv6-firewall-rule','key','list','list-usages','ms-support','outbound-firewall-rule','refresh-external-governance-status','restore','show','tde-key','update','vnet-rule','wait'],'sql server firewall-rule':['create','delete','list','show','update'],'sql db':['advanced-threat-protection-setting','audit-policy','classification','copy','create','delete','export','geo-backup','import','list','list-deleted','list-editions','ltr-backup','ltr-policy','op','rename','replica','restore','show','show-connection-string','show-deleted','str-policy','tde','threat-policy','update','wait'],
+  acr:['agentpool','artifact-streaming','build','cache','check-health','check-name','config','connected-registry','create','credential','credential-set','delete','encryption','identity','import','list','login','manifest','network-rule','pack','private-endpoint-connection','replication','repository','run','scope-map','show','show-endpoints','show-usage','task','taskrun','token','update','webhook'],'acr repository':['delete','list','list-deleted','show','show-manifests','show-tags','untag','update'],
+  monitor:['account','action-group','activity-log','app-insights','autoscale','diagnostic-settings','log-analytics','log-profiles','metrics','private-link-scope','scheduled-query'],'monitor activity-log':['alert','list','list-categories'],'monitor metrics':['alert','list','list-definitions','list-namespaces','list-sub','list-sub-definitions'],'monitor metrics alert':['create','delete','dimension','list','show','update'],'monitor action-group':['create','delete','enable-receiver','identity','list','show','test-notifications','update'],consumption:['budget','marketplace','pricesheet','reservation','usage'],'consumption usage':['list'],'consumption budget':['create','create-with-rg','delete','delete-with-rg','list','show','show-with-rg','update','update-with-rg'],
   'network nsg':['create','delete','list','rule','show','update','wait'],'network nsg rule':['create','delete','list','show','update','wait'],'network public-ip':['create','delete','ddos-protection','list','prefix','show','update','wait'],
 };
 
@@ -269,8 +273,10 @@ function create(opts={}){
   const C={};
   const cmd=(key,desc,args,ex,fn,extra={})=>{C[key]={key,desc,args,ex,fn,...extra}};
   const yaml=opts.yaml||root.jsyaml;
-  const now=opts.now||(()=>Date.now());
+  const clock=opts.now||(()=>Date.now());
   let S,pending=null;
+  // Reloj del simulador: el real más el tiempo adelantado con "lab tiempo".
+  const now=()=>clock()+((S&&S.offset)||0);
   const sub=()=>S.subs.find(s=>s.id===S.current);
   const curSub=()=>S.cur||S.current;
 
@@ -278,7 +284,7 @@ function create(opts={}){
     const t=now();
     S={v:1,createdAt:t,savedAt:t,loggedIn:false,tenant:{id:guid(),name:'Default Directory',domain:DOMAIN},
       subs:[{id:guid(),name:'Azure subscription 1',offer:'Pay-As-You-Go'},{id:guid(),name:'Cloud Lab Dev',offer:'Visual Studio Enterprise'}],
-      current:null,defaults:{},res:[],roles:[],merged:[],gone:[],locks:[],policies:[],deletedVaults:[],sshKeys:false,vars:{},files:{},history:[],stats:{}};
+      current:null,defaults:{},res:[],roles:[],merged:[],gone:[],locks:[],policies:[],deletedVaults:[],activity:[],budgets:[],offset:0,sshKeys:false,vars:{},files:{},history:[],stats:{}};
     S.current=S.subs[0].id;
     for(const s of S.subs)S.roles.push({id:guid(),scope:`/subscriptions/${s.id}`,role:'Owner',principal:USERS[0].id,created:t-86400000*30});
   }
@@ -317,6 +323,7 @@ function create(opts={}){
   const tagsOf=list=>Object.fromEntries((list||[]).filter(Boolean).map(t=>{const i=t.indexOf('=');return i<0?[t,'']:[t.slice(0,i),t.slice(i+1)]}));
   const busy=r=>r.busy&&r.busy.until>now()?r.busy.state:null;
   function settle(){
+    meter();
     const t=now();
     for(const r of S.res.slice())if(r.busy&&r.busy.until<=t){if(r.busy.state==='Deleting'){removeTree(r)}else delete r.busy}
   }
@@ -325,6 +332,7 @@ function create(opts={}){
     removeRes(r);
   }
   function removeRes(x){
+    if(x.p&&x.p.acc){S.spentGone=S.spentGone||{};S.spentGone[x.sub]=(S.spentGone[x.sub]||0)+x.p.acc}
     if(x.t==='aks'){S.gone.push({name:x.name,fqdn:x.p.fqdn,id:x.p.uid});S.gone=S.gone.slice(-20);const mc=S.res.find(g=>g.t==='group'&&g.p.managedBy===resId(x));if(mc)removeTree(mc)}
     if(x.t==='plan')for(const w of S.res.filter(w=>w.t==='webapp'&&w.p.plan===resId(x)))del(w);
     if(x.t==='kv')S.deletedVaults.push({name:x.name,rg:x.rg,location:x.location,sub:x.sub,id:resId(x),at:now(),created:x.created,retention:x.p.retention||90,purgeProtection:!!x.p.purgeProtection,p:x.p});
@@ -462,9 +470,11 @@ function create(opts={}){
     if(c.login!==false&&!S.loggedIn)err(`Please run 'az login' to setup account.`);
     settle();
     // Las preguntas (y/n, contraseña) conservan -o, --query y la tabla del comando al continuar.
-    const wrap=e=>{const cont=e.cont;e.cont=a=>{try{const r=cont(a)||{};return{...r,table:r.table||c.table,G:v}}catch(x){throw x instanceof Ask?wrap(x):x}};return e};
+    const failed=x=>{if(x instanceof AzError){const m=x.message.match(/^ERROR: \(([A-Za-z]+)\)/);if(m)logActivity(key,v,'Failed',m[1])}};
+    const wrap=e=>{const cont=e.cont;e.cont=a=>{try{const r=cont(a)||{};if(!/^Operation cancelled/.test(r.text||''))logActivity(key,v,'Succeeded');return{...r,table:r.table||c.table,G:v}}catch(x){if(!(x instanceof Ask))failed(x);throw x instanceof Ask?wrap(x):x}};return e};
     let r;
-    try{r=c.fn(v)||{}}catch(e){throw e instanceof Ask?wrap(e):e}
+    try{r=c.fn(v)||{}}catch(e){if(!(e instanceof Ask))failed(e);throw e instanceof Ask?wrap(e):e}
+    if(!r.ask&&!r.code)logActivity(key,v,'Succeeded');
     if(r.ask)wrap(r.ask);
     r.table=r.table||c.table;
     return{...r,G:v};
@@ -1490,6 +1500,301 @@ function create(opts={}){
     return{data:{...secretView(k,v.name,s,false),deletedDate:iso(now()),recoveryId:`https://${k.name}.vault.azure.net/deletedsecrets/${v.name}`,scheduledPurgeDate:iso(now()+k.p.retention*86400000)}};
   });
 
+  // ---------- Azure SQL ----------
+  const SQL_SKUS={Basic:['Basic','Basic',5,2],S0:['Standard','Standard',10,250],S1:['Standard','Standard',20,250],S2:['Standard','Standard',50,250],P1:['Premium','Premium',125,500],GP_Gen5_2:['GeneralPurpose','GP_Gen5',2,32],GP_Gen5_4:['GeneralPurpose','GP_Gen5',4,32],GP_S_Gen5_1:['GeneralPurpose','GP_S_Gen5',1,32],GP_S_Gen5_2:['GeneralPurpose','GP_S_Gen5',2,32],BC_Gen5_2:['BusinessCritical','BC_Gen5',2,32],HS_Gen5_2:['Hyperscale','HS_Gen5',2,1024]};
+  const TAKEN_SQL=['sqlserver','mysqlserver','server','test','demo','sql','database','cloudlab'];
+  const sqlFind=(rg,name)=>needRes('sqlserver',rg,name);
+  function sqlView(s){return{administratorLogin:s.p.admin,administratorLoginPassword:null,administrators:null,externalGovernanceStatus:'Disabled',federatedClientId:null,fullyQualifiedDomainName:`${s.name}.database.windows.net`,id:resId(s),identity:null,keyId:null,kind:'v12.0',location:s.location,minimalTlsVersion:'1.2',name:s.name,primaryUserAssignedIdentityId:null,privateEndpointConnections:[],publicNetworkAccess:'Enabled',resourceGroup:s.rg,restrictOutboundNetworkAccess:'Disabled',state:'Ready',tags:Object.keys(s.tags).length?s.tags:null,type:TYPES.sqlserver,version:'12.0',workspaceFeature:null}}
+  const sqlTable=d=>d.map(s=>({Name:s.name,ResourceGroup:s.resourceGroup,Location:s.location,FullyQualifiedDomainName:s.fullyQualifiedDomainName,AdministratorLogin:s.administratorLogin,State:s.state}));
+  cmd('sql server create','Create a server.',[NAME('The name of the Azure SQL server. You can configure the default using `az configure --defaults sql-server=<name>`.'),RG(),LOC(),A('admin',['--admin-user','-u'],{desc:'Administrator username for the server. Once created it cannot be changed.'}),A('password',['--admin-password','-p'],{desc:'The administrator login password (required for server creation).'}),A('tls',['--minimal-tls-version'],{choices:['1.0','1.1','1.2','1.3'],desc:'The minimal TLS version enforced by the sql server for inbound connections.'}),A('adOnly',['--enable-ad-only-auth'],{type:'bool',desc:'Enable Azure Active Directory Only Authentication for this server.'}),TAGS],
+    [['Create a server.','az sql server create -l westus -g mygroup -n myserver -u myadminuser -p myadminpassword']],v=>{
+      const g=needGroup(v.rg,true);
+      if(!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(v.name))arm('InvalidResourceName',`Server name '${v.name}' cannot be empty or null. It can only be made up of lowercase letters 'a'-'z', the numbers 0-9 and the hyphen. The hyphen may not lead or trail in the name.`);
+      if(v.adOnly)err('cloudlab: la autenticación solo con Microsoft Entra ID no se simula. Crea el servidor con --admin-user y --admin-password.');
+      if(!v.admin||!v.password)err('Please specify --admin-user and --admin-password for SQL authentication, or enable Microsoft Entra-only authentication with --enable-ad-only-auth.',2);
+      if(['admin','administrator','sa','root','dbmanager','loginmanager','dbo','guest','public'].includes(lc(v.admin)))arm('InvalidParameterValue',`Invalid value given for parameter Login. Specify a valid parameter value.\ncloudlab: "${v.admin}" es un nombre reservado en Azure SQL. Prueba con sqladmin.`);
+      const n=[/[a-z]/,/[A-Z]/,/\d/,/[^a-zA-Z0-9]/].filter(r=>r.test(v.password)).length;
+      if(v.password.length<8||v.password.length>128||n<3||lc(v.password).includes(lc(v.admin)))arm('PasswordNotComplex',`Password validation failed. The password does not meet policy requirements because it is not complex enough.\ncloudlab: entre 8 y 128 caracteres, con 3 de estos 4 tipos (minúsculas, mayúsculas, números, símbolos) y sin incluir el nombre de usuario.`);
+      const loc=v.location?needLoc(v.location,'sqlserver'):g.location;
+      const mine=S.res.find(r=>r.t==='sqlserver'&&r.name===v.name);
+      if(TAKEN_SQL.includes(v.name)||mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name)))arm('NameAlreadyExists',`The name '${v.name}.database.windows.net' already exists. Choose a different name.`);
+      if(!mine)policyCheck({t:'sqlserver',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.sqlserver}/${v.name}`});
+      const s=mine||add({t:'sqlserver',name:v.name,rg:g.name,location:loc,tags:tagsOf(v.tags),p:{admin:v.admin,rules:[],dbs:{}}});
+      stat('sqlServer');
+      return{data:sqlView(s)};
+    },{table:d=>sqlTable([d])});
+  cmd('sql server list','List available servers.',[RG(false)],[['List all servers in the current subscription.','az sql server list -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('sqlserver',v.rg).map(sqlView)}},{table:sqlTable});
+  cmd('sql server show','Gets a server.',[NAME('The name of the Azure SQL server.'),RG()],[['Show a server.','az sql server show -g mygroup -n myserver']],v=>({data:sqlView(sqlFind(v.rg,v.name))}),{table:d=>sqlTable([d])});
+  cmd('sql server delete','Deletes a server.',[NAME('The name of the Azure SQL server.'),RG(),YES],[['Delete a server.','az sql server delete -g mygroup -n myserver']],v=>{
+    const s=sqlFind(v.rg,v.name);
+    const go=()=>{guard('delete',resId(s),true);del(s);return{}};
+    return v.yes?go():confirm(go);
+  });
+  const ipOk=ip=>/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.test(ip)&&ip.split('.').every(x=>+x<=255);
+  const fwView=(s,r)=>({endIpAddress:r.end,id:`${resId(s)}/firewallRules/${r.name}`,name:r.name,resourceGroup:s.rg,startIpAddress:r.start,type:'Microsoft.Sql/servers/firewallRules'});
+  const fwTable=d=>d.map(r=>({EndIpAddress:r.endIpAddress,Name:r.name,ResourceGroup:r.resourceGroup,StartIpAddress:r.startIpAddress}));
+  cmd('sql server firewall-rule create','Create a firewall rule.',[NAME('The name of the firewall rule.'),RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'}),A('start',['--start-ip-address'],{req:true,desc:'The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' to represent all Azure-internal IP addresses.'}),A('end',['--end-ip-address'],{req:true,desc:'The end IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' to represent all Azure-internal IP addresses.'})],
+    [['Allow access from Azure services.','az sql server firewall-rule create -g mygroup -s myserver -n AllowAzureServices --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0'],['Allow your client IP.','az sql server firewall-rule create -g mygroup -s myserver -n MyIp --start-ip-address 203.0.113.10 --end-ip-address 203.0.113.10']],v=>{
+      const s=sqlFind(v.rg,v.server);guard('write',resId(s));
+      for(const ip of [v.start,v.end])if(!ipOk(ip))arm('FirewallRuleNotIPv4Address',`The firewall rule '${v.name}' is not valid because '${ip}' is not a valid IPv4 address.`);
+      if(ip2n(v.start)>ip2n(v.end))arm('FirewallRuleInvalidRange','First IP address must be less than or equal to the last IP address.');
+      const r={name:v.name,start:v.start,end:v.end};
+      s.p.rules=s.p.rules.filter(x=>lc(x.name)!==lc(v.name)).concat(r);stat('sqlFirewall');
+      return{data:fwView(s,r)};
+    },{table:d=>fwTable([d])});
+  cmd('sql server firewall-rule list','List a server\'s firewall rules.',[RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'})],[['List firewall rules.','az sql server firewall-rule list -g mygroup -s myserver -o table']],v=>{const s=sqlFind(v.rg,v.server);return{data:s.p.rules.map(r=>fwView(s,r))}},{table:fwTable});
+  cmd('sql server firewall-rule delete','Deletes a firewall rule.',[NAME('The name of the firewall rule.'),RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'})],[['Delete a firewall rule.','az sql server firewall-rule delete -g mygroup -s myserver -n MyIp']],v=>{const s=sqlFind(v.rg,v.server);guard('write',resId(s));s.p.rules=s.p.rules.filter(x=>lc(x.name)!==lc(v.name));return{}});
+  function dbView(s,n,d){
+    const[tier,family,cap,maxGb]=SQL_SKUS[d.sku],vcore=/Gen5/.test(d.sku),sku={capacity:cap,family:vcore?'Gen5':null,name:vcore?family:d.sku==='Basic'?'Basic':tier,size:null,tier};
+    return{autoPauseDelay:/_S_/.test(d.sku)?60:null,availabilityZone:'NoPreference',catalogCollation:'SQL_Latin1_General_CP1_CI_AS',collation:'SQL_Latin1_General_CP1_CI_AS',createMode:null,creationDate:iso(d.created),currentBackupStorageRedundancy:d.backup,currentServiceObjectiveName:d.sku,currentSku:sku,databaseId:d.id,defaultSecondaryLocation:(REGION[s.location]||{}).pair||null,earliestRestoreDate:iso(d.created),edition:tier,elasticPoolId:null,failoverGroupId:null,freeLimitExhaustionBehavior:null,highAvailabilityReplicaCount:null,id:`${resId(s)}/databases/${n}`,isLedgerOn:false,kind:`v12.0,user${vcore?',vcore':''}${/_S_/.test(d.sku)?',serverless':''}`,licenseType:vcore&&!/_S_/.test(d.sku)?'LicenseIncluded':null,location:s.location,maintenanceConfigurationId:`/subscriptions/${s.sub}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default`,managedBy:null,maxLogSizeBytes:null,maxSizeBytes:(d.maxGb||maxGb)*1073741824,minCapacity:/_S_/.test(d.sku)?0.5:null,name:n,pausedDate:null,readScale:'Disabled',requestedBackupStorageRedundancy:d.backup,requestedServiceObjectiveName:d.sku,resourceGroup:s.rg,resumedDate:null,sku,status:'Online',tags:{},type:'Microsoft.Sql/servers/databases',useFreeLimit:null,zoneRedundant:!!d.zone};
+  }
+  const dbTable=d=>d.map(x=>({Name:x.name,ResourceGroup:x.resourceGroup,Location:x.location,Status:x.status,Sku:x.currentServiceObjectiveName,Tier:x.edition,MaxSizeGB:x.maxSizeBytes/1073741824,BackupRedundancy:x.currentBackupStorageRedundancy}));
+  cmd('sql db create','Create a database.',[NAME('Name of the Azure SQL Database.'),RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'}),A('so',['--service-objective'],{desc:'The service objective for the new database. For example: Basic, S0, P1, GP_Gen5_2, GP_S_Gen5_1.'}),A('edition',['--edition','--tier','-e'],{desc:'The edition component of the sku. Allowed values include: Basic, Standard, Premium, GeneralPurpose, BusinessCritical, Hyperscale.'}),A('compute',['--compute-model'],{choices:['Provisioned','Serverless'],desc:'The compute model of the database.'}),A('family',['--family','-f'],{desc:'The compute generation component of the sku (for vcore skus only). Allowed values include: Gen5.'}),A('capacity',['--capacity','-c'],{type:'int',desc:'The capacity component of the sku in integer number of DTUs or vcores.'}),A('maxSize',['--max-size'],{desc:'The max storage size. If no unit is specified, defaults to bytes (B).'}),A('backup',['--backup-storage-redundancy','--bsr'],{choices:['Geo','GeoZone','Local','Zone'],desc:'Backup storage redundancy used to store backups. Allowed values include: Local, Zone, Geo, GeoZone.'}),A('zone',['--zone-redundant','-z'],{type:'tbool',desc:'Specifies whether to enable zone redundancy. Default is true if no value is specified.'}),NOWAIT,TAGS],
+    [['Create a Standard S0 database.','az sql db create -g mygroup -s myserver -n mydb --service-objective S0'],['Create a serverless General Purpose database.','az sql db create -g mygroup -s myserver -n mydb -e GeneralPurpose -f Gen5 -c 2 --compute-model Serverless --backup-storage-redundancy Local']],v=>{
+      const s=sqlFind(v.rg,v.server);guard('write',resId(s));
+      let sku=v.so;
+      if(!sku&&(v.edition||v.compute)){const e=lc(v.edition||'generalpurpose');sku=e==='basic'?'Basic':e==='standard'?'S0':e==='premium'?'P1':`${e==='businesscritical'?'BC':e==='hyperscale'?'HS':'GP'}${v.compute==='Serverless'?'_S':''}_Gen5_${v.capacity||(v.compute==='Serverless'?1:2)}`}
+      sku=sku||'GP_Gen5_2';
+      const k=Object.keys(SQL_SKUS).find(x=>lc(x)===lc(sku));
+      if(!k)arm('InvalidServiceObjectiveName',`The service objective name '${sku}' is invalid. Choose a valid service objective name, for example: ${Object.keys(SQL_SKUS).join(', ')}.`);
+      if(s.p.dbs[v.name])arm('DatabaseAlreadyExists',`The database '${v.server}/${v.name}' already exists.`);
+      const warn=[];
+      if(!v.backup)warn.push('Selected value for backup storage redundancy is geo-redundant storage. Note that database backups will be geo-replicated to the paired region. To learn more about Azure Paired Regions visit https://aka.ms/micorosoft-azure-paired-regions.');
+      const d={sku:k,created:now(),id:guid(),backup:v.backup||'Geo',zone:v.zone,maxGb:v.maxSize?parseFloat(v.maxSize):null};
+      s.p.dbs[v.name]=d;stat('sqlDb');
+      return v.noWait?{warn}:{warn,data:dbView(s,v.name,d)};
+    },{table:d=>dbTable([d])});
+  cmd('sql db list','List databases on a server or elastic pool.',[RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'})],[['List databases on a server.','az sql db list -g mygroup -s myserver -o table']],v=>{const s=sqlFind(v.rg,v.server);return{data:[['master',{sku:'Basic',created:s.created,id:guid(),backup:'Geo',system:true}],...Object.entries(s.p.dbs)].map(([n,d])=>{const x=dbView(s,n,d);if(d.system){x.kind='v12.0,system';x.currentServiceObjectiveName='System';x.edition='System'}return x})}},{table:dbTable});
+  cmd('sql db show','Get the details for a database.',[NAME('Name of the Azure SQL Database.'),RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'})],[['Get the details for a database.','az sql db show -g mygroup -s myserver -n mydb']],v=>{const s=sqlFind(v.rg,v.server),d=s.p.dbs[v.name];if(!d)arm('ResourceNotFound',`The Resource 'Microsoft.Sql/servers/${v.server}/databases/${v.name}' under resource group '${v.rg}' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix`,3);return{data:dbView(s,v.name,d)}},{table:d=>dbTable([d])});
+  cmd('sql db delete','Delete a database.',[NAME('Name of the Azure SQL Database.'),RG(),A('server',['--server','-s'],{req:true,desc:'Name of the Azure SQL Server.'}),YES,NOWAIT],[['Delete a database.','az sql db delete -g mygroup -s myserver -n mydb']],v=>{
+    const s=sqlFind(v.rg,v.server);
+    const go=()=>{guard('delete',resId(s));delete s.p.dbs[v.name];return{}};
+    return v.yes?go():confirm(go);
+  });
+  cmd('sql db show-connection-string','Generates a connection string to a database.',[A('client',['--client','-c'],{req:true,choices:['ado.net','jdbc','odbc','php','php_pdo','sqlcmd'],desc:'Type of client connection provider.'}),A('name',['--name','-n'],{desc:'Name of the Azure SQL Database.'}),A('server',['--server','-s'],{desc:'Name of the Azure SQL Server.'}),A('auth',['--auth-type','-a'],{choices:['ADIntegrated','ADPassword','SqlPassword'],desc:'Type of authentication.'})],
+    [['Generate connection string for ado.net.','az sql db show-connection-string -s myserver -n mydb -c ado.net']],v=>{
+      const sv=v.server||'<servername>',db=v.name||'<databasename>';
+      const cs={'ado.net':`Server=tcp:${sv}.database.windows.net,1433;Database=${db};User ID=<username>;Password=<password>;Encrypt=true;Connection Timeout=30;`,jdbc:`jdbc:sqlserver://${sv}.database.windows.net:1433;database=${db};user=<username>@${sv};password=<password>;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;`,odbc:`Driver={ODBC Driver 13 for SQL Server};Server=tcp:${sv}.database.windows.net,1433;Database=${db};Uid=<username>@${sv};Pwd=<password>;Encrypt=yes;TrustServerCertificate=no;`,php:`$conn = new PDO('sqlsrv:server = tcp:${sv}.database.windows.net,1433; Database = ${db}; LoginTimeout = 30; Encrypt = 1; TrustServerCertificate = 0;', '<username>', '<password>');`,php_pdo:`$conn = new PDO('sqlsrv:server = tcp:${sv}.database.windows.net,1433; Database = ${db}; LoginTimeout = 30; Encrypt = 1; TrustServerCertificate = 0;', '<username>', '<password>');`,sqlcmd:`sqlcmd -S tcp:${sv}.database.windows.net,1433 -d ${db} -U <username> -P <password> -N -l 30`}[v.client];
+      return{data:cs};
+    },{login:false});
+
+  // ---------- Azure Container Registry ----------
+  const TAKEN_ACR=['myregistry','registry','acr','test','demo','docker','cloudlab','containers'];
+  const acrFind=(name,rg)=>{const r=S.res.find(x=>x.t==='acr'&&inSub(x)&&lc(x.name)===lc(name)&&(!rg||lc(x.rg)===lc(rg)));if(!r)arm('ResourceNotFound',`The Resource 'Microsoft.ContainerRegistry/registries/${name}' under resource group '${rg||'<resource group>'}' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix`,3);return r};
+  const acrView=r=>({adminUserEnabled:!!r.p.admin,anonymousPullEnabled:false,creationDate:iso(r.created),dataEndpointEnabled:false,dataEndpointHostNames:[],encryption:{keyVaultProperties:null,status:'disabled'},id:resId(r),identity:null,location:r.location,loginServer:`${r.name}.azurecr.io`,metadataSearch:'Disabled',name:r.name,networkRuleBypassOptions:'AzureServices',networkRuleSet:null,policies:{azureAdAuthenticationAsArmPolicy:{status:'enabled'},exportPolicy:{status:'enabled'},quarantinePolicy:{status:'disabled'},retentionPolicy:{days:7,status:'disabled'},softDeletePolicy:{retentionDays:7,status:'disabled'},trustPolicy:{status:'disabled',type:'Notary'}},privateEndpointConnections:[],provisioningState:'Succeeded',publicNetworkAccess:'Enabled',resourceGroup:r.rg,sku:{name:r.p.sku,tier:r.p.sku},status:null,systemData:{createdAt:iso(r.created),createdBy:USERS[0].upn,createdByType:'User'},tags:r.tags,type:TYPES.acr,zoneRedundancy:'Disabled'});
+  const acrTable=d=>d.map(r=>({NAME:r.name,'RESOURCE GROUP':r.resourceGroup,LOCATION:r.location,SKU:r.sku.name,'LOGIN SERVER':r.loginServer,'CREATION DATE':r.creationDate,'ADMIN ENABLED':r.adminUserEnabled}));
+  cmd('acr create','Create an Azure Container Registry.',[NAME('The name of the container registry. It should be specified in lower case. You can configure the default registry name using `az configure --defaults acr=<registry name>`.'),RG(),A('sku',['--sku'],{req:true,choices:['Basic','Premium','Standard'],desc:'The SKU of the container registry.'}),LOC(),A('admin',['--admin-enabled'],{type:'tbool',desc:'Indicates whether the admin user is enabled.'}),TAGS],
+    [['Create a managed container registry with the Standard SKU.','az acr create -n myregistry -g MyResourceGroup --sku Standard']],v=>{
+      const g=needGroup(v.rg,true);
+      if(!/^[a-zA-Z0-9]{5,50}$/.test(v.name))err(`Registry names may contain only alpha numeric characters and must be between 5 and 50 characters`);
+      const name=lc(v.name),loc=v.location?needLoc(v.location,'acr'):g.location;
+      const mine=S.res.find(r=>r.t==='acr'&&r.name===name);
+      if(TAKEN_ACR.includes(name)||mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name)))arm('AlreadyInUse',`The registry DNS name ${name}.azurecr.io is already in use. You can check if the name is already claimed using following API: https://docs.microsoft.com/en-us/rest/api/containerregistry/registries/checknameavailability`);
+      if(!mine)policyCheck({t:'acr',name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.acr}/${name}`});
+      const r=mine||add({t:'acr',name,rg:g.name,location:loc,tags:tagsOf(v.tags),p:{repos:{}}});
+      Object.assign(r.p,{sku:v.sku,admin:!!v.admin});stat('acrCreate');
+      return{data:acrView(r)};
+    },{table:d=>acrTable([d])});
+  cmd('acr list','List container registries.',[RG(false)],[['List container registries and show the results in a table.','az acr list -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('acr',v.rg).map(acrView)}},{table:acrTable});
+  cmd('acr show','Get the details of an Azure Container Registry.',[NAME('The name of the container registry.'),RG(false)],[['Get the login server for an Azure Container Registry.','az acr show -n myregistry --query loginServer']],v=>({data:acrView(acrFind(v.name,v.rg))}),{table:d=>acrTable([d])});
+  cmd('acr delete','Delete an Azure Container Registry.',[NAME('The name of the container registry.'),RG(false),YES],[['Delete an Azure Container Registry.','az acr delete -n myregistry']],v=>{
+    const r=acrFind(v.name,v.rg);
+    const go=()=>{guard('delete',resId(r));del(r);return{}};
+    return v.yes?go():confirm(go);
+  });
+  cmd('acr login','Log in to an Azure Container Registry through the Docker CLI.',[NAME('The name of the container registry.'),A('expose',['--expose-token','-t'],{type:'bool',desc:'Expose access token instead of automatically logging in through Docker CLI.'})],[['Log in to an Azure Container Registry.','az acr login -n myregistry']],v=>{
+    const r=acrFind(v.name);
+    if(!v.expose)err(`This command requires running the docker daemon, which is not supported in Azure Cloud Shell. You may want to use 'az acr login -n ${r.name} --expose-token' to get an access token, which does not require Docker to be installed.`);
+    return{warn:[`You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'`],data:{accessToken:'eyJhbGciOiJSUzI1NiIs...REDACTED',loginServer:`${r.name}.azurecr.io`}};
+  });
+  cmd('acr build','Queues a quick build, providing streaming logs for an Azure Container Registry.',[A('registry',['--registry','-r'],{req:true,desc:'The name of the container registry.'}),A('image',['--image','-t'],{desc:'The name and tag of the image using the format: \'-t repo/image:tag\'. Multiple tags are supported by passing -t multiple times.'}),A('file',['--file','-f'],{desc:'The relative path of the Docker file to the source code root folder. Default to \'Dockerfile\'.'}),A('noLogs',['--no-logs'],{type:'bool',desc:'Do not show logs after successfully queuing the build.'})],
+    [['Queue a local context as a Linux build, tag it, and push it to the registry.','az acr build -t sample/hello-world:{{.Run.ID}} -r myregistry .']],v=>{
+      const r=acrFind(v.registry);
+      const ctx=(v.__pos||[])[0];
+      if(!ctx)err('the following arguments are required: <SOURCE_LOCATION>',2);
+      if(ctx!=='.')err(`cloudlab: usa "." como contexto: el Dockerfile y los ficheros están en el directorio actual (ls).`);
+      const df=v.file||'Dockerfile';
+      if(!(df in S.files))err(`Unable to find '${df}'.\ncloudlab: crea un Dockerfile con:\n  cat <<EOF > Dockerfile\n  FROM nginx\n  COPY index.html /usr/share/nginx/html/\n  EOF`);
+      const lines=S.files[df].split('\n').map(l=>l.trim()).filter(l=>l&&!l.startsWith('#'));
+      const from=(lines.find(l=>/^FROM\s/i.test(l))||'').split(/\s+/)[1];
+      if(!from)err(`Dockerfile parse error: no FROM instruction found in '${df}'.`);
+      const run=`c${hexs(1)}${String((S.runs=(S.runs||0)+1)).padStart(1,'0')}`;
+      const tags=[].concat(v.image||[]).map(t=>t.replace('{{.Run.ID}}',run)).map(t=>t.includes(':')?t:t+':latest');
+      const t0=new Date(now()),stamp=d=>new Date(t0.getTime()+d*1000).toISOString().slice(0,19).replace('T',' ').replace(/-/g,'/');
+      const copies=lines.filter(l=>/^(COPY|ADD)\s/i.test(l)).map(l=>l.split(/\s+/)[1]).filter(f=>f!=='.'&&!(f in S.files));
+      const log=[`Packing source code into tar to upload...`,`Uploading archived source code from '/tmp/build_archive_${hexs(32)}.tar.gz'...`,`Sending context (${(Object.values(S.files).join('').length/1024+0.3).toFixed(3)} KiB) to registry: ${r.name}...`,`Queued a build with ID: ${run}`,`Waiting for an agent...`,`${stamp(1)} Downloading source code...`,`${stamp(2)} Finished downloading source code`,`${stamp(2)} Using acb_vol_${guid()} as the home volume`,`${stamp(3)} Setting up Docker configuration...`,`${stamp(4)} Successfully set up Docker configuration`,`${stamp(4)} Logging in to registry: ${r.name}.azurecr.io`,`${stamp(5)} Successfully logged into ${r.name}.azurecr.io`,`${stamp(5)} Executing step ID: build. Timeout(sec): 28800, Working directory: '', Network: ''`,`${stamp(5)} Scanning for dependencies...`,`${stamp(6)} Successfully scanned dependencies`,`${stamp(6)} Launching container with name: build`,`Sending build context to Docker daemon  ${(Object.values(S.files).join('').length/1024+2).toFixed(2)}kB`,...lines.map((l,i)=>`Step ${i+1}/${lines.length} : ${l}`)];
+      if(copies.length){log.push(`COPY failed: file not found in build context or excluded by .dockerignore: stat ${copies[0]}: file does not exist`,`${stamp(9)} Container failed during run: build. No retries remaining.`,`failed to run step ID: build: exit status 1`,'',`Run ID: ${run} failed after 10s. Error: failed during run, err: exit status 1`);return{text:log.join('\n'),code:1,errText:true}}
+      log.push(`Successfully built ${hexs(12)}`,...tags.map(t=>`Successfully tagged ${r.name}.azurecr.io/${t}`),`${stamp(12)} Successfully executed container: build`,`${stamp(12)} Executing step ID: push. Timeout(sec): 3600, Working directory: '', Network: ''`,...tags.map(t=>`${stamp(13)} Pushing image: ${r.name}.azurecr.io/${t}, attempt 1`),...tags.map(t=>`${t.split(':')[1]}: digest: sha256:${hexs(64)} size: 1570`),`${stamp(16)} Successfully pushed image: ${r.name}.azurecr.io/${tags[0]||'(sin etiqueta)'}`,`${stamp(16)} Step ID: build marked as successful (elapsed time in seconds: 6.8)`,`${stamp(16)} Step ID: push marked as successful (elapsed time in seconds: 3.4)`,'',`Run ID: ${run} was successful after 18s`);
+      for(const t of tags){const[repo,tag]=t.split(':');(r.p.repos[repo]=r.p.repos[repo]||[]).includes(tag)||r.p.repos[repo].push(tag)}
+      if(!tags.length)log.splice(log.length-1,0,`cloudlab: sin -t la imagen se construye pero no se guarda en el registro. Añade -t app:v1.`);
+      stat('acrBuild');
+      return{text:log.join('\n')};
+    },{positional:true});
+  cmd('acr repository list','List repositories in an Azure Container Registry.',[NAME('The name of the container registry.')],[['List repositories in a given Azure Container Registry.','az acr repository list -n myregistry']],v=>({data:Object.keys(acrFind(v.name).p.repos).sort()}));
+  cmd('acr repository show-tags','Show tags for a repository in an Azure Container Registry.',[NAME('The name of the container registry.'),A('repo',['--repository'],{req:true,desc:'The name of the repository.'})],[['Show tags of a repository in an Azure Container Registry.','az acr repository show-tags -n myregistry --repository MyRepository']],v=>{
+    const r=acrFind(v.name),t=r.p.repos[v.repo];
+    if(!t)err(`(NAME_UNKNOWN) repository name not known to registry\nCode: NAME_UNKNOWN\nMessage: repository name not known to registry`,3);
+    return{data:t.slice().sort()};
+  });
+  cmd('aks update','Update the properties of a managed Kubernetes cluster.',[NAME('Name of the managed cluster.'),RG(),A('attach',['--attach-acr'],{desc:'Grant the \'acrpull\' role assignment to the ACR specified by name or resource ID.'}),A('detach',['--detach-acr'],{desc:'Disable the \'acrpull\' role assignment to the ACR specified by name or resource ID.'}),A('tier',['--tier'],{choices:['free','premium','standard'],desc:'Specify SKU tier for managed clusters.'}),NOWAIT],
+    [['Attach an ACR to the cluster.','az aks update -n MyManagedCluster -g MyResourceGroup --attach-acr acrName']],v=>{
+      const a=aksFind(v);aksBusy(a);guard('write',resId(a));
+      const warn=[];
+      if(!v.attach&&!v.detach&&!v.tier)err('Please specify one or more of "--enable-cluster-autoscaler" or "--disable-cluster-autoscaler" or "--update-cluster-autoscaler" or "--cluster-autoscaler-profile" or "--load-balancer-managed-outbound-ip-count" or "--load-balancer-outbound-ips" or "--load-balancer-outbound-ip-prefixes" or "--attach-acr" or "--detach-acr" or "--tier" ...',2);
+      a.p.acr=a.p.acr||[];
+      if(v.attach){const r=acrFind(v.attach.split('/').pop());a.p.acr=[...new Set([...a.p.acr,r.name])];S.roles.push({id:guid(),scope:resId(r),role:'AcrPull',principal:a.p.principal,created:now(),sp:`${a.name}-agentpool`});warn.push('AAD role propagation done[############################################]  100.0000%')}
+      if(v.detach){const n=lc(v.detach.split('/').pop());a.p.acr=a.p.acr.filter(x=>x!==n);S.roles=S.roles.filter(r=>!(r.principal===a.p.principal&&r.role==='AcrPull'&&lc(r.scope).endsWith('/'+n)))}
+      if(v.tier)a.p.tier=v.tier==='standard'?'Standard':v.tier==='premium'?'Premium':'Free';
+      stat('aksUpdate');
+      return{warn,data:v.noWait?undefined:aksView(a)};
+    });
+
+  // ---------- Azure Monitor ----------
+  // Registro de actividad: operaciones de escritura (PUT/DELETE/POST) del plano de control, con éxito o error.
+  const OPS={vm:'Microsoft.Compute/virtualMachines','storage account':'Microsoft.Storage/storageAccounts','network vnet subnet':'Microsoft.Network/virtualNetworks/subnets','network vnet':'Microsoft.Network/virtualNetworks','network nsg rule':'Microsoft.Network/networkSecurityGroups/securityRules','network nsg':'Microsoft.Network/networkSecurityGroups','network public-ip':'Microsoft.Network/publicIPAddresses','appservice plan':'Microsoft.Web/serverFarms',webapp:'Microsoft.Web/sites',aks:'Microsoft.ContainerService/managedClusters',keyvault:'Microsoft.KeyVault/vaults',group:'Microsoft.Resources/subscriptions/resourceGroups',lock:'Microsoft.Authorization/locks','policy assignment':'Microsoft.Authorization/policyAssignments','role assignment':'Microsoft.Authorization/roleAssignments','sql server firewall-rule':'Microsoft.Sql/servers/firewallRules','sql server':'Microsoft.Sql/servers','sql db':'Microsoft.Sql/servers/databases',acr:'Microsoft.ContainerRegistry/registries','monitor action-group':'Microsoft.Insights/actionGroups','monitor metrics alert':'Microsoft.Insights/metricAlerts','consumption budget':'Microsoft.Consumption/budgets'};
+  const VERB={create:'write',update:'write',scale:'write','open-port':'write',resize:'write','get-credentials':'listClusterUserCredential/action',delete:'delete',start:'start/action',stop:'powerOff/action',deallocate:'deallocate/action',restart:'restart/action',recover:'write',purge:'delete'};
+  function logActivity(key,v,status,code){
+    if(!S.loggedIn)return;
+    const verb=VERB[last(key)];const grp=Object.keys(OPS).find(g=>key.startsWith(g+' '));
+    if(!verb||!grp)return;
+    let op=`${OPS[grp]}/${verb}`;
+    if(key==='vm stop'&&verb.startsWith('powerOff'))op=`${OPS.vm}/powerOff/action`;
+    if(key.startsWith('aks')&&verb==='powerOff/action')op=`${OPS.aks}/stop/action`;
+    const rg=key.startsWith('group ')?v.name:v.rg||null;
+    const name=key.startsWith('group ')?null:(v.name||v.server||v.registry);
+    const sid=`/subscriptions/${curSub()}`;
+    const resourceId=key.startsWith('group ')?`${sid}/resourceGroups/${v.name}`:rg&&name?`${sid}/resourceGroups/${rg}/providers/${OPS[grp].split('/').slice(0,2).join('/')}/${name}`:sid;
+    S.activity.push({t:now(),op,status,code:code||null,rg,resourceId,correlationId:guid(),sub:curSub()});
+    if(S.activity.length>300)S.activity.splice(0,S.activity.length-300);
+  }
+  const parseDur=(s,def)=>{if(!s)return def;const m=String(s).match(/^(\d+)([dhm])$/i);if(!m)err(`usage error: --offset must be a duration such as 1h, 6h, 7d (got '${s}')`,2);return +m[1]*({d:86400000,h:3600000,m:60000}[m[2].toLowerCase()])};
+  cmd('monitor activity-log list','List and query activity log events.',[RG(false),A('offset',['--offset'],{desc:'Time offset of the query range, in ##d##h format. Can be used with either --start-time or --end-time. If used with neither, defaults to querying the past 6 hours.'}),A('status',['--status'],{desc:'Status to filter events by.'}),A('caller',['--caller'],{desc:'Caller to look for when querying.'}),A('maxEvents',['--max-events'],{type:'int',desc:'Maximum number of records to return.'}),A('resourceId',['--resource-id'],{desc:'ARM ID of a resource.'})],
+    [['List all events from July 1st, looking forward one week.','az monitor activity-log list --start-time 2018-07-01 --offset 7d'],['List events within the past six hours based on a correlation ID.','az monitor activity-log list --correlation-id b5eac9d2-e829-4c9a-9efb-586d19417c5f'],['List what changed in a resource group in the last day.',"az monitor activity-log list -g MyResourceGroup --offset 1d --query \"[].{op:operationName.value, status:status.value, time:eventTimestamp}\" -o table"]],v=>{
+      const from=now()-parseDur(v.offset,6*3600000);
+      if(v.rg)needGroup(v.rg);
+      let ev=S.activity.filter(e=>e.sub===curSub()&&e.t>=from&&(!v.rg||lc(e.rg||'')===lc(v.rg))&&(!v.status||lc(e.status)===lc(v.status))&&(!v.resourceId||lc(e.resourceId)===lc(v.resourceId)));
+      ev=ev.slice().reverse().slice(0,v.maxEvents||50);stat('activityLog');
+      return{data:ev.map(e=>({authorization:{action:e.op,scope:e.resourceId},caller:USERS[0].upn,category:{localizedValue:'Administrative',value:'Administrative'},correlationId:e.correlationId,description:'',eventDataId:guid(),eventName:{localizedValue:'End request',value:'EndRequest'},eventTimestamp:iso(e.t),id:`${e.resourceId}/events/${guid()}`,level:e.status==='Failed'?'Error':'Informational',operationName:{localizedValue:e.op,value:e.op},properties:e.code?{statusCode:'BadRequest',statusMessage:`{"error":{"code":"${e.code}"}}`}:{statusCode:e.op.endsWith('delete')?'OK':'Created'},resourceGroupName:e.rg,resourceId:e.resourceId,resourceProviderName:{localizedValue:e.op.split('/')[0],value:e.op.split('/')[0]},status:{localizedValue:e.status,value:e.status},subStatus:{localizedValue:'',value:''},submissionTimestamp:iso(e.t+12000),subscriptionId:e.sub,tenantId:S.tenant.id}))};
+    },{table:d=>d.map(e=>({EventTimestamp:e.eventTimestamp,OperationName:e.operationName.value,Status:e.status.value,ResourceGroupName:e.resourceGroupName||'',Caller:e.caller}))});
+  // Métricas: series sintéticas pero coherentes con el estado (una VM desasignada no emite datos).
+  const METRICS={vm:[['Percentage CPU','Percent'],['Network In Total','Bytes'],['Network Out Total','Bytes'],['Available Memory Bytes','Bytes'],['Disk Read Bytes','Bytes']],aks:[['node_cpu_usage_percentage','Percent'],['kube_node_status_condition','Count']],storage:[['UsedCapacity','Bytes'],['Transactions','Count']],webapp:[['Requests','Count'],['Http5xx','Count'],['CpuTime','Seconds']],sqlserver:[['cpu_percent','Percent']]};
+  const noise=(k,i)=>{let x=0;for(const c of k+i)x=(x*31+c.charCodeAt(0))>>>0;return(x%1000)/1000};
+  function resolveTarget(v){
+    if(v.resource&&v.resource.startsWith('/')){const r=S.res.find(x=>lc(resId(x))===lc(v.resource));if(!r)arm('ResourceNotFound',`The Resource '${v.resource.split('/providers/')[1]||v.resource}' was not found.`,3);return r}
+    if(!v.resource)err('the following arguments are required: --resource',2);
+    if(!v.rg)err('usage error: --resource ID | --resource NAME --resource-group NAME --resource-type TYPE',2);
+    const t=Object.keys(TYPES).find(k=>lc(TYPES[k])===lc(v.rtype||'')||lc(TYPES[k].split('/')[1])===lc(v.rtype||''));
+    if(!t)err('usage error: --resource ID | --resource NAME --resource-group NAME --resource-type TYPE',2);
+    return needRes(t,v.rg,v.resource);
+  }
+  const RES_ARGS=[A('resource',['--resource'],{desc:'Name or ID of the target resource.'}),RG(false),A('rtype',['--resource-type'],{desc:'Target resource type. Can also accept namespace/type format (Ex: \'Microsoft.Compute/virtualMachines\').'})];
+  cmd('monitor metrics list','List the metric values for a resource.',[...RES_ARGS,A('metrics',['--metrics','--metric'],{type:'list',desc:'Space-separated list of metric names to retrieve.'}),A('interval',['--interval'],{desc:'The interval over which to aggregate metrics, in ##h##m format.'}),A('aggregation',['--aggregation'],{type:'list',desc:'The list of aggregation types (space-separated) to retrieve.'}),A('offset',['--offset'],{desc:'Time offset of the query range, in ##d##h format. Defaults to 1h.'})],
+    [['List a VM\'s CPU usage for the past hour.','az monitor metrics list --resource /subscriptions/{subscriptionID}/resourceGroups/{resourceGroup}/providers/Microsoft.Compute/virtualMachines/{vmName} --metric "Percentage CPU"'],['List CPU by name and type.','az monitor metrics list -g MyResourceGroup --resource MyVm --resource-type Microsoft.Compute/virtualMachines --metric "Percentage CPU" --interval 5m -o table']],v=>{
+      const r=resolveTarget(v),defs=METRICS[r.t]||[];
+      const names=v.metrics||[defs.length?defs[0][0]:'—'];
+      for(const n of names)if(!defs.some(d=>d[0]===n))arm('BadRequest',`Failed to find metric configuration for provider: ${TYPES[r.t].split('/')[0]}, resource Type: ${TYPES[r.t].split('/')[1]}, metric: ${n}, Valid metrics: ${defs.map(d=>d[0]).join(',')}`);
+      const step=parseDur((v.interval||'1m').replace(/^PT/i,'').toLowerCase(),60000),span=parseDur(v.offset,3600000);
+      const agg=(v.aggregation||['Average'])[0];
+      const end=Math.floor(now()/step)*step,start=end-span;
+      const pts=[];
+      for(let t=start;t<end;t+=step){
+        const alive=t>=r.created&&(r.t!=='vm'||r.p.power==='running'||(r.p.power==='stopped'&&false));
+        const ts=new Date(t).toISOString().replace(/\.\d{3}Z$/,'+00:00');
+        if(!alive){pts.push({timeStamp:ts});continue}
+        const n0=noise(r.name+names[0],t),load=r.t==='vm'&&ports_(r).includes('80')?12:0;
+        const val=names[0]==='Percentage CPU'?+(2+load+n0*8).toFixed(2):names[0].includes('Bytes')||names[0].startsWith('Network')?Math.round(20000+n0*80000+load*5000):names[0]==='UsedCapacity'?Object.values(r.p.containers||{}).reduce((a,c)=>a+Object.values(c.blobs).reduce((b,x)=>b+x.content.length,0),0):+(n0*10).toFixed(2);
+        pts.push({[lc(agg)]:val,timeStamp:ts});
+      }
+      const d=defs.find(x=>x[0]===names[0]);
+      return{data:{cost:Math.round(span/60000),interval:`PT${step>=3600000?step/3600000+'H':step/60000+'M'}`,namespace:TYPES[r.t],resourceregion:r.location,timespan:`${iso(start).replace(/\.\d+\+00:00/,'Z')}/${iso(end).replace(/\.\d+\+00:00/,'Z')}`,value:[{displayDescription:'',errorCode:'Success',id:`${resId(r)}/providers/Microsoft.Insights/metrics/${names[0]}`,name:{localizedValue:names[0],value:names[0]},timeseries:[{data:pts,metadatavalues:[]}],type:'Microsoft.Insights/metrics',unit:d[1]}]},agg};
+    },{table:d=>(d.value||[]).flatMap(m=>m.timeseries[0].data.map(p=>({Timestamp:p.timeStamp.replace('+00:00','').replace('T',' '),Name:m.name.value,Average:p.average??''})))});
+  const ports_=vm=>{const nic=S.res.find(n=>n.t==='nic'&&resId(n)===vm.p.nic),nsg=nic&&S.res.find(n=>n.t==='nsg'&&resId(n)===nic.p.nsg);return nsg?nsgRules(nsg).flatMap(r=>r.ports):[]};
+  cmd('monitor metrics list-definitions','List the metric definitions for the resource.',[...RES_ARGS],[['List metric definitions of a VM.','az monitor metrics list-definitions --resource <vm-id> --query "[].name.value" -o tsv']],v=>{const r=resolveTarget(v);return{data:(METRICS[r.t]||[]).map(([n,u])=>({dimensions:null,id:`${resId(r)}/providers/microsoft.insights/metricdefinitions/${n}`,isDimensionRequired:false,metricAvailabilities:[{retention:'P93D',timeGrain:'PT1M'}],name:{localizedValue:n,value:n},namespace:TYPES[r.t],primaryAggregationType:u==='Percent'?'Average':'Total',resourceId:resId(r),supportedAggregationTypes:['None','Average','Minimum','Maximum','Total','Count'],unit:u}))}},{table:d=>d.map(x=>({Name:x.name.value,Unit:x.unit,PrimaryAggregationType:x.primaryAggregationType}))});
+  const agView=a=>({armRoleReceivers:[],automationRunbookReceivers:[],azureAppPushReceivers:[],azureFunctionReceivers:[],emailReceivers:a.p.emails.map(e=>({emailAddress:e.address,name:e.name,status:'Enabled',useCommonAlertSchema:false})),enabled:true,eventHubReceivers:[],groupShortName:a.p.short,id:resId(a),itsmReceivers:[],location:'Global',logicAppReceivers:[],name:a.name,resourceGroup:a.rg,smsReceivers:[],tags:null,type:'Microsoft.Insights/ActionGroups',voiceReceivers:[],webhookReceivers:[]});
+  cmd('monitor action-group create','Create a new action group.',[NAME('Name of the action group.'),RG(),A('short',['--short-name'],{desc:'The short name of the action group.'}),A('action',['--action','-a'],{type:'list',desc:'Add receivers to the action group. Usage: --action TYPE NAME [ARG ...]. Email: --action email bob bob@contoso.com'}),TAGS],
+    [['Create a new action group with an email receiver.','az monitor action-group create -n MyActionGroup -g MyResourceGroup --action email admin admin@contoso.com']],v=>{
+      const g=needGroup(v.rg,true);
+      const emails=[];
+      if(v.action){const[type,name,addr]=v.action;if(lc(type)!=='email')err('cloudlab: solo se simulan acciones de tipo email: --action email <nombre> <correo>');if(!name||!addr)err('usage error: --action email NAME EMAIL_ADDRESS [usecommonalertschema]',2);emails.push({name,address:addr})}
+      const short=(v.short||v.name).slice(0,12);
+      let a=findRes('ag',g.name,v.name);
+      if(!a)a=add({t:'ag',name:v.name,rg:g.name,location:'global',p:{emails,short}});else Object.assign(a.p,{emails,short});
+      return{data:agView(a)};
+    });
+  cmd('monitor action-group list','List action groups under a resource group or the current subscription.',[RG(false)],[['List action groups.','az monitor action-group list -g MyResourceGroup -o table']],v=>({data:resOf('ag',v.rg).map(agView)}),{table:d=>d.map(a=>({Name:a.name,ResourceGroup:a.resourceGroup,GroupShortName:a.groupShortName,Enabled:a.enabled,Location:a.location}))});
+  function parseCondition(c,r){
+    const m=String(c).match(/^\s*(avg|min|max|total|count)\s+(.+?)\s*(>=|<=|>|<|=)\s*(-?[\d.]+)\s*$/i);
+    if(!m)err(`usage error: --condition {avg,min,max,total,count} METRIC {=,!=,>,>=,<,<=} THRESHOLD\n                         [where DIMENSION {includes,excludes} VALUE [or VALUE ...]\n                         [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]\n                         [with skipmetricvalidation]`,2);
+    const metric=m[2].replace(/^["']|["']$/g,'');
+    const defs=METRICS[r.t]||[];
+    if(!defs.some(d=>d[0]===metric))arm('BadRequest',`Couldn't find a metric named ${metric}. Make sure the name is correct. Valid metrics: ${defs.map(d=>d[0]).join(', ')}`);
+    return{agg:m[1].toLowerCase(),metric,op:m[3],threshold:+m[4]};
+  }
+  const alertView=a=>({actions:a.p.ag?[{actionGroupId:a.p.ag,webHookProperties:{}}]:[],autoMitigate:true,criteria:{additionalProperties:{},allOf:[{criterionType:'StaticThresholdCriterion',dimensions:[],metricName:a.p.cond.metric,metricNamespace:TYPES[a.p.targetType],name:'cond0',operator:{'>':'GreaterThan','>=':'GreaterThanOrEqual','<':'LessThan','<=':'LessThanOrEqual','=':'Equals'}[a.p.cond.op],threshold:a.p.cond.threshold,timeAggregation:{avg:'Average',min:'Minimum',max:'Maximum',total:'Total',count:'Count'}[a.p.cond.agg]}],odatatype:'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'},description:a.p.desc||'',enabled:true,evaluationFrequency:`PT${a.p.freq.toUpperCase()}`,id:resId(a),location:'global',name:a.name,resourceGroup:a.rg,scopes:[a.p.scope],severity:a.p.sev,tags:{},targetResourceRegion:'',targetResourceType:'',type:'Microsoft.Insights/metricAlerts',windowSize:`PT${a.p.window.toUpperCase()}`});
+  cmd('monitor metrics alert create','Create a metric-based alert rule.',[NAME('Name of the alert rule.'),RG(),A('scopes',['--scopes'],{type:'list',req:true,desc:'Space-separated list of scopes the rule applies to. The resources specified in this parameter must be of the same type and exist in the same location.'}),A('condition',['--condition'],{type:'list',req:true,desc:'The condition which triggers the rule. Usage: --condition {avg,min,max,total,count} [NAMESPACE.]METRIC [{=,!=,>,>=,<,<=} THRESHOLD]'}),A('action',['--action','-a'],{type:'list',desc:'Add an action group and optional webhook properties to fire when the alert is triggered.'}),A('window',['--window-size'],{desc:'Time over which to aggregate metrics in "##h##m##s" format. Default: 5m.'}),A('freq',['--evaluation-frequency'],{desc:'Frequency with which to evaluate the rule in "##h##m##s" format. Default: 1m.'}),A('sev',['--severity'],{type:'int',desc:'Severity of the alert from 0 (critical) to 4 (verbose). Default: 2.'}),A('desc',['--description'],{desc:'Free-text description of the rule.'})],
+    [['Create a high CPU usage alert on a VM with no action.','az monitor metrics alert create -n alert1 -g {ResourceGroup} --scopes {VirtualMachineID} --condition "avg Percentage CPU > 90" --description "High CPU"']],v=>{
+      const g=needGroup(v.rg,true);
+      const scope=v.scopes[0],r=S.res.find(x=>lc(resId(x))===lc(scope));
+      if(!r)arm('ResourceNotFound',`The Resource '${scope}' was not found.\ncloudlab: --scopes necesita el ID completo, p. ej. $(az vm show -g ${g.name} -n <vm> --query id -o tsv)`,3);
+      const cond=parseCondition(v.condition.join(' '),r);
+      let ag=null;
+      if(v.action){const x=v.action[0];const a=x.startsWith('/')?S.res.find(y=>y.t==='ag'&&lc(resId(y))===lc(x)):findRes('ag',g.name,x);if(!a)arm('ResourceNotFound',`The Resource 'Microsoft.Insights/actionGroups/${x.split('/').pop()}' under resource group '${g.name}' was not found.`,3);ag=resId(a)}
+      if(v.sev!=null&&(v.sev<0||v.sev>4))err('--severity must be between 0 and 4');
+      let a=findRes('alert',g.name,v.name);
+      const p={scope:resId(r),targetType:r.t,cond,ag,window:v.window||'5m',freq:v.freq||'1m',sev:v.sev??2,desc:v.desc};
+      if(!a)a=add({t:'alert',name:v.name,rg:g.name,location:'global',p});else a.p=p;
+      stat('alertCreate');
+      return{data:alertView(a)};
+    });
+  cmd('monitor metrics alert list','List metric-based alert rules.',[RG(false)],[['List metric alert rules.','az monitor metrics alert list -g MyResourceGroup -o table']],v=>({data:resOf('alert',v.rg).map(alertView)}),{table:d=>d.map(a=>({Name:a.name,ResourceGroup:a.resourceGroup,Enabled:a.enabled,Severity:a.severity,Condition:`${a.criteria.allOf[0].timeAggregation} ${a.criteria.allOf[0].metricName} ${a.criteria.allOf[0].operator} ${a.criteria.allOf[0].threshold}`,Scope:a.scopes[0].split('/').pop()}))});
+  cmd('monitor metrics alert delete','Delete a metrics-based alert rule.',[NAME('Name of the alert rule.'),RG()],[['Delete a metric alert rule.','az monitor metrics alert delete -n alert1 -g MyResourceGroup']],v=>{const a=needRes('alert',v.rg,v.name);del(a);return{}});
+
+  // ---------- Costes y presupuestos ----------
+  const PREVIEW=g=>`Command group '${g}' is in preview and under development. Reference and support levels: https://aka.ms/CLI_refstatus`;
+  cmd('consumption usage list','List the details of Azure resource consumption, either as an invoice or within a billing period.',[A('top',['--top','-t'],{type:'int',desc:'Maximum number of items to return. Value range: 1-1000.'}),A('start',['--start-date','-s'],{desc:'Start date (YYYY-MM-DD in UTC). If specified, also requires --end-date.'}),A('end',['--end-date','-e'],{desc:'End date (YYYY-MM-DD in UTC). If specified, also requires --start-date.'})],
+    [['List usage details for the current billing period.','az consumption usage list --query "[].{name:instanceName, cost:pretaxCost}" -o table']],v=>{
+      const rows=costRows().sort((a,b)=>b.cost-a.cost).slice(0,v.top||1000);
+      const period=new Date(now()).toISOString().slice(0,7).replace('-','');
+      return{warn:[PREVIEW('consumption'),'cloudlab: costes estimados con precios aproximados de pago por uso (USD, East US) y el tiempo simulado. Avanza el reloj con lab tiempo +1d.'],data:rows.map(r=>({accountName:null,additionalInfo:null,billableQuantity:null,billingPeriodId:`/subscriptions/${curSub()}/providers/Microsoft.Billing/billingPeriods/${period}`,consumedService:r.service,costCenter:null,currency:'USD',departmentName:null,id:`/subscriptions/${curSub()}/providers/Microsoft.Consumption/usageDetails/${guid()}`,instanceId:r.id,instanceLocation:r.location,instanceName:r.name,invoiceId:null,isEstimated:true,meterId:guid(),name:guid(),pretaxCost:String(r.cost.toFixed(6)),product:r.meter,subscriptionGuid:curSub(),subscriptionName:sub().name,tags:null,type:'Microsoft.Consumption/usageDetails',usageEnd:iso(now()),usageQuantity:String(r.qty.toFixed(4)),usageStart:iso(Math.max(r.since,now()-30*86400000))}))};
+    },{table:d=>d.map(r=>({InstanceName:r.instanceName,ConsumedService:r.consumedService,Product:r.product,UsageQuantity:r.usageQuantity,PretaxCost:r.pretaxCost,Currency:r.currency}))});
+  const budgetView=b=>({amount:String(b.amount),category:'Cost',currentSpend:{amount:String(spend().toFixed(2)),unit:'USD'},eTag:null,id:`/subscriptions/${curSub()}/providers/Microsoft.Consumption/budgets/${b.name}`,name:b.name,notifications:{},timeGrain:b.grain,timePeriod:{endDate:`${b.end}T00:00:00Z`,startDate:`${b.start}T00:00:00Z`},type:'Microsoft.Consumption/budgets'});
+  cmd('consumption budget create','Create a budget for an Azure subscription.',[A('name',['--budget-name'],{req:true,desc:'Name of a budget.'}),A('amount',['--amount'],{req:true,desc:'Amount of a budget.'}),A('category',['--category'],{req:true,choices:['cost','usage'],desc:'Category of the budget can be cost or usage.'}),A('grain',['--time-grain'],{req:true,choices:['annually','monthly','quarterly'],desc:'Time grain of the budget can be monthly, quarterly, or annually.'}),A('start',['--start-date','-s'],{req:true,desc:'Start date (YYYY-MM-DD in UTC) of time period of a budget.'}),A('end',['--end-date','-e'],{req:true,desc:'End date (YYYY-MM-DD in UTC) of time period of a budget.'})],
+    [['Create a monthly cost budget for the subscription.','az consumption budget create --budget-name presupuesto --amount 50 --category cost --time-grain monthly --start-date 2026-10-01 --end-date 2027-09-30']],v=>{
+      if(!/^\d+(\.\d+)?$/.test(v.amount))err(`argument --amount: invalid decimal value: '${v.amount}'`,2);
+      for(const d of [v.start,v.end])if(!/^\d{4}-\d{2}-\d{2}$/.test(d))err(`usage error: dates must be in the format YYYY-MM-DD (got '${d}')`,2);
+      if(!/-01$/.test(v.start))arm('400',`Start date should be the first day of a month.`);
+      if(v.end<=v.start)arm('400','End date should be after start date.');
+      const b={name:v.name,amount:+v.amount,grain:v.grain[0].toUpperCase()+v.grain.slice(1),start:v.start,end:v.end,sub:curSub()};
+      S.budgets=S.budgets.filter(x=>!(x.sub===b.sub&&x.name===b.name)).concat(b);stat('budget');
+      return{warn:[PREVIEW('consumption')],data:budgetView(b)};
+    });
+  cmd('consumption budget list','List budgets for an Azure subscription.',[],[['List budgets.','az consumption budget list -o table']],()=>({warn:[PREVIEW('consumption')],data:S.budgets.filter(b=>b.sub===curSub()).map(budgetView)}),{table:d=>d.map(b=>({Name:b.name,Amount:b.amount,CurrentSpend:b.currentSpend.amount,TimeGrain:b.timeGrain,StartDate:b.timePeriod.startDate.slice(0,10),EndDate:b.timePeriod.endDate.slice(0,10)}))});
+  cmd('consumption budget delete','Delete a budget for an Azure subscription.',[A('name',['--budget-name'],{req:true,desc:'Name of a budget.'})],[['Delete a budget.','az consumption budget delete --budget-name presupuesto']],v=>{S.budgets=S.budgets.filter(b=>!(b.sub===curSub()&&b.name===v.name));return{warn:[PREVIEW('consumption')]}});
+
+  // ---------- Costes estimados (precios aproximados de pago por uso, USD/hora, East US) ----------
+  const VM_PRICE={Standard_B1ls:0.0052,Standard_B1s:0.0104,Standard_B1ms:0.0207,Standard_B2s:0.0416,Standard_B2ms:0.0832,Standard_B4ms:0.166,Standard_B2ats_v2:0.0094,Standard_B2s_v2:0.0832,Standard_DS1_v2:0.073,Standard_DS2_v2:0.146,Standard_DS3_v2:0.293,Standard_D2s_v3:0.096,Standard_D4s_v3:0.192,Standard_D2s_v5:0.096,Standard_D4s_v5:0.192,Standard_D8s_v5:0.384,Standard_D2as_v5:0.086,Standard_D2ds_v5:0.113,Standard_E2s_v5:0.126,Standard_E4s_v5:0.252,Standard_F2s_v2:0.085,Standard_F4s_v2:0.169,Standard_NC4as_T4_v3:0.526};
+  const PLAN_PRICE={F1:0,FREE:0,D1:0.013,SHARED:0.013,B1:0.018,B2:0.035,B3:0.07,S1:0.1,S2:0.2,S3:0.4,P0V3:0.077,P1V3:0.169,P2V3:0.338,P3V3:0.676,P1V2:0.2,P2V2:0.4,P3V2:0.8};
+  const SQL_PRICE={Basic:0.0068,S0:0.0202,S1:0.0403,S2:0.1008,P1:0.625,GP_Gen5_2:0.505,GP_Gen5_4:1.01,GP_S_Gen5_1:0,GP_S_Gen5_2:0,BC_Gen5_2:1.36,HS_Gen5_2:0.46};
+  const ACR_PRICE={Basic:0.00694,Standard:0.0278,Premium:0.0694};
+  // [USD/hora, servicio, medidor] según el estado actual del recurso.
+  function rate(r){
+    switch(r.t){
+      case'vm':return[r.p.power==='deallocated'||busy(r)==='Creating'?0:(VM_PRICE[r.p.size]||0.1)*(r.p.windows?1.45:1),'Virtual Machines',`${r.p.size.replace('Standard_','')} ${r.p.windows?'Windows':'Linux'}`];
+      case'disk':return[r.p.size>64?0.027:0.0072,'Storage',r.p.size>64?'P10 LRS Disk':'P4 LRS Disk'];
+      case'pip':return[0.005,'Virtual Network','Standard IPv4 Static Public IP'];
+      case'aks':return[r.p.power==='Running'&&!busy(r)?(VM_PRICE[r.p.vmSize]||0.146)*r.p.count+(r.p.tier==='Standard'?0.1:r.p.tier==='Premium'?0.6:0):0,'Azure Kubernetes Service',`${r.p.count} × ${r.p.vmSize.replace('Standard_','')} + ${r.p.tier}`];
+      case'plan':return[(PLAN_PRICE[r.p.sku]??0.1)*(r.p.workers||1),'Azure App Service',`${r.p.sku} App Service plan`];
+      case'sqlserver':return[Object.values(r.p.dbs||{}).reduce((a,d)=>a+(SQL_PRICE[d.sku]||0),0),'SQL Database',Object.values(r.p.dbs||{}).map(d=>d.sku).join(', ')||'sin bases de datos'];
+      case'acr':return[ACR_PRICE[r.p.sku]||0,'Container Registry',`${r.p.sku} Registry Unit`];
+      case'storage':return[0.0001,'Storage',`${r.p.sku} capacity`];
+    }
+    return[0,'',''];
+  }
+  // Acumula el coste desde la última medición con la tarifa del estado actual (se llama antes de cada cambio).
+  function meter(){const t=now();for(const r of S.res){if(r.p.accAt==null){r.p.accAt=r.created;r.p.acc=0}if(t>r.p.accAt){r.p.acc+=rate(r)[0]*(t-r.p.accAt)/3600000;r.p.accAt=t}}}
+  function costRows(){meter();return S.res.filter(r=>inSub(r)&&(r.p.acc>0||rate(r)[0]>0)).map(r=>{const[h,service,meterName]=rate(r);return{id:resId(r),name:r.name,location:r.location,service,meter:meterName,cost:r.p.acc,qty:(now()-r.created)/3600000,hourly:h,since:r.created,rg:r.rg}})}
+  const spend=()=>costRows().reduce((a,r)=>a+r.cost,0)+((S.spentGone||{})[curSub()]||0);
+
   // ---------- Mini shell (variables, $(...), tuberías, redirecciones) ----------
   const SHELL_CMDS=['az','kubectl','k','clear','help','history','ls','cat','rm','echo','export','unset','env','lab','grep','wc','head','tail','pwd','whoami','date','touch','nano','vi','vim','jq'];
   function expand(arg,subs){
@@ -1533,8 +1838,14 @@ function create(opts={}){
       case'head':case'tail':{const n=+(rest.find(x=>/^-?\d+$/.test(x))||'10').replace('-','')||+(rest[rest.indexOf('-n')+1]||10);const l=String(stdin??'').split('\n');return(c==='head'?l.slice(0,n):l.slice(-n)).join('\n')}
       case'lab':{
         if(rest[0]==='reset'){fresh();return{out:'cloudlab: Azure reiniciado. Vuelves a tener dos suscripciones vacías y la sesión cerrada (empieza con az login).',reset:true}}
+        if(rest[0]==='tiempo'||rest[0]==='time'){
+          const m=String(rest[1]||'').match(/^\+?(\d+)([dhm])$/i);
+          if(!m)return`cloudlab: reloj simulado: ${new Date(now()).toISOString().slice(0,16).replace('T',' ')} UTC (adelantado ${Math.round(S.offset/3600000)} h).\nAdelántalo con: lab tiempo +2h | +1d | +30m  (sirve para ver costes, métricas y el registro de actividad).`;
+          meter();S.offset+=+m[1]*({d:86400000,h:3600000,m:60000}[m[2].toLowerCase()]);settle();
+          return`cloudlab: el reloj avanza ${m[1]}${m[2]}. Ahora son ${new Date(now()).toISOString().slice(0,16).replace('T',' ')} UTC. Coste estimado acumulado de la suscripción: $${spend().toFixed(2)}.`;
+        }
         if(rest[0]==='status'||!rest[0])return`cloudlab: Azure simulado (Azure CLI ${CLI_VERSION})\nCreado: ${new Date(S.createdAt).toLocaleString('es')}\nSesión: ${S.loggedIn?USERS[0].upn:'sin iniciar'} · Suscripción: ${sub().name}\nGrupos: ${S.res.filter(r=>r.t==='group').length} · Recursos: ${S.res.filter(r=>r.t!=='group').length}\nEl estado se guarda en este navegador y se borra tras 48 h sin uso.\nComandos: lab status | lab reset`;
-        fail(`lab: subcomando desconocido "${rest[0]}". Usa: lab status | lab reset`);
+        fail(`lab: subcomando desconocido "${rest[0]}". Usa: lab status | lab reset | lab tiempo +1d`);
       }
     }
     if(C[c]||GROUPS[c]||ROOT_EXTRA[c]||(REAL['']||[]).includes(c))fail(`bash: ${c}: command not found\ncloudlab: ¿quisiste decir "az ${c}"?`,127);
@@ -1543,13 +1854,14 @@ function create(opts={}){
     fail(`bash: ${c}: command not found${s.length?`\ncloudlab: ¿quisiste decir "${s[0]}"?`:''}`,127);
   }
   function shellHelp(){
-    return`Terminal de Cloud Lab: Azure CLI ${CLI_VERSION} simulada, como Azure Cloud Shell.\nNada se crea de verdad ni cuesta dinero: el simulador imita el comportamiento y los errores reales.\n\n  az login              Inicia sesión (simulada) y elige suscripción\n  az --help             Grupos de comandos; az vm --help, az vm create --help...\n  az find "vm"          Ejemplos de uso de un grupo o comando\n  -o table|json|tsv     Formato de salida; --query "[].name" filtra con JMESPath\n  RG=mi-grupo           Variables de bash: az group show -n $RG\n  $(az ... -o tsv)      Sustitución de comandos: --scope $(az group show -n $RG --query id -o tsv)\n  kubectl ...           Tras az aks get-credentials, maneja el clúster AKS (compartido con la terminal de Kubernetes)\n  grep, wc, head        Filtra la salida con tuberías: az vm list-sizes -l eastus -o table | grep B1\n  history, clear        Historial y limpiar la pantalla\n  lab status|reset      Estado del laboratorio o empezar de cero\n\nAtajos: Tab autocompleta (dos veces muestra opciones) · ↑/↓ historial · Ctrl+C cancela · Ctrl+L limpia`;
+    return`Terminal de Cloud Lab: Azure CLI ${CLI_VERSION} simulada, como Azure Cloud Shell.\nNada se crea de verdad ni cuesta dinero: el simulador imita el comportamiento y los errores reales.\n\n  az login              Inicia sesión (simulada) y elige suscripción\n  az --help             Grupos de comandos; az vm --help, az vm create --help...\n  az find "vm"          Ejemplos de uso de un grupo o comando\n  -o table|json|tsv     Formato de salida; --query "[].name" filtra con JMESPath\n  RG=mi-grupo           Variables de bash: az group show -n $RG\n  $(az ... -o tsv)      Sustitución de comandos: --scope $(az group show -n $RG --query id -o tsv)\n  kubectl ...           Tras az aks get-credentials, maneja el clúster AKS (compartido con la terminal de Kubernetes)\n  grep, wc, head        Filtra la salida con tuberías: az vm list-sizes -l eastus -o table | grep B1\n  history, clear        Historial y limpiar la pantalla\n  lab tiempo +1d        Adelanta el reloj simulado (costes, métricas, registro de actividad)
+  lab status|reset      Estado del laboratorio o empezar de cero\n\nAtajos: Tab autocompleta (dos veces muestra opciones) · ↑/↓ historial · Ctrl+C cancela · Ctrl+L limpia`;
   }
   // Convierte una respuesta del comando az en salida de terminal.
   function render(r){
     const parts=[];
     if(r.text!=null&&r.text!=='')parts.push({out:r.text});
-    if(r.warn&&r.warn.length&&!(r.G&&r.G.onlyErrors))parts.push({out:r.warn.map(w=>w.startsWith('cloudlab:')||w.startsWith('Finished[')?w:'WARNING: '+w).join('\n'),warn:true});
+    if(r.warn&&r.warn.length&&!(r.G&&r.G.onlyErrors))parts.push({out:r.warn.map(w=>w.startsWith('cloudlab:')||/\[#{10,}\]/.test(w)?w:'WARNING: '+w).join('\n'),warn:true});
     if(r.data!==undefined){const out=format(r,r.G||{});if(out)parts.push({out})}
     return parts;
   }
@@ -1690,7 +2002,7 @@ function create(opts={}){
     if(!toks.length)return SHELL_CMDS;
     const c0=toks[0];
     if(['cat','rm','ls'].includes(c0))return Object.keys(S.files);
-    if(c0==='lab')return toks.length===1?['status','reset']:[];
+    if(c0==='lab')return toks.length===1?['status','reset','tiempo']:toks[1]==='tiempo'?['+1h','+6h','+1d','+7d','+30d']:[];
     if(c0!=='az')return[];
     let prefix='',key=null,prev=null;
     const seen={};
@@ -1730,6 +2042,10 @@ function create(opts={}){
       case'scope':return[`/subscriptions/${curSub()}`,...groups().map(g=>`/subscriptions/${curSub()}/resourceGroups/${g.name}`)];
       case'runtime':return RUNTIMES.linux;
       case'vault':return resOf('kv').map(r=>r.name);
+      case'server':return names('sqlserver');
+      case'registry':case'attach':return resOf('acr').map(r=>r.name);
+      case'repo':{const r=resOf('acr').find(x=>x.name===get('--name','-n'));return r?Object.keys(r.p.repos):[]}
+      case'scopes':case'resource':return S.res.filter(r=>inSub(r)&&['vm','aks','storage','webapp','sqlserver'].includes(r.t)).map(r=>resId(r));
       case'nsg':return names('nsg');
       case'account':return resOf('storage').map(r=>r.name);
       case'container':{const s=resOf('storage').find(r=>r.name===(get('--account-name')||S.vars.AZURE_STORAGE_ACCOUNT));return s?Object.keys(s.p.containers||{}):[]}
@@ -1741,10 +2057,13 @@ function create(opts={}){
         if(key.startsWith('group'))return groups().map(g=>g.name);
         if(key.startsWith('keyvault secret')){const k=resOf('kv').find(r=>r.name===get('--vault-name'));return k?Object.keys(k.p.secrets):[]}
         if(key.startsWith('lock'))return S.locks.map(l=>l.name);
+        if(key.startsWith('sql server firewall-rule')){const x=findRes('sqlserver',rg,get('--server','-s')||'');return x?x.p.rules.map(r=>r.name):[]}
+        if(key.startsWith('sql db')){const x=findRes('sqlserver',rg,get('--server','-s')||'');return x?Object.keys(x.p.dbs):[]}
+        if(key.startsWith('acr'))return resOf('acr').map(r=>r.name);
         if(key.startsWith('policy assignment'))return S.policies.map(a=>a.name);
         if(key.startsWith('storage container')){const s=resOf('storage').find(r=>r.name===(get('--account-name')||S.vars.AZURE_STORAGE_ACCOUNT));return s?Object.keys(s.p.containers||{}):[]}
         if(key.startsWith('storage blob')){const s=resOf('storage').find(r=>r.name===(get('--account-name')||S.vars.AZURE_STORAGE_ACCOUNT)),c=s&&(s.p.containers||{})[get('--container-name','-c')];return c?Object.keys(c.blobs):[]}
-        const t=key.startsWith('vm ')?'vm':key.startsWith('storage')?'storage':key.startsWith('keyvault')?'kv':key.startsWith('network nsg')?'nsg':key.startsWith('network public-ip')?'pip':key.startsWith('network vnet subnet')?null:key.startsWith('network vnet')?'vnet':key.startsWith('appservice plan')?'plan':key.startsWith('webapp')?'webapp':key.startsWith('aks')?'aks':null;
+        const t=key.startsWith('vm ')?'vm':key.startsWith('storage')?'storage':key.startsWith('keyvault')?'kv':key.startsWith('sql server')?'sqlserver':key.startsWith('monitor metrics alert')?'alert':key.startsWith('monitor action-group')?'ag':key.startsWith('network nsg')?'nsg':key.startsWith('network public-ip')?'pip':key.startsWith('network vnet subnet')?null:key.startsWith('network vnet')?'vnet':key.startsWith('appservice plan')?'plan':key.startsWith('webapp')?'webapp':key.startsWith('aks')?'aks':null;
         if(key.startsWith('network vnet subnet')){const v=findRes('vnet',rg,get('--vnet-name')||'');return v?v.p.subnets.map(s=>s.name):[]}
         return t&&!key.endsWith('create')?names(t):[];
       }
@@ -1756,13 +2075,15 @@ function create(opts={}){
   function bridge(){
     const clusters=S.res.filter(r=>r.t==='aks').map(a=>({name:a.name,id:a.p.uid,rg:a.rg,location:a.location,nodeCount:a.p.count,version:a.p.version,vmSize:a.p.vmSize,fqdn:a.p.fqdn,power:busy(a)==='Creating'?'Creating':a.p.power,created:a.created}));
     for(const g of S.gone)if(!clusters.some(c=>c.name===g.name))clusters.push({name:g.name,id:g.id,fqdn:g.fqdn,deleted:true});
-    return{clusters,merged:S.merged.filter(m=>m.cluster).map(m=>({context:m.context,cluster:m.cluster,user:m.user,at:m.at}))};
+    for(const c of clusters){const a=S.res.find(x=>x.t==='aks'&&x.p.uid===c.id);if(a)c.acr=a.p.acr||[]}
+    const acr=S.res.filter(r=>r.t==='acr').map(r=>({name:r.name,images:Object.entries(r.p.repos||{}).flatMap(([repo,tags])=>tags.map(t=>`${repo}:${t}`))}));
+    return{clusters,acr,merged:S.merged.filter(m=>m.cluster).map(m=>({context:m.context,cluster:m.cluster,user:m.user,at:m.at}))};
   }
 
   // ---------- Persistencia ----------
   const TTL=48*3600*1000;
   function load(saved){
-    if(saved&&saved.v===1&&now()-saved.savedAt<TTL){S=clone(saved);S.history=S.history||[];S.files=S.files||{};S.vars=S.vars||{};S.stats=S.stats||{};S.gone=S.gone||[];S.merged=S.merged||[];S.locks=S.locks||[];S.policies=S.policies||[];S.deletedVaults=S.deletedVaults||[];S.cur=null;return true}
+    if(saved&&saved.v===1&&now()-saved.savedAt<TTL){S=clone(saved);S.history=S.history||[];S.files=S.files||{};S.vars=S.vars||{};S.stats=S.stats||{};S.gone=S.gone||[];S.merged=S.merged||[];S.locks=S.locks||[];S.policies=S.policies||[];S.deletedVaults=S.deletedVaults||[];S.activity=S.activity||[];S.budgets=S.budgets||[];S.offset=S.offset||0;S.cur=null;return true}
     fresh();return false;
   }
   const restored=load(opts.saved);
@@ -1774,7 +2095,7 @@ function create(opts={}){
     get pending(){return pending?{text:pending.ask.text,secret:pending.ask.secret}:null},
     restored,
     serialize:()=>{const o=clone(S);delete o.cur;return o},
-    view:{nsgRules,policyName:id=>(findDef(id)||{displayName:id}).displayName,groupView,vmView,storageView,vnetView,planView,siteView,aksView,roleView,resId,busy,usage:coreUsage,powerText,disp},
+    view:{costRows,spend,rate,now,nsgRules,policyName:id=>(findDef(id)||{displayName:id}).displayName,groupView,vmView,storageView,vnetView,planView,siteView,aksView,roleView,resId,busy,usage:coreUsage,powerText,disp},
     ttlHours:TTL/3600000,
     expiresAt:()=>S.savedAt+TTL,
     VERSION:CLI_VERSION,

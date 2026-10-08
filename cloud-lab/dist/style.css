@@ -267,3 +267,16 @@ label.option.wrong{border-color:#e6b9b3;background:var(--danger-bg)}
 .mini-tag.tagkv{background:#f3faf7;border-color:#cfe5da;color:var(--teal);cursor:default}
 .azkv{background:#fffaf2;border-color:#f0e2c4}
 .azkv .kind{color:#b07a12}
+.azcost{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11.5px}
+.azcost small{font-size:10px;color:var(--muted);margin:0}
+.azbudget{margin-top:6px;font-size:10.5px}
+.azbudget>div{display:flex;justify-content:space-between;gap:8px}
+.azbudget i{display:block;height:6px;border-radius:4px;background:#edf2f1;margin-top:3px;overflow:hidden}
+.azbudget em{display:block;height:100%;background:var(--teal)}
+.azbudget em.warn{background:#e0a92e}
+.azbudget em.over{background:#d65a4c}
+.azsql{background:#f4f8ff;border-color:#d6e3f7}
+.azsql .kind{color:#2f6cc4}
+.azacr{background:#f3fbfd;border-color:#cfe8ef}
+.azacr .kind{color:#1b8aa8}
+.mini-tag.alert{background:#fdf0ef;border-color:#f0d3cf;color:var(--danger);cursor:default}
