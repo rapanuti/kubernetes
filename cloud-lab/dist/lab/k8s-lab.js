@@ -1,19 +1,19 @@
 // Laboratorio de Kubernetes: terminal (xterm.js) + mapa visual del clúster + retos guiados.
 // Se monta en la sección de práctica de Kubernetes con window.mountK8sLab(elemento).
 (()=>{
-const STORE='cloudlab-k8s-lab',DONE='cloudlab-k8s-retos';
-const ASSETS=['vendor/xterm.css','vendor/xterm.js','vendor/addon-fit.js','vendor/js-yaml.js','lab/k8s-engine.js'];
+const STORE='cloudlab-k8s-lab',DONE='cloudlab-k8s-retos',BRIDGE='cloudlab-aks-bridge';
+const ASSETS=['vendor/xterm.css','vendor/xterm.js','vendor/addon-fit.js','vendor/js-yaml.js','lab/term.js','lab/k8s-engine.js'];
 const h=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let loading=null,active=null;
+let active=null;
 
-function load(){
-  if(loading)return loading;
-  loading=ASSETS.reduce((p,src)=>p.then(()=>new Promise((res,rej)=>{
-    if(src.endsWith('.css')){const l=document.createElement('link');l.rel='stylesheet';l.href=src;l.onload=res;l.onerror=rej;document.head.appendChild(l);return}
+const loadAsset=src=>{
+  const cache=window.__cloudLabAssets=window.__cloudLabAssets||{};
+  return cache[src]=cache[src]||new Promise((res,rej)=>{
+    if(src.endsWith('.css')){const l=document.createElement('link');l.rel='stylesheet';l.href=src;l.onload=res;l.onerror=()=>rej(new Error(src));document.head.appendChild(l);return}
     const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error(src));document.head.appendChild(s);
-  })),Promise.resolve());
-  return loading;
-}
+  });
+};
+const load=()=>ASSETS.reduce((p,src)=>p.then(()=>loadAsset(src)),Promise.resolve());
 const readJSON=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}};
 const writeJSON=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 
@@ -45,7 +45,7 @@ class Lab{
   constructor(el){
     this.el=el;
     const saved=readJSON(STORE);
-    this.sim=K8sSim.create({yaml:jsyaml,saved});
+    this.sim=K8sSim.create({yaml:jsyaml,saved,aks:readJSON(BRIDGE)});
     this.done=readJSON(DONE)||{};
     this.prevUids=new Set();
     this.freshUids=new Set();
@@ -67,126 +67,44 @@ class Lab{
     this.drawMap();this.drawRetos();
     this.timer=setInterval(()=>{if(!document.body.contains(this.el)){this.dispose();if(active===this)active=null;return}this.sim.tick();this.drawMap(true)},1500);
   }
-  dispose(){clearInterval(this.timer);this.ro&&this.ro.disconnect();this.term&&this.term.dispose()}
+  dispose(){clearInterval(this.timer);this.t&&this.t.dispose()}
 
   // ---------- Terminal ----------
   initTerm(){
-    const term=this.term=new Terminal({convertEol:true,cursorBlink:true,fontFamily:'"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace',fontSize:innerWidth<760?11.5:13,lineHeight:1.25,scrollback:3000,
-      theme:{background:'#10242a',foreground:'#d5e8e3',cursor:'#5fd4bb',cursorAccent:'#10242a',selectionBackground:'#2b5d57',black:'#10242a',red:'#ff8b7e',green:'#7ddcb0',yellow:'#f1cc74',blue:'#7fb6ff',magenta:'#d6a6ff',cyan:'#5fd4bb',white:'#d5e8e3',brightBlack:'#6e8d89',brightRed:'#ffa69b',brightGreen:'#9be8c4',brightYellow:'#f6db99',brightBlue:'#a3cbff',brightMagenta:'#e4c2ff',brightCyan:'#8ae6d2',brightWhite:'#ffffff'}});
-    const fit=this.fit=new FitAddon.FitAddon();
-    term.loadAddon(fit);
-    term.open(this.el.querySelector('.term'));
-    const doFit=()=>{try{fit.fit()}catch{}};
-    doFit();
-    this.ro=new ResizeObserver(doFit);this.ro.observe(this.el.querySelector('.term'));
-    this.buf='';this.cur=0;this.hist=this.sim.state.history.slice();this.hIdx=this.hist.length;this.heredoc=null;this.lastTab=0;this.rendered={rows:0,curRow:0};
-    term.onData(d=>this.onData(d));
-    const S=this.sim.state;
-    const restored=this.sim.restored;
-    term.write(`\x1b[1;36mCloud Lab\x1b[0m · terminal de Kubernetes simulada (\x1b[36mminikube\x1b[0m, Kubernetes ${K8sSim.VERSION})\n`);
-    if(restored){const left=Math.max(0,Math.round((this.sim.expiresAt()-Date.now())/3600000));term.write(`\x1b[2mClúster restaurado: ${S.items.filter(o=>!o.namespace||!['kube-system','kube-public','kube-node-lease'].includes(o.namespace)).length} objetos guardados. Se conserva ${left} h más si no lo usas.\x1b[0m\n`)}
-    else term.write(`\x1b[2mClúster nuevo. Tu trabajo se guarda en este navegador durante 48 h desde el último uso.\x1b[0m\n`);
-    term.write(`Escribe \x1b[33mhelp\x1b[0m para empezar, \x1b[33mkubectl --help\x1b[0m para ver los comandos o pulsa \x1b[33mTab\x1b[0m para autocompletar.\n\n`);
-    this.prompt();
-    setTimeout(()=>term.focus(),50);
+    const sim=this.sim;
+    const t=this.t=new CloudLabTerm(this.el.querySelector('.term'),{
+      run:(line,stdin)=>{this.syncBridge();return sim.run(line,stdin)},
+      complete:b=>sim.complete(b),
+      prompt:()=>this.promptStr(),
+      history:sim.state.history,
+      colorize,
+      after:r=>this.afterRun(r),
+    });
+    this.term=t.term;
+    const S=sim.state;
+    t.write(`\x1b[1;36mCloud Lab\x1b[0m · terminal de Kubernetes simulada (\x1b[36mminikube\x1b[0m, Kubernetes ${K8sSim.VERSION})\n`);
+    if(sim.restored){const left=Math.max(0,Math.round((sim.expiresAt()-Date.now())/3600000));t.write(`\x1b[2mClúster restaurado: ${S.items.filter(o=>!o.namespace||!['kube-system','kube-public','kube-node-lease'].includes(o.namespace)).length} objetos guardados. Se conserva ${left} h más si no lo usas.\x1b[0m\n`)}
+    else t.write(`\x1b[2mClúster nuevo. Tu trabajo se guarda en este navegador durante 48 h desde el último uso.\x1b[0m\n`);
+    const aks=Object.values(S.ctx.contexts).filter(c=>c.aks).length;
+    if(aks)t.write(`\x1b[2mContextos de AKS importados desde la terminal de Azure: ${aks}. Míralos con kubectl config get-contexts.\x1b[0m\n`);
+    t.write(`Escribe \x1b[33mhelp\x1b[0m para empezar, \x1b[33mkubectl --help\x1b[0m para ver los comandos o pulsa \x1b[33mTab\x1b[0m para autocompletar.\n\n`);
+    t.prompt();
+    setTimeout(()=>t.focus(),50);
   }
   promptStr(){
-    if(this.heredoc)return'> ';
     const S=this.sim.state,ns=S.ctx.contexts[S.ctx.current].namespace||'default';
     this.ctxEl.textContent=`⎈ ${S.ctx.current} · ns: ${ns}`;
     return`\x1b[1;32muser@cloudlab\x1b[0m:\x1b[1;34m~\x1b[0m \x1b[36m(⎈ ${S.ctx.current}|${ns})\x1b[0m$ `;
   }
-  visLen(s){return s.replace(/\x1b\[[0-9;]*m/g,'').length}
-  prompt(){this.p=this.promptStr();this.buf='';this.cur=0;this.rendered={rows:0,curRow:0};this.term.write(this.p)}
-  redraw(){
-    const t=this.term,cols=t.cols,pl=this.visLen(this.p);
-    if(this.rendered.curRow>0)t.write(`\x1b[${this.rendered.curRow}A`);
-    t.write('\r\x1b[J'+this.p+this.buf);
-    const len=pl+this.buf.length;
-    if(len>0&&len%cols===0)t.write('\r\n');
-    const endRow=Math.floor(len/cols),tgt=pl+this.cur,tRow=Math.floor(tgt/cols),tCol=tgt%cols;
-    if(endRow-tRow>0)t.write(`\x1b[${endRow-tRow}A`);
-    t.write('\r'+(tCol?`\x1b[${tCol}C`:''));
-    this.rendered={rows:endRow,curRow:tRow};
-  }
-  setLine(s){this.buf=s;this.cur=s.length;this.redraw()}
-  insert(s){this.buf=this.buf.slice(0,this.cur)+s+this.buf.slice(this.cur);this.cur+=s.length;this.redraw()}
-  onData(d){
-    // Pegar varias líneas: se ejecutan una a una.
-    if(d.length>1&&/[\r\n]/.test(d)&&!d.startsWith('\x1b')){
-      const parts=d.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-      parts.forEach((p,i)=>{if(p)this.insert(p.replace(/\t/g,'  '));if(i<parts.length-1)this.enter()});
-      return;
-    }
-    switch(d){
-      case'\r':return this.enter();
-      case'\x7f':case'\b':if(this.cur>0){this.buf=this.buf.slice(0,this.cur-1)+this.buf.slice(this.cur);this.cur--;this.redraw()}return;
-      case'\x1b[3~':if(this.cur<this.buf.length){this.buf=this.buf.slice(0,this.cur)+this.buf.slice(this.cur+1);this.redraw()}return;
-      case'\x1b[D':if(this.cur>0){this.cur--;this.redraw()}return;
-      case'\x1b[C':if(this.cur<this.buf.length){this.cur++;this.redraw()}return;
-      case'\x1b[H':case'\x01':case'\x1bOH':this.cur=0;this.redraw();return;
-      case'\x1b[F':case'\x05':case'\x1bOF':this.cur=this.buf.length;this.redraw();return;
-      case'\x1b[1;5D':case'\x1bb':{const m=this.buf.slice(0,this.cur).match(/\S+\s*$/);this.cur=m?m.index:0;this.redraw();return}
-      case'\x1b[1;5C':case'\x1bf':{const m=this.buf.slice(this.cur).match(/^\s*\S+/);this.cur+=m?m[0].length:this.buf.length-this.cur;this.redraw();return}
-      case'\x1b[A':if(this.heredoc)return;if(this.hIdx>0){this.hIdx--;this.setLine(this.hist[this.hIdx])}return;
-      case'\x1b[B':if(this.heredoc)return;if(this.hIdx<this.hist.length-1){this.hIdx++;this.setLine(this.hist[this.hIdx])}else{this.hIdx=this.hist.length;this.setLine('')}return;
-      case'\x03':this.term.write('^C\n');this.heredoc=null;this.prompt();return;
-      case'\x0c':this.term.clear();this.term.write('\x1b[2J\x1b[H');this.redraw();return;
-      case'\x15':this.buf=this.buf.slice(this.cur);this.cur=0;this.redraw();return;
-      case'\x0b':this.buf=this.buf.slice(0,this.cur);this.redraw();return;
-      case'\x17':{const m=this.buf.slice(0,this.cur).match(/\S+\s*$/);if(m){this.buf=this.buf.slice(0,m.index)+this.buf.slice(this.cur);this.cur=m.index;this.redraw()}return}
-      case'\t':return this.tab();
-    }
-    if(d.startsWith('\x1b'))return;
-    const clean=d.replace(/[\x00-\x1f]/g,'');
-    if(clean)this.insert(clean);
-  }
-  tab(){
-    if(this.heredoc){this.insert('  ');return}
-    const before=this.buf.slice(0,this.cur);
-    const{candidates,word}=this.sim.complete(before);
-    if(!candidates.length)return;
-    const common=candidates.reduce((a,b)=>{let i=0;while(i<a.length&&a[i]===b[i])i++;return a.slice(0,i)});
-    if(candidates.length===1){
-      const c=candidates[0];
-      this.insert(c.slice(word.length)+(/[=/]$/.test(c)?'':' '));
-      return;
-    }
-    if(common.length>word.length){this.insert(common.slice(word.length));return}
-    const now=Date.now();
-    if(now-this.lastTab<900||candidates.length<=12){
-      const w=Math.max(...candidates.map(c=>c.length))+2,per=Math.max(1,Math.floor(this.term.cols/w));
-      let out='';candidates.slice(0,120).forEach((c,i)=>{out+=c.padEnd(w);if((i+1)%per===0)out+='\n'});
-      this.term.write('\n'+out.trimEnd()+'\n');
-      this.rendered={rows:0,curRow:0};
-      this.redraw();
-    }
-    this.lastTab=now;
-  }
-  enter(){
-    const line=this.buf;
-    // Mueve el cursor al final antes de escribir la salida.
-    this.cur=this.buf.length;this.redraw();this.term.write('\n');
-    if(this.heredoc){
-      if(line.trim()===this.heredoc.word){const hd=this.heredoc;this.heredoc=null;this.exec(hd.line,hd.body.join('\n')+'\n',true);return}
-      this.heredoc.body.push(line);this.p='> ';this.buf='';this.cur=0;this.rendered={rows:0,curRow:0};this.term.write(this.p);return;
-    }
-    const m=line.match(/<<-?\s*['"]?(\w+)['"]?/);
-    if(m){this.heredoc={word:m[1],line,body:[]};this.p='> ';this.buf='';this.cur=0;this.rendered={rows:0,curRow:0};this.term.write(this.p);return}
-    if(line.trim()){this.hist=this.hist.filter(x=>x!==line.trim());this.hist.push(line.trim())}
-    this.hIdx=this.hist.length;
-    this.exec(line,undefined,true);
-  }
-  exec(line,stdin,typed){
-    if(!typed){this.setLine(line);this.term.write('\n');if(line.trim()){this.hist.push(line);this.hIdx=this.hist.length}}
-    const r=this.sim.run(line,stdin);
-    if(r.clear){this.term.clear();this.term.write('\x1b[2J\x1b[H')}
-    if(r.reset){this.done={};writeJSON(DONE,this.done);this.hist=[];this.hIdx=0}
-    for(const p of r.parts||[])if(p.out)this.term.write(colorize(p.out,p.err)+'\n');
+  setLine(s){this.t.setLine(s)}
+  exec(line){this.t.exec(line)}
+  // Contextos de AKS creados con "az aks get-credentials" en la terminal de Azure.
+  syncBridge(){this.sim.syncAks(readJSON(BRIDGE))}
+  afterRun(r){
+    if(r.reset){this.done={};writeJSON(DONE,this.done);this.t.clearHistory()}
     writeJSON(STORE,this.sim.serialize());
     this.snapshot(true);
     this.drawMap();this.drawRetos(true);
-    this.prompt();
   }
 
   // ---------- Mapa visual ----------
@@ -201,12 +119,12 @@ class Lab{
     const list=(k,ns)=>S.items.filter(o=>o.kind===k&&(ns==null||o.namespace===ns));
     const fresh=u=>this.freshUids.has(u)&&Date.now()-this.freshAt<2500?' fresh':'';
     const pst=p=>{const v=sim.podView(p);return{v,cls:v.status==='Running'&&v.ready===v.total?'st-run':/Err|BackOff|Invalid|Unknown|Failed/.test(v.status)?'st-err':v.status==='Completed'?'st-done':v.status==='Terminating'?'st-done':'st-wait'}};
-    const podChip=(p,showNode)=>{const{v,cls}=pst(p);return`<button class="pod ${cls}${fresh(p.uid)}" data-desc="kubectl describe pod ${h(p.name)} -n ${h(p.namespace)}" title="${h(p.name)} · ${h(v.status)}${p.spec.nodeName?' · '+h(p.spec.nodeName):''}"><span class="dot"></span>${h(shortPod(p.name))}${showNode&&p.spec.nodeName?`<small>${h(p.spec.nodeName.replace('minikube-',''))}</small>`:''}</button>`};
+    const podChip=(p,showNode)=>{const{v,cls}=pst(p);return`<button class="pod ${cls}${fresh(p.uid)}" data-desc="kubectl describe pod ${h(p.name)} -n ${h(p.namespace)}" title="${h(p.name)} · ${h(v.status)}${p.spec.nodeName?' · '+h(p.spec.nodeName):''}"><span class="dot"></span>${h(shortPod(p.name))}${showNode&&p.spec.nodeName?`<small>${h(p.spec.nodeName.replace('minikube-','').replace(/^aks-nodepool1-\d+-/,''))}</small>`:''}</button>`};
     const S_ctxNs=S.ctx.contexts[S.ctx.current].namespace||'default';
     // Nodos
     const nodes=list('Node').map(n=>{
       const pods=list('Pod').filter(p=>p.spec.nodeName===n.name&&(this.showSystem||!sys.includes(p.namespace)));
-      return`<div class="cnode${n.spec.unschedulable?' cordoned':''}${fresh(n.uid)}" data-desc="kubectl describe node ${h(n.name)}"><div class="cnode-h"><span class="ico">▣</span><b>${h(n.name)}</b><span class="tag">${'node-role.kubernetes.io/control-plane' in n.labels?'control-plane':'worker'}</span><span class="badge ${n.spec.unschedulable?'warn':'ok'}">${n.spec.unschedulable?'SchedulingDisabled':'Ready'}</span></div><div class="pods">${pods.map(p=>podChip(p)).join('')||'<span class="empty-s">sin Pods</span>'}</div></div>`;
+      return`<div class="cnode${n.spec.unschedulable?' cordoned':''}${fresh(n.uid)}" data-desc="kubectl describe node ${h(n.name)}"><div class="cnode-h"><span class="ico">▣</span><b>${h(n.name)}</b><span class="tag">${'node-role.kubernetes.io/control-plane' in n.labels?'control-plane':n.status.aks?'agent · nodepool1':'worker'}</span><span class="badge ${n.spec.unschedulable?'warn':'ok'}">${n.spec.unschedulable?'SchedulingDisabled':'Ready'}</span></div><div class="pods">${pods.map(p=>podChip(p)).join('')||'<span class="empty-s">sin Pods</span>'}</div></div>`;
     }).join('');
     const pending=list('Pod').filter(p=>!p.spec.nodeName);
     // Namespaces
@@ -233,7 +151,7 @@ class Lab{
       return`<div class="cns${ns===S_ctxNs?' current':''}${fresh(n.uid)}"><div class="cns-h" data-desc="kubectl get all -n ${h(ns)}"><span class="ico">◫</span><b>${h(ns)}</b>${ns===S_ctxNs?'<span class="tag cur">actual</span>':''}<span class="count">${pods.length} pod${pods.length===1?'':'s'}</span></div>
 ${empty?'<p class="empty-s">Namespace vacío. Prueba: <code>kubectl create deployment web --image=nginx'+(ns===S_ctxNs?'':` -n ${h(ns)}`)+'</code></p>':''}${svcHtml?`<div class="svc-row">${svcHtml}</div>`:''}${depHtml}${bare.length?`<div class="cres bare"><div class="cres-h"><span class="kind">Pods sueltos</span></div><div class="pods">${bare.map(p=>podChip(p,true)).join('')}</div></div>`:''}${conf?`<div class="conf">${conf}</div>`:''}</div>`;
     }).join('');
-    const html=`<div class="csec"><p class="csec-t">Clúster minikube · nodos</p><div class="cnodes">${nodes}</div>${pending.length?`<p class="pending-note">⚠ ${pending.length} Pod${pending.length>1?'s':''} sin nodo (Pending): no hay nodos programables.</p>`:''}</div><div class="csec"><p class="csec-t">Namespaces</p><div class="cnss">${nsHtml}</div></div>${S.running?'':'<div class="stopped">El clúster está parado. Arráncalo con <code>minikube start</code>.</div>'}`;
+    const html=`<div class="csec"><p class="csec-t">Clúster ${h(S.cluster||'minikube')}${S.cluster&&S.cluster!=='minikube'?' (AKS en Azure)':''} · nodos</p><div class="cnodes">${nodes}</div>${pending.length?`<p class="pending-note">⚠ ${pending.length} Pod${pending.length>1?'s':''} sin nodo (Pending): no hay nodos programables.</p>`:''}</div><div class="csec"><p class="csec-t">Namespaces</p><div class="cnss">${nsHtml}</div></div>${S.running?'':'<div class="stopped">El clúster está parado. Arráncalo con <code>minikube start</code>.</div>'}`;
     if(fromTimer&&html===this.lastMap)return;
     this.lastMap=html;
     const sc=this.mapEl.scrollTop;

@@ -219,12 +219,13 @@ function create(opts={}){
   const now=opts.now||(()=>Date.now());
   let S;
 
-  function fresh(){
+  // reset=true en "lab reset": los contextos AKS antiguos se conservan pero no vuelven a ser el actual.
+  function fresh(reset){
     const t=now()-1000*60*4;
     S={v:1,createdAt:t,savedAt:now(),seq:0,ipSeq:{},svcSeq:2,running:true,
       addons:{'metrics-server':false,'dashboard':false,'ingress':false},
       ctx:{current:'minikube',contexts:{minikube:{cluster:'minikube',user:'minikube',namespace:'default'}}},
-      items:[],events:[],files:{},history:[]};
+      items:[],events:[],files:{},history:[],cluster:'minikube',parked:{},aksAt:reset?now():0};
     addNode('minikube',true,t);
     for(const n of ['default',...SYSTEM_NS])put({kind:'Namespace',name:n,created:t,labels:{'kubernetes.io/metadata.name':n}});
     put({kind:'Service',namespace:'default',name:'kubernetes',created:t,labels:{component:'apiserver',provider:'kubernetes'},spec:{type:'ClusterIP',clusterIP:'10.96.0.1',ports:[{name:'https',port:443,targetPort:8443,protocol:'TCP'}],selector:null}});
@@ -237,6 +238,81 @@ function create(opts={}){
     const i=S.items.filter(x=>x.kind==='Node').length;
     put({kind:'Node',name,created:t,labels:{'kubernetes.io/hostname':name,'kubernetes.io/os':'linux','kubernetes.io/arch':'amd64',...(cp?{'node-role.kubernetes.io/control-plane':''}:{})},spec:{unschedulable:false,podCIDR:`10.244.${i}.0/24`},status:{ready:true,ip:`192.168.49.${2+i}`,index:i}});
   }
+  // ---------- Varios clústeres: minikube + los AKS de la terminal de Azure ----------
+  // Los objetos del clúster activo viven en S.items; los demás se aparcan en S.parked.
+  // aks = puente escrito por la terminal de Azure: {clusters:[{name,id,rg,location,nodeCount,version,vmSize,fqdn,power,created}], merged:[{context,cluster,user,at}]}.
+  const CLUSTER_KEYS=['items','events','running','addons','ipSeq','svcSeq','aksId'];
+  let aks=opts.aks||null;
+  const aksInfo=name=>((aks&&aks.clusters)||[]).find(c=>c.name===name&&!c.deleted)||null;
+  const isAks=()=>S.cluster!=='minikube';
+  function useCluster(name){
+    if(S.cluster===name)return;
+    S.parked[S.cluster]=Object.fromEntries(CLUSTER_KEYS.map(k=>[k,S[k]]));
+    const p=S.parked[name],info=aksInfo(name);
+    delete S.parked[name];
+    if(p&&(name==='minikube'||(info&&p.aksId===info.id)))Object.assign(S,p);
+    else freshAks(info);
+    S.cluster=name;
+  }
+  function freshAks(info){
+    const t=info.created||now();
+    Object.assign(S,{items:[],events:[],running:true,addons:{'metrics-server':true,'dashboard':false,'ingress':false},ipSeq:{},svcSeq:2,aksId:info.id});
+    for(const n of ['default',...SYSTEM_NS])put({kind:'Namespace',name:n,created:t,labels:{'kubernetes.io/metadata.name':n}});
+    for(const n of ['default',...SYSTEM_NS])put({kind:'ConfigMap',namespace:n,name:'kube-root-ca.crt',created:t,data:{'ca.crt':'-----BEGIN CERTIFICATE-----\nMIIE6DCCAtCgAwIBAgIQ\n-----END CERTIFICATE-----'}});
+    put({kind:'Service',namespace:'default',name:'kubernetes',created:t,labels:{component:'apiserver',provider:'kubernetes'},spec:{type:'ClusterIP',clusterIP:'10.0.0.1',ports:[{name:'https',port:443,targetPort:443,protocol:'TCP'}],selector:null}});
+    const sys=[['coredns',2,'mcr.microsoft.com/oss/v2/kubernetes/coredns:v1.12.1',{'k8s-app':'kube-dns'}],['coredns-autoscaler',1,'mcr.microsoft.com/oss/v2/kubernetes/autoscaler/cluster-proportional-autoscaler:v1.9.0',{'k8s-app':'coredns-autoscaler'}],['konnectivity-agent',2,'mcr.microsoft.com/oss/v2/kubernetes/apiserver-network-proxy/agent:v0.31.2',{app:'konnectivity-agent'}],['metrics-server',2,'mcr.microsoft.com/oss/v2/kubernetes/metrics-server:v0.8.0',{'k8s-app':'metrics-server'}]];
+    let k=0;
+    for(const [name,n,image,labels] of sys)for(let i=0;i<n;i++)put({kind:'Pod',namespace:'kube-system',name:`${name}-${hashStr(info.id+name,10)}-${hashStr(info.id+name+i,5)}`,created:t,labels,spec:{containers:[{name:name.split('-')[0]==='coredns'&&name!=='coredns'?'autoscaler':name.split('-')[0]==='konnectivity'?'konnectivity-agent':name,image}],restartPolicy:'Always',nodeName:null,system:true,spread:k++},status:{}});
+    syncAksNodes(t);
+  }
+  const aksNodeName=(info,i)=>`aks-nodepool1-${String(parseInt(hashStr(info.id,6),36)%1e8).padStart(8,'1')}-vmss${String(i).padStart(6,'0')}`;
+  // Ajusta los nodos del clúster AKS activo a lo que diga Azure (az aks scale).
+  function syncAksNodes(t=now()){
+    const info=aksInfo(S.cluster);
+    if(!info||!isAks())return;
+    const want=info.power==='Running'?info.nodeCount:0;
+    let nodes=list('Node').sort((a,b)=>a.status.index-b.status.index);
+    for(const n of nodes.slice(want)){for(const p of list('Pod').filter(p=>p.spec.nodeName===n.name&&p.spec.perNode))remove(p);deleteObj(n)}
+    for(let i=0;i<want;i++){
+      const name=aksNodeName(info,i);
+      if(find('Node',name))continue;
+      put({kind:'Node',name,created:t,labels:{agentpool:'nodepool1','kubernetes.azure.com/agentpool':'nodepool1','kubernetes.azure.com/cluster':`MC_${info.rg}_${info.name}_${info.location}`,'kubernetes.azure.com/role':'agent','kubernetes.io/arch':'amd64','kubernetes.io/hostname':name,'kubernetes.io/os':'linux','node.kubernetes.io/instance-type':info.vmSize,'topology.kubernetes.io/region':info.location},spec:{unschedulable:false,podCIDR:`10.244.${i}.0/24`},status:{ready:true,ip:`10.224.0.${4+i}`,index:i,aks:true}});
+      for(const [ds,image] of [['kube-proxy','mcr.microsoft.com/oss/v2/kubernetes/kube-proxy:v'+info.version],['azure-ip-masq-agent','mcr.microsoft.com/oss/v2/kubernetes/ip-masq-agent:v0.1.15'],['cloud-node-manager','mcr.microsoft.com/oss/v2/kubernetes/azure-cloud-node-manager:v1.33.0'],['csi-azuredisk-node','mcr.microsoft.com/oss/v2/kubernetes-csi/azuredisk-csi:v1.33.0'],['csi-azurefile-node','mcr.microsoft.com/oss/v2/kubernetes-csi/azurefile-csi:v1.33.0']])
+        put({kind:'Pod',namespace:'kube-system',name:`${ds}-${hashStr(name+ds,5)}`,created:t,labels:{'k8s-app':ds},spec:{containers:[{name:ds,image}],restartPolicy:'Always',nodeName:name,system:true,perNode:true},status:{scheduledAt:t,podIP:`10.224.0.${4+i}`}});
+    }
+    // Pods del sistema sin nodo (p. ej. tras arrancar o escalar): se reparten entre los nodos.
+    nodes=list('Node');
+    if(nodes.length)for(const p of list('Pod','kube-system').filter(p=>p.spec.system&&!p.spec.nodeName)){const n=nodes[(p.spec.spread||0)%nodes.length];p.spec.nodeName=n.name;p.status.scheduledAt=t;p.status.podIP=podIP(n.name)}
+    reconcile();
+  }
+  // Recibe el puente de la terminal de Azure: añade los contextos de "az aks get-credentials".
+  function syncAks(bridge){
+    if(bridge)aks=bridge;
+    for(const m of (aks&&aks.merged)||[]){
+      const prev=S.ctx.contexts[m.context];
+      S.ctx.contexts[m.context]={cluster:m.cluster,user:m.user,namespace:prev&&prev.cluster===m.cluster?prev.namespace:'default',aks:true};
+      if(m.at>(S.aksAt||0)){S.ctx.current=m.context;S.aksAt=m.at}
+    }
+    syncAksNodes();
+  }
+  const server=()=>{const i=aksInfo(S.cluster);return isAks()&&i?`https://${i.fqdn}:443`:'https://192.168.49.2:8443'};
+  const serverVersion=()=>{const i=aksInfo(S.cluster);return isAks()&&i?'v'+i.version:VERSION};
+  // Elige el clúster del contexto actual (o de --context). Falla como kubectl si el clúster AKS ya no existe.
+  function ensureCluster(ctxName,silent){
+    const ctx=S.ctx.contexts[ctxName||S.ctx.current];
+    if(!ctx)return;
+    const cl=ctx.cluster;
+    if(cl!=='minikube'){
+      const all=((aks&&aks.clusters)||[]).filter(c=>c.name===cl);
+      const info=aksInfo(cl),host=(all[all.length-1]||{fqdn:`${cl}-dns-${hashStr(cl,8)}.hcp.eastus.azmk8s.io`}).fqdn;
+      if(!info){if(silent)return;fail(`E1007 12:00:00.000000   memcache.go:265] couldn't get current server API group list: Get "https://${host}:443/api?timeout=32s": dial tcp: lookup ${host} on 127.0.0.53:53: no such host\nUnable to connect to the server: dial tcp: lookup ${host} on 127.0.0.53:53: no such host\ncloudlab: el clúster AKS "${cl}" ya no existe en Azure (¿lo borraste con az aks delete?). Vuelve a minikube con: kubectl config use-context minikube`)}
+      if(info.power==='Creating'&&!silent)fail(`Unable to connect to the server: dial tcp: lookup ${info.fqdn} on 127.0.0.53:53: no such host\ncloudlab: el clúster AKS "${cl}" todavía se está creando (--no-wait). Espera un poco y vuelve a intentarlo; míralo con az aks show en la terminal de Azure.`);
+      if(info.power==='Stopped'&&!silent)fail(`Unable to connect to the server: dial tcp 20.62.${parseInt(hashStr(cl,2),36)%250}.${parseInt(hashStr(cl+1,2),36)%250}:443: i/o timeout\ncloudlab: el clúster AKS "${cl}" está detenido. Arráncalo en la terminal de Azure con: az aks start -g ${info.rg} -n ${cl}`);
+    }
+    useCluster(cl);
+    syncAksNodes();
+  }
+
   function put(o){
     o.uid=o.uid||uid();o.labels=o.labels||{};o.annotations=o.annotations||{};o.created=o.created||now();o.spec=o.spec||{};o.status=o.status||{};o.rv=++S.seq;
     if(!KINDS[o.kind].ns)delete o.namespace;
@@ -374,7 +450,7 @@ function create(opts={}){
     else if(o.kind==='ConfigMap'){m.data=o.data||{}}
     else if(o.kind==='Secret'){m.data=Object.fromEntries(Object.entries(o.data||{}).map(([k,v])=>[k,b64(v)]));m.type=o.spec.type||'Opaque'}
     else if(o.kind==='Namespace'){m.spec={finalizers:['kubernetes']};m.status={phase:'Active'}}
-    else if(o.kind==='Node'){m.spec={podCIDR:o.spec.podCIDR,...(o.spec.unschedulable?{unschedulable:true,taints:[{effect:'NoSchedule',key:'node.kubernetes.io/unschedulable'}]}:{})};m.status={addresses:[{type:'InternalIP',address:o.status.ip},{type:'Hostname',address:o.name}],capacity:{cpu:'2',memory:'3912Mi',pods:'110'},nodeInfo:{kubeletVersion:VERSION,containerRuntimeVersion:'docker://28.4.0',osImage:'Ubuntu 22.04.5 LTS',architecture:'amd64'}}}
+    else if(o.kind==='Node'){m.spec={podCIDR:o.spec.podCIDR,...(o.spec.unschedulable?{unschedulable:true,taints:[{effect:'NoSchedule',key:'node.kubernetes.io/unschedulable'}]}:{})};m.status={addresses:[{type:'InternalIP',address:o.status.ip},{type:'Hostname',address:o.name}],capacity:{cpu:'2',memory:'3912Mi',pods:'110'},nodeInfo:{kubeletVersion:serverVersion(),containerRuntimeVersion:o.status.aks?'containerd://2.0.0':'docker://28.4.0',osImage:'Ubuntu 22.04.5 LTS',architecture:'amd64'}}}
     return m;
   }
   const b64=s=>{try{return typeof btoa==='function'?btoa(unescape(encodeURIComponent(s))):Buffer.from(s).toString('base64')}catch{return s}};
@@ -399,7 +475,7 @@ function create(opts={}){
     return{current:pods.length,ready:pods.filter(p=>{const v=podView(p);return v.status==='Running'&&v.ready===v.total}).length};
   }
   function endpoints(svc){
-    if(!svc.spec.selector)return svc.name==='kubernetes'?['192.168.49.2:8443']:[];
+    if(!svc.spec.selector)return svc.name==='kubernetes'?[isAks()?'10.224.0.4:443':'192.168.49.2:8443']:[];
     return list('Pod',svc.namespace).filter(p=>selMatch(labelStr(svc.spec.selector).replace('<none>',''),p.labels)&&podView(p).status==='Running'&&p.status.podIP).map(p=>`${p.status.podIP}:${svc.spec.ports[0]?.targetPort??80}`);
   }
   const portStr=s=>s.spec.ports.map(p=>`${p.port}${p.nodePort?':'+p.nodePort:''}/${p.protocol||'TCP'}`).join(',')||'<none>';
@@ -419,7 +495,7 @@ function create(opts={}){
       case'ConfigMap':return[head(['NAME','DATA','AGE']),...objs.map(c=>[...pre(c),nm(c),Object.keys(c.data||{}).length,age(t-c.created),...lab(c)])];
       case'Secret':return[head(['NAME','TYPE','DATA','AGE']),...objs.map(c=>[...pre(c),nm(c),c.spec.type||'Opaque',Object.keys(c.data||{}).length,age(t-c.created),...lab(c)])];
       case'Namespace':return[head(['NAME','STATUS','AGE']),...objs.map(n=>[nm(n),n.status.terminating?'Terminating':'Active',age(t-n.created),...lab(n)])];
-      case'Node':return[head(['NAME','STATUS','ROLES','AGE','VERSION',...(W?['INTERNAL-IP','EXTERNAL-IP','OS-IMAGE','KERNEL-VERSION','CONTAINER-RUNTIME']:[])]),...objs.map(n=>[nm(n),(n.status.ready?'Ready':'NotReady')+(n.spec.unschedulable?',SchedulingDisabled':''),'node-role.kubernetes.io/control-plane' in n.labels?'control-plane':'<none>',age(t-n.created),VERSION,...(W?[n.status.ip,'<none>','Ubuntu 22.04.5 LTS','6.10.14-linuxkit','docker://28.4.0']:[]),...lab(n)])];
+      case'Node':return[head(['NAME','STATUS','ROLES','AGE','VERSION',...(W?['INTERNAL-IP','EXTERNAL-IP','OS-IMAGE','KERNEL-VERSION','CONTAINER-RUNTIME']:[])]),...objs.map(n=>[nm(n),(n.status.ready?'Ready':'NotReady')+(n.spec.unschedulable?',SchedulingDisabled':''),'node-role.kubernetes.io/control-plane' in n.labels?'control-plane':'<none>',age(t-n.created),serverVersion(),...(W?[n.status.ip,'<none>','Ubuntu 22.04.5 LTS',n.status.aks?'5.15.0-1092-azure':'6.10.14-linuxkit',n.status.aks?'containerd://2.0.0':'docker://28.4.0']:[]),...lab(n)])];
       case'Event':return[head(['LAST SEEN','TYPE','REASON','OBJECT','MESSAGE']),...objs.map(e=>[...(A?[e.namespace]:[]),age(t-e.t),e.type,e.reason,`${KINDS[e.kind].singular}/${e.name}`,e.msg])];
     }
   }
@@ -521,11 +597,14 @@ function create(opts={}){
     if(spec.subs&&!['create','apply'].includes(key)&&!rest.some(r=>!r.startsWith('-'))&&key!=='create')return help(key);
     const {flags,pos,dash}=parseFlags(rest,spec.flags,key);
     if(flags.context&&!S.ctx.contexts[flags.context])fail(`error: context "${flags.context}" does not exist`);
+    const offline=['config','config current-context','config get-contexts','config use-context','config set-context','config view','explain','api-resources'].includes(key)||(key==='version'&&flags.client);
+    ensureCluster(flags.context,offline);
     if(!S.running&&!['config','config current-context','config get-contexts','config use-context','config set-context','config view','version','explain','api-resources'].includes(key)||(!S.running&&key==='version'&&!flags.client))fail(`E1007 12:00:00.000000   memcache.go:265] couldn't get current server API group list: Get "https://192.168.49.2:8443/api?timeout=32s": dial tcp 192.168.49.2:8443: connect: connection refused\nThe connection to the server 192.168.49.2:8443 was refused - did you specify the right host or port?`);
     const fn=HANDLERS[key];
     if(!fn)return help(key);
     const out=fn({flags,pos,dash,stdin,key});
     reconcile();
+    if(key==='config use-context')ensureCluster(null,true);
     return out;
   }
   const info=s=>({out:s,code:0});
@@ -889,7 +968,7 @@ function create(opts={}){
     },
     'config view'(){
       const c=S.ctx.contexts;
-      return dumpYaml({apiVersion:'v1',clusters:[{cluster:{'certificate-authority':'/home/user/.minikube/ca.crt',server:'https://192.168.49.2:8443'},name:'minikube'}],contexts:Object.entries(c).map(([n,x])=>({context:{cluster:x.cluster,namespace:x.namespace,user:x.user},name:n})),'current-context':S.ctx.current,kind:'Config',users:[{name:'minikube',user:{'client-certificate':'/home/user/.minikube/profiles/minikube/client.crt','client-key':'/home/user/.minikube/profiles/minikube/client.key'}}]});
+      return dumpYaml({apiVersion:'v1',clusters:[{cluster:{'certificate-authority':'/home/user/.minikube/ca.crt',server:'https://192.168.49.2:8443'},name:'minikube'},...Object.values(c).filter(x=>x.aks).map(x=>({cluster:{'certificate-authority-data':'DATA+OMITTED',server:`https://${(((aks&&aks.clusters)||[]).filter(k=>k.name===x.cluster).pop()||{fqdn:'?'}).fqdn}:443`},name:x.cluster}))],contexts:Object.entries(c).map(([n,x])=>({context:{cluster:x.cluster,namespace:x.namespace,user:x.user},name:n})),'current-context':S.ctx.current,kind:'Config',users:[{name:'minikube',user:{'client-certificate':'/home/user/.minikube/profiles/minikube/client.crt','client-key':'/home/user/.minikube/profiles/minikube/client.key'}},...Object.values(c).filter(x=>x.aks).map(x=>({name:x.user,user:{'client-certificate-data':'DATA+OMITTED','client-key-data':'DATA+OMITTED',token:'REDACTED'}}))]});
     },
     cordon({pos}){const n=nodeArg(pos);if(n.spec.unschedulable)return`node/${n.name} already cordoned`;n.spec.unschedulable=true;event(n,'Normal','NodeNotSchedulable',`Node ${n.name} status is now: NodeNotSchedulable`);return`node/${n.name} cordoned`},
     uncordon({pos}){const n=nodeArg(pos);if(!n.spec.unschedulable)return`node/${n.name} already uncordoned`;n.spec.unschedulable=false;event(n,'Normal','NodeSchedulable',`Node ${n.name} status is now: NodeSchedulable`);return`node/${n.name} uncordoned`},
@@ -924,12 +1003,12 @@ function create(opts={}){
       if(!pods.length)return`No resources found in ${ns} namespace.`;
       return table([[...(all?['NAMESPACE']:[]),'NAME','CPU(cores)','MEMORY(bytes)'],...pods.map(p=>{const h=parseInt(hashStr(p.name,3),36)%40;const img=p.spec.containers[0].image;return[...(all?[p.namespace]:[]),p.name,`${/nginx|httpd/.test(img)?1+h%3:/redis/.test(img)?3+h%4:p.spec.system?5+h:1+h%5}m`,`${/nginx/.test(img)?3+h%6:/redis/.test(img)?4+h%5:/postgres|mysql|mongo/.test(img)?30+h:p.spec.system?20+h:2+h%8}Mi`]})]);
     },
-    'cluster-info'(){return`Kubernetes control plane is running at https://192.168.49.2:8443\nCoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy\n\nTo further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.`},
+    'cluster-info'(){return`Kubernetes control plane is running at ${server()}\nCoreDNS is running at ${server()}/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy\n\nTo further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.`},
     version({flags}){
       const cli={major:'1',minor:'37',gitVersion:VERSION,platform:'linux/amd64'};
       if(flags.output==='json')return JSON.stringify({clientVersion:cli,kustomizeVersion:'v5.7.1',...(flags.client?{}:{serverVersion:{...cli}})},null,2);
       if(flags.output==='yaml')return dumpYaml({clientVersion:cli,kustomizeVersion:'v5.7.1',...(flags.client?{}:{serverVersion:cli})});
-      return`Client Version: ${VERSION}\nKustomize Version: v5.7.1${flags.client?'':`\nServer Version: ${VERSION}`}`;
+      return`Client Version: ${VERSION}\nKustomize Version: v5.7.1${flags.client?'':`\nServer Version: ${serverVersion()}`}`;
     },
     'api-resources'({flags}){
       let rows=Object.entries(KINDS).map(([k,v])=>[v.plural,v.short.join(','),v.api,String(v.ns),k]);
@@ -1299,7 +1378,10 @@ function create(opts={}){
     const [cmd,...rest]=args;
     switch(cmd){
       case'kubectl':case'k':return kubectl(rest,stdin);
-      case'minikube':return minikube(rest);
+      case'minikube':{
+        const prev=S.cluster;useCluster('minikube');
+        try{return minikube(rest)}finally{if(prev!=='minikube'&&S.parked[prev])useCluster(prev)}
+      }
       case'help':return shellHelp();
       case'ls':{const f=Object.keys(S.files).sort();return rest.includes('-l')||rest.includes('-la')?f.map(n=>`-rw-r--r-- 1 user user ${pad(S.files[n].length,5)} ${n}`).join('\n'):f.join('  ')}
       case'cat':{if(!rest.length)return stdin??'';return rest.map(f=>f in S.files?S.files[f].replace(/\n$/,''):fail(`cat: ${f}: No such file or directory`)).join('\n')}
@@ -1325,7 +1407,7 @@ function create(opts={}){
       case'head':case'tail':{const n=+(rest.find(x=>/^-?\d+$/.test(x))||'10').replace('-','')||+(rest[rest.indexOf('-n')+1]||10);const l=String(stdin??'').split('\n');return(cmd==='head'?l.slice(0,n):l.slice(-n)).join('\n')}
       case'base64':{const s=String(stdin??'').replace(/\n$/,'');if(rest.includes('-d')||rest.includes('--decode')){const d=unb64(s.trim());return d===null?fail('base64: invalid input'):d}return b64(s)}
       case'lab':{
-        if(rest[0]==='reset'){fresh();return{out:'cloudlab: clúster reiniciado. Vuelves a tener un clúster minikube limpio.',reset:true}}
+        if(rest[0]==='reset'){fresh(true);return{out:'cloudlab: clúster reiniciado. Vuelves a tener un clúster minikube limpio.',reset:true}}
         if(rest[0]==='status'||!rest[0])return`cloudlab: clúster simulado "minikube" (Kubernetes ${VERSION})\nCreado: ${new Date(S.createdAt).toLocaleString('es')}\nObjetos: ${S.items.length} · Ficheros: ${Object.keys(S.files).length}\nEl estado se guarda en este navegador y se borra tras 48 h sin uso.\nComandos: lab status | lab reset`;
         fail(`lab: subcomando desconocido "${rest[0]}". Usa: lab status | lab reset`);
       }
@@ -1472,14 +1554,22 @@ function create(opts={}){
   // ---------- Persistencia ----------
   const TTL=48*3600*1000;
   function load(saved){
-    if(saved&&saved.v===1&&now()-saved.savedAt<TTL){S=saved;S.history=S.history||[];S.files=S.files||{};S.addons=S.addons||{'metrics-server':false,'dashboard':false,'ingress':false};return true}
+    if(saved&&saved.v===1&&now()-saved.savedAt<TTL){S=saved;S.history=S.history||[];S.files=S.files||{};S.addons=S.addons||{'metrics-server':false,'dashboard':false,'ingress':false};S.cluster=S.cluster||'minikube';S.parked=S.parked||{};S.aksAt=S.aksAt||S.savedAt;return true}
     fresh();return false;
   }
   const restored=load(opts.saved);
+  syncAks();
+  if(S.cluster!=='minikube'&&!aksInfo(S.cluster))useCluster('minikube');
   reconcile();
 
   return{
-    run,complete,
+    run,complete,syncAks,
+    // Ejecuta un comando ya tokenizado (lo usa la terminal de Azure para kubectl).
+    exec(args,stdin){
+      S.savedAt=now();
+      try{const r=builtin(args.slice(),stdin);return typeof r==='string'?{out:r,code:0}:{out:r.out??'',code:r.code??0,err:r.err}}
+      catch(e){if(!(e instanceof CmdError)){console.error(e);return{out:`cloudlab: error interno del simulador (${e.message}).`,code:1,err:true}}return{out:e.message,code:e.code,err:true}}
+    },
     get state(){return S},
     restored,
     serialize:()=>JSON.parse(JSON.stringify(S)),
