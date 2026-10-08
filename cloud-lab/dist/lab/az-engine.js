@@ -647,7 +647,7 @@ function create(opts={}){
     });
 
   // ---------- Comandos: máquinas virtuales ----------
-  const pubIp=()=>`${[20,4,52,13,172][Math.random()*5|0]}.${Math.random()*250+1|0}.${Math.random()*250+1|0}.${Math.random()*250+1|0}`;
+  const pubIp=()=>`${[20,4,52,13,40][Math.random()*5|0]}.${Math.random()*250+1|0}.${Math.random()*250+1|0}.${Math.random()*250+1|0}`;
   const mac=()=>Array.from({length:6},(_,i)=>i===0?'00':i===1?'0D':i===2?'3A':hexs(2).toUpperCase()).join('-');
   function resolveImage(img){
     const alias=Object.keys(IMAGES).find(k=>lc(k)===lc(img));
