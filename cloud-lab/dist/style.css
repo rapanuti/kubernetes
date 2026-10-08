@@ -261,3 +261,9 @@ label.option.wrong{border-color:#e6b9b3;background:var(--danger-bg)}
 .az-empty{padding:18px;text-align:center;border:1.5px dashed #cfe0db;border-radius:12px;color:var(--muted);font-size:12px}
 .az-empty b{color:var(--ink);font-size:13px}
 @media(prefers-reduced-motion:reduce){.azvm.st-wait .dot,.aksnode.st-wait .dot{animation:none}}
+.mini-tag.lock{background:#fdf3dc;border-color:#efdcae;color:var(--warn);cursor:default}
+.mini-tag.policy{background:#f4f0fd;border-color:#e0d6f7;color:#6a4fbf;cursor:default}
+.mini-tag.policy.off{opacity:.6;text-decoration:line-through}
+.mini-tag.tagkv{background:#f3faf7;border-color:#cfe5da;color:var(--teal);cursor:default}
+.azkv{background:#fffaf2;border-color:#f0e2c4}
+.azkv .kind{color:#b07a12}

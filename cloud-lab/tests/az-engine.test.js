@@ -74,7 +74,7 @@ test('argumentos obligatorios, región inválida y comandos mal escritos',()=>{
   assert.match(r.out,/^ERROR: argument --name\/--resource-group\/-n\/-g: expected one argument/);
   r=run('az group list -o xml');
   assert.match(r.out,/^ERROR: argument --output\/-o: invalid choice: 'xml' \(choose from 'json', 'jsonc', 'none', 'table', 'tsv', 'yaml', 'yamlc'\)/);
-  r=run('az vm resize -g x -n y');
+  r=run('az vm redeploy -g x -n y');
   assert.match(r.out,/existe en Azure CLI 2\.91\.0, pero todavía no se simula/);
 });
 test('crear, mostrar, repetir y conflicto de región en un grupo',()=>{
@@ -316,6 +316,176 @@ test('get-credentials crea el contexto; kubectl ve los nodos; scale/stop/delete 
   assert.deepEqual(ok('az group list --query "[].name" -o tsv').out,'rg');
 });
 
+console.log('Gobierno: etiquetas, bloqueos y Azure Policy');
+test('etiquetas de grupo con --tags, --set y --remove',()=>{
+  const{ok,login,json}=env();login();
+  ok('az group create -n rg -l eastus -o none');
+  assert.deepEqual(json('az group update -n rg --tags env=dev team=web').tags,{env:'dev',team:'web'});
+  assert.deepEqual(json('az group update -n rg --set tags.costCenter=1234').tags,{env:'dev',team:'web',costCenter:'1234'});
+  assert.deepEqual(json('az group update -n rg --remove tags.team').tags,{env:'dev',costCenter:'1234'});
+  assert.deepEqual(json('az group list --tag env=dev --query "[].name"'),['rg']);
+});
+test('CanNotDelete impide borrar; ReadOnly impide además escribir; al quitarlos se puede',()=>{
+  const{run,ok,login,json,clock}=env();login();
+  ok('az group create -n rg -l eastus -o none');
+  ok('az vm create -g rg -n vm1 --image Ubuntu2204 --size Standard_B1s --generate-ssh-keys -o none');
+  const l=json('az lock create -n no-borrar -g rg --lock-type CanNotDelete --notes "Producción"');
+  assert.equal(l.level,'CanNotDelete');
+  assert.match(l.id,/\/resourceGroups\/rg\/providers\/Microsoft\.Authorization\/locks\/no-borrar$/);
+  let r=run('az group delete -n rg --yes');
+  assert.match(r.out,/^ERROR: \(ScopeLocked\) The scope '\/subscriptions\/[^']+\/resourceGroups\/rg' cannot perform delete operation because following scope\(s\) are locked: '\/subscriptions\/[^']+\/resourceGroups\/rg'\. Please remove the lock and try again\./);
+  assert.match(run('az vm delete -g rg -n vm1 --yes').out,/ScopeLocked/);
+  ok('az vm deallocate -g rg -n vm1');
+  ok('az lock create -n solo-lectura -g rg -t ReadOnly --resource vm1 --resource-type Microsoft.Compute/virtualMachines -o none');
+  assert.match(run('az vm start -g rg -n vm1').out,/cannot perform write operation because following scope\(s\) are locked: '\/subscriptions\/[^']+\/resourceGroups\/rg\/providers\/Microsoft\.Compute\/virtualMachines\/vm1'/);
+  const t=ok('az lock list -g rg -o table').out.split('\n');
+  assert.match(t[0],/^Name\s+ResourceGroup\s+Level\s+Notes$/);
+  assert.equal(t.length,4);
+  ok('az lock delete -n solo-lectura -g rg --resource vm1 --resource-type Microsoft.Compute/virtualMachines');
+  ok('az vm start -g rg -n vm1');
+  // Un bloqueo en un recurso hijo también impide borrar el grupo.
+  ok('az lock delete -n no-borrar -g rg');
+  ok('az lock create -n vnet-lock -g rg -t CanNotDelete --resource vm1VNET --resource-type virtualNetworks -o none');
+  assert.match(run('az group delete -n rg --yes').out,/following scope\(s\) are locked: '[^']+virtualNetworks\/vm1VNET'/);
+  ok('az lock delete -n vnet-lock -g rg --resource vm1VNET --resource-type virtualNetworks');
+  ok('az group delete -n rg --yes');
+  assert.equal(json('az lock list').length,0);
+  // ReadOnly en la cuenta de almacenamiento bloquea listKeys, así que falla el acceso por clave.
+  ok('az group create -n rg2 -l eastus -o none');
+  ok('az storage account create -n stlocked2026 -g rg2 -o none');
+  ok('az lock create -n ro -g rg2 -t ReadOnly -o none');
+  assert.match(run('az storage container create -n datos --account-name stlocked2026').out,/ScopeLocked/);
+  assert.match(run('az group create -n rg2 -l eastus').out,/cannot perform write operation/);
+  void clock;
+});
+test('Azure Policy: Allowed locations deniega, no afecta a los grupos y marca lo existente como no conforme',()=>{
+  const{run,ok,login,json}=env();login();
+  ok('az group create -n rg -l eastus -o none');
+  ok('az storage account create -n steast2026 -g rg -o none');
+  let r=run('az policy assignment create -n solo-europa --policy e56962a6-4747-49cd-b67b-bf8b01975c4c');
+  assert.match(r.out,/\(MissingPolicyParameter\) The policy assignment 'solo-europa' is missing the parameter\(s\) 'listOfAllowedLocations'/);
+  r=run("az policy assignment create -n solo-europa --policy e56962a6-4747-49cd-b67b-bf8b01975c4c --params '{\"listOfAllowedLocations\":{\"value\":[\"westeurope\",\"spaincentral\"]}'");
+  assert.match(r.out,/^ERROR: Failed to parse string as JSON:/);
+  const a=json("az policy assignment create -n solo-europa --display-name \"Solo Europa\" --policy e56962a6-4747-49cd-b67b-bf8b01975c4c --params '{\"listOfAllowedLocations\":{\"value\":[\"westeurope\",\"spaincentral\"]}}'");
+  assert.equal(a.policyDefinitionId,'/providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c');
+  assert.deepEqual(a.parameters,{listOfAllowedLocations:{value:['westeurope','spaincentral']}});
+  // El grupo en eastus ya existe: se puede usar, pero un recurso nuevo allí queda denegado.
+  r=run('az vm create -g rg -n vm1 --image Ubuntu2204 --size Standard_B1s --generate-ssh-keys');
+  assert.match(r.out,/^ERROR: \(RequestDisallowedByPolicy\) Resource 'vm1' was disallowed by policy\. Policy identifiers: '\[\{"policyAssignment":\{"name":"Solo Europa","id":"\/subscriptions\/[^"]+\/providers\/Microsoft\.Authorization\/policyAssignments\/solo-europa"\},"policyDefinition":\{"name":"Allowed locations"/);
+  assert.match(r.out,/\nTarget: vm1\n/);
+  ok('az vm create -g rg -n vm1 -l westeurope --image Ubuntu2204 --size Standard_B1s --generate-ssh-keys -o none');
+  ok('az group create -n rg-us -l westus -o none');
+  // No conformes: la cuenta de eastus (creada antes de la política). La VM y su VNet están en westeurope y los grupos no cuentan.
+  const st=json('az policy state list --only-show-errors --query "[].resourceId"');
+  assert.equal(st.length,1);
+  assert.match(st[0],/storageAccounts\/steast2026$/);
+  assert.equal(json('az policy state summarize --query results.nonCompliantResources'),1);
+  ok('az policy assignment delete -n solo-europa');
+  ok('az storage account create -n steast2027 -g rg -o none');
+  // Requerir etiqueta en recursos y tamaños de VM permitidos, en el ámbito de un grupo.
+  ok("az policy assignment create -n tag-env -g rg --policy 871b6d14-10aa-478d-b590-94f262ecfa99 --params '{\"tagName\":{\"value\":\"env\"}}' -o none");
+  assert.match(run('az storage account create -n sttag2026 -g rg').out,/RequestDisallowedByPolicy/);
+  ok('az storage account create -n sttag2026 -g rg --tags env=dev -o none');
+  ok("az policy assignment create -n vm-pequenas -g rg --policy 'Allowed virtual machine size SKUs' --params '{\"listOfAllowedSKUs\":[\"Standard_B1s\",\"Standard_B2s\"]}' -o none");
+  assert.match(run('az vm create -g rg -n vm2 -l westeurope --image Ubuntu2204 --size Standard_D2s_v5 --tags env=dev').out,/Allowed virtual machine size SKUs/);
+  assert.match(run('az vm resize -g rg -n vm1 --size Standard_D2s_v5').out,/RequestDisallowedByPolicy/);
+  assert.equal(json('az policy assignment list -g rg --query "length(@)"'),2);
+  assert.equal(json('az policy definition list --only-show-errors --query "length(@)"'),6);
+});
+
+console.log('Datos: blobs y Key Vault');
+test('blobs: aviso sin credenciales, rol de datos con --auth-mode login y errores del servicio',()=>{
+  const{run,ok,login,json}=env();login();
+  ok('az group create -n rg -l westeurope -o none');
+  ok('az storage account create -n stdatos2026 -g rg --sku Standard_LRS -o none');
+  let r=ok('az storage container create -n imagenes --account-name stdatos2026');
+  assert.match(r.out,/There are no credentials provided in your command and environment, we will query for account key for your storage account\./);
+  assert.match(r.out,/\{\n  "created": true\n\}$/);
+  assert.match(run('az storage container create -n Imagenes_1 --account-name stdatos2026 --auth-mode key --account-key x').out,/AuthenticationFailed/);
+  const key=ok('az storage account keys list -n stdatos2026 -g rg --query [0].value -o tsv').out;
+  assert.match(run(`az storage container create -n Imagenes_1 --account-name stdatos2026 --account-key ${key}`).out,/^ERROR: The specifed resource name contains invalid characters\.\nRequestId:[0-9a-f-]+\nTime:[^\n]+\nErrorCode:InvalidResourceName$/);
+  assert.match(run('az storage container create -n web --public-access blob --account-name stdatos2026 --account-key '+key).out,/ErrorCode:PublicAccessNotPermitted/);
+  r=run('az storage blob upload -c imagenes -n hola.txt --data "Hola Azure" --account-name stdatos2026 --auth-mode login');
+  assert.match(r.out,/You do not have the required permissions needed to perform this operation\./);
+  assert.match(r.out,/"Storage Blob Data Contributor"/);
+  ok('SCOPE=$(az storage account show -n stdatos2026 -g rg --query id -o tsv) && az role assignment create --assignee user@cloudlabdemo.onmicrosoft.com --role "Storage Blob Data Contributor" --scope $SCOPE -o none');
+  assert.match(run('az storage blob upload -c imagenes -f nota.txt --account-name stdatos2026 --auth-mode login').out,/No such file or directory: 'nota.txt'/);
+  ok('echo "Hola Azure" > nota.txt');
+  r=ok('az storage blob upload -c imagenes -f nota.txt --account-name stdatos2026 --auth-mode login');
+  assert.match(r.out,/Finished\[#+\]  100\.0000%/);
+  assert.match(run('az storage blob upload -c imagenes -f nota.txt --account-name stdatos2026 --auth-mode login').out,/ERROR: The specified blob already exists\.[\s\S]*ErrorCode:BlobAlreadyExists/);
+  ok('az storage blob upload -c imagenes -f nota.txt --overwrite --account-name stdatos2026 --auth-mode login -o none');
+  const t=ok('az storage blob list -c imagenes --account-name stdatos2026 --auth-mode login -o table').out.split('\n');
+  assert.match(t[0],/^Name\s+Blob Type\s+Blob Tier\s+Length\s+Content Type\s+Last Modified\s+Snapshot$/);
+  assert.match(t[2],/^nota\.txt\s+BlockBlob\s+Hot\s+11\s+text\/plain\s/);
+  assert.equal(ok('az storage blob download -c imagenes -n nota.txt --account-name stdatos2026 --auth-mode login').out,'Hola Azure');
+  ok('az storage blob download -c imagenes -n nota.txt -f copia.txt --account-name stdatos2026 --auth-mode login -o none');
+  assert.equal(ok('cat copia.txt').out,'Hola Azure');
+  assert.match(run('az storage blob show -c imagenes -n nada.txt --account-name stdatos2026 --auth-mode login').out,/ErrorCode:BlobNotFound/);
+  assert.match(run('az storage blob list -c nada --account-name stdatos2026 --auth-mode login').out,/ErrorCode:ContainerNotFound/);
+  ok('az storage blob delete -c imagenes -n nota.txt --account-name stdatos2026 --auth-mode login');
+  assert.deepEqual(json('az storage blob list -c imagenes --account-name stdatos2026 --auth-mode login'),[]);
+  assert.match(json('az storage account show-connection-string -n stdatos2026 -g rg').connectionString,/^DefaultEndpointsProtocol=https;EndpointSuffix=core\.windows\.net;AccountName=stdatos2026;AccountKey=/);
+});
+test('Key Vault: RBAC en el plano de datos, soft-delete, recover y purga',()=>{
+  const{run,ok,login,json}=env();login();
+  ok('az group create -n rg -l westeurope -o none');
+  assert.match(run('az keyvault create -n 1kv -g rg').out,/\(VaultNameNotValid\) The vault name '1kv' is invalid\./);
+  assert.match(run('az keyvault create -n mykeyvault -g rg').out,/\(VaultAlreadyExists\) The vault name 'mykeyvault' is already in use\./);
+  const k=json('az keyvault create -n kv-cloudlab-2026 -g rg');
+  assert.deepEqual([k.properties.enableRbacAuthorization,k.properties.softDeleteRetentionInDays,k.properties.sku.name,k.properties.vaultUri],[true,90,'standard','https://kv-cloudlab-2026.vault.azure.net/']);
+  let r=run('az keyvault secret set --vault-name kv-cloudlab-2026 -n db-password --value "S3cr3t!"');
+  assert.match(r.out,/^ERROR: \(Forbidden\) Caller is not authorized to perform action on resource\./);
+  assert.match(r.out,/Action: 'Microsoft\.KeyVault\/vaults\/secrets\/setSecret\/action'/);
+  assert.match(r.out,/"code": "ForbiddenByRbac"/);
+  ok('az role assignment create --assignee user@cloudlabdemo.onmicrosoft.com --role "Key Vault Secrets Officer" --scope $(az keyvault show -n kv-cloudlab-2026 --query id -o tsv) -o none');
+  const sec=json('az keyvault secret set --vault-name kv-cloudlab-2026 -n db-password --value "S3cr3t!"');
+  assert.match(sec.id,/^https:\/\/kv-cloudlab-2026\.vault\.azure\.net\/secrets\/db-password\/[0-9a-f]{32}$/);
+  assert.equal(ok('az keyvault secret show --vault-name kv-cloudlab-2026 -n db-password --query value -o tsv').out,'S3cr3t!');
+  assert.equal(json('az keyvault secret list --vault-name kv-cloudlab-2026')[0].value,undefined);
+  assert.match(run('az keyvault secret show --vault-name kv-cloudlab-2026 -n nada').out,/\(SecretNotFound\)/);
+  r=ok('az keyvault delete -n kv-cloudlab-2026');
+  assert.match(r.out,/soft-delete/);
+  assert.equal(json('az keyvault list-deleted --query "[].name"')[0],'kv-cloudlab-2026');
+  assert.match(run('az keyvault create -n kv-cloudlab-2026 -g rg').out,/VaultAlreadyExists[\s\S]*az keyvault recover -n kv-cloudlab-2026/);
+  ok('az keyvault recover -n kv-cloudlab-2026 -o none');
+  assert.equal(ok('az keyvault secret show --vault-name kv-cloudlab-2026 -n db-password --query value -o tsv').out,'S3cr3t!');
+  ok('az keyvault delete -n kv-cloudlab-2026 && az keyvault purge -n kv-cloudlab-2026');
+  ok('az keyvault create -n kv-cloudlab-2026 -g rg --enable-purge-protection true -o none');
+  ok('az keyvault delete -n kv-cloudlab-2026');
+  assert.match(run('az keyvault purge -n kv-cloudlab-2026').out,/purge protection is enabled/);
+});
+
+console.log('Red: NSG, IP pública y más comandos de VM');
+test('reglas de NSG, vm open-port, IP pública Standard y resize',()=>{
+  const{run,ok,login,json}=env();login();
+  ok('az group create -n rg -l eastus -o none');
+  ok('az vm create -g rg -n vm1 --image Ubuntu2204 --size Standard_B1s --generate-ssh-keys -o none');
+  let rules=ok('az network nsg rule list -g rg --nsg-name vm1NSG -o table').out.split('\n');
+  assert.match(rules[0],/^Name\s+ResourceGroup\s+Priority\s+SourcePortRanges\s+SourceAddressPrefixes\s+SourceASG\s+Access\s+Protocol\s+Direction\s+DestinationPortRanges\s+DestinationAddressPrefixes\s+DestinationASG$/);
+  assert.match(rules[2],/^default-allow-ssh\s+rg\s+1000\s+\*\s+\*\s+None\s+Allow\s+Tcp\s+Inbound\s+22\s+\*\s+None$/);
+  const nsg=json('az vm open-port -g rg -n vm1 --port 80');
+  assert.deepEqual(nsg.securityRules.map(r=>[r.name,r.priority,r.destinationPortRange]),[['open-port-80',900,'80'],['default-allow-ssh',1000,'22']]);
+  assert.match(run('az vm open-port -g rg -n vm1 --port 443').out,/\(SecurityRuleConflict\) Security rule open-port-443 conflicts with rule open-port-80\. Rules cannot have the same Priority and Direction\./);
+  assert.match(run('az network nsg rule create -g rg --nsg-name vm1NSG -n mala --priority 50').out,/\(SecurityRuleInvalidPriority\) Security rule has invalid Priority\. Value provided: 50 Allowed range 100-4096\./);
+  assert.match(run('az network nsg rule create -g rg --nsg-name vm1NSG -n mala').out,/the following arguments are required: --priority/);
+  ok('az network nsg rule create -g rg --nsg-name vm1NSG -n deny-rdp --priority 200 --access Deny --protocol Tcp --destination-port-ranges 3389 -o none');
+  assert.equal(json('az network nsg rule list -g rg --nsg-name vm1NSG --include-default --query "length(@)"'),9);
+  assert.match(run('az network nsg delete -g rg -n vm1NSG').out,/\(InUseNetworkSecurityGroupCannotBeDeleted\)/);
+  ok('az network nsg create -g rg -n nsg-web -o none');
+  assert.deepEqual(json('az network nsg list -g rg --query "[].name"'),['vm1NSG','nsg-web']);
+  assert.match(run('az network public-ip create -g rg -n ip1 --allocation-method Dynamic').out,/StandardSkuPublicIPAddressesCannotHaveDynamicAllocation/);
+  assert.match(run('az network public-ip create -g rg -n ip1 --sku Basic').out,/se retiraron|retiró/);
+  const ip=json('az network public-ip create -g rg -n ip1').publicIp;
+  assert.deepEqual([ip.sku.name,ip.publicIPAllocationMethod],['Standard','Static']);
+  assert.equal(json('az network public-ip list -g rg --query "length(@)"'),2);
+  const ips=ok('az vm list-ip-addresses -g rg -o table').out.split('\n');
+  assert.match(ips[0],/^VirtualMachine\s+PublicIPAddresses\s+PrivateIPAddresses$/);
+  assert.match(ips[2],/^vm1\s+[\d.]+\s+10\.0\.0\.4$/);
+  assert.equal(json('az vm resize -g rg -n vm1 --size Standard_B2s --query hardwareProfile.vmSize'),'Standard_B2s');
+  assert.match(run('az vm resize -g rg -n vm1 --size Standard_NC4as_T4_v3').out,/QuotaExceeded/);
+});
+
 console.log('Persistencia, autocompletado y shell');
 test('el estado se conserva 48 h y caduca después',()=>{
   const{az,ok,login,clock}=env();login();
@@ -333,6 +503,12 @@ test('el estado se conserva 48 h y caduca después',()=>{
   const r=az.run('lab reset');
   assert.equal(r.reset,true);
   assert.equal(az.state.loggedIn,false);
+});
+test('dos instancias del simulador no comparten estado',()=>{
+  const a=env(),b=env();a.login();
+  a.ok('az group create -n solo-a -l eastus -o none');
+  assert.equal(b.run('az group list').out,"ERROR: Please run 'az login' to setup account.");
+  assert.equal(a.ok('az group list --query "[].name" -o tsv').out,'solo-a');
 });
 test('autocompletado de grupos, comandos, argumentos y valores',()=>{
   const{az,ok,login}=env();login();

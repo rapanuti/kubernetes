@@ -24,7 +24,7 @@ const sizeName=s=>Object.keys(SIZES).find(k=>k.toLowerCase()===String(s).toLower
 const IMAGES={CentOS85Gen2:'OpenLogic:CentOS:8_5-gen2:latest',Debian11:'Debian:debian-11:11-backports-gen2:latest',Debian12:'Debian:debian-12:12-gen2:latest',FlatcarLinuxFreeGen2:'kinvolk:flatcar-container-linux-free:stable-gen2:latest',OpenSuseLeap154Gen2:'SUSE:openSUSE-leap-15-4:gen2:latest',RHELRaw8LVMGen2:'RedHat:RHEL:8-lvm-gen2:latest',SuseSles15SP5:'SUSE:sles-15-sp5:gen2:latest',Ubuntu2204:'Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest',Ubuntu2404:'Canonical:ubuntu-24_04-lts:server:latest',Win2025Datacenter:'MicrosoftWindowsServer:WindowsServer:2025-datacenter-g2:latest',Win2022Datacenter:'MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest',Win2022AzureEditionCore:'MicrosoftWindowsServer:WindowsServer:2022-datacenter-azure-edition-core:latest',Win2019Datacenter:'MicrosoftWindowsServer:WindowsServer:2019-datacenter-gensecond:latest',Win2016Datacenter:'MicrosoftWindowsServer:WindowsServer:2016-datacenter-gensecond:latest',Win2012R2Datacenter:'MicrosoftWindowsServer:WindowsServer:2012-r2-datacenter-gensecond:latest',Win2012Datacenter:'MicrosoftWindowsServer:WindowsServer:2012-datacenter-gensecond:latest'};
 const RESERVED_USERS=['administrator','admin','user','user1','test','user2','test1','user3','admin1','1','123','a','actuser','adm','admin2','aspnet','backup','console','david','guest','john','owner','root','server','sql','support','support_388945a0','sys','test2','test3','user4','user5'];
 // Roles integrados de Azure (los identificadores son los reales).
-const ROLES={'Owner':'8e3af657-a8ff-443c-a75c-2fe8c4bcb635','Contributor':'b24988ac-6180-42a0-ab88-20f7382dd24c','Reader':'acdd72a7-3385-48ef-bd42-f606fba81ae7','User Access Administrator':'18d7d88d-d35e-4fb5-a5c3-7773c20a72d9','Role Based Access Control Administrator':'f58310d9-a9f6-439a-9e8d-f62e7b41a168','Virtual Machine Contributor':'9980e02c-c2be-4d73-94e8-173b1dc7cf3c','Network Contributor':'4d97b98b-1d4f-4787-a291-c67834d212e7','Storage Account Contributor':'17d1049b-9a84-46fb-8f53-869881c3d3ab','Storage Blob Data Contributor':'ba92f5b4-2d11-453d-a403-e96b0029c9fe','Storage Blob Data Reader':'2a2b9908-6ea1-4ae2-8e65-a410df84e7d1','Website Contributor':'de139f84-1756-47ae-9be6-808fbbe84772','Azure Kubernetes Service Cluster User Role':'4abbcc35-e782-43d8-92c5-2d3f1bd2253f','Azure Kubernetes Service RBAC Reader':'7f6c6a51-bcf8-42ba-9220-52d62157d7db'};
+const ROLES={'Owner':'8e3af657-a8ff-443c-a75c-2fe8c4bcb635','Contributor':'b24988ac-6180-42a0-ab88-20f7382dd24c','Reader':'acdd72a7-3385-48ef-bd42-f606fba81ae7','User Access Administrator':'18d7d88d-d35e-4fb5-a5c3-7773c20a72d9','Role Based Access Control Administrator':'f58310d9-a9f6-439a-9e8d-f62e7b41a168','Virtual Machine Contributor':'9980e02c-c2be-4d73-94e8-173b1dc7cf3c','Network Contributor':'4d97b98b-1d4f-4787-a291-c67834d212e7','Storage Account Contributor':'17d1049b-9a84-46fb-8f53-869881c3d3ab','Storage Blob Data Contributor':'ba92f5b4-2d11-453d-a403-e96b0029c9fe','Storage Blob Data Reader':'2a2b9908-6ea1-4ae2-8e65-a410df84e7d1','Website Contributor':'de139f84-1756-47ae-9be6-808fbbe84772','Azure Kubernetes Service Cluster User Role':'4abbcc35-e782-43d8-92c5-2d3f1bd2253f','Azure Kubernetes Service RBAC Reader':'7f6c6a51-bcf8-42ba-9220-52d62157d7db','Storage Blob Data Owner':'b7e6dc6d-f1e8-4753-8033-0f276bb0955b','Key Vault Administrator':'00482a5a-887f-4fb3-b363-3b7fe8e74483','Key Vault Secrets Officer':'b86a8fe4-44ce-4948-aee5-eccb2c155cd7','Key Vault Secrets User':'4633458b-17de-408a-b874-0445c86b69e6','Key Vault Reader':'21090545-7ca7-4776-b22c-e363652d74d2'};
 const DOMAIN='cloudlabdemo.onmicrosoft.com';
 const USERS=[['user','Cloud Lab User','Cloud Lab','User'],['ana.garcia','Ana García','Ana','García'],['luis.perez','Luis Pérez','Luis','Pérez'],['marta.ruiz','Marta Ruiz','Marta','Ruiz']].map(([u,d,g,s],i)=>({upn:`${u}@${DOMAIN}`,displayName:d,givenName:g,surname:s,id:['3b0f9d6e-6c1a-4a8e-9f4a-2f1c0d7b8e11','5c2e4a7d-1b3f-4c6e-8a9d-0e1f2a3b4c5d','7d4f6b8e-2c5a-4d7f-9b1e-1f2a3b4c5d6e','9e6a8c0f-3d7b-4e8a-a2c3-2a3b4c5d6e7f'][i]}));
 const RUNTIMES={linux:['NODE:22-lts','NODE:20-lts','PYTHON:3.13','PYTHON:3.12','PYTHON:3.11','DOTNETCORE:9.0','DOTNETCORE:8.0','JAVA:21-java21','JAVA:17-java17','PHP:8.4','PHP:8.3'],windows:['dotnet:9','dotnet:8','ASPNET:V4.8','NODE:22LTS','NODE:20LTS','JAVA:21','JAVA:17','PYTHON:3.12']};
@@ -33,7 +33,7 @@ const STORAGE_SKUS=['Premium_LRS','Premium_ZRS','Standard_GRS','Standard_GZRS','
 // Nombres globales que "ya usa otra persona" en Azure (storage y web apps son únicos en todo Azure).
 const TAKEN_STORAGE=['storage','mystorage','mystorageaccount','storageaccount','teststorage','test','azure','demo','cloudlab','backup','data','images','logs','prod','dev','files','media'];
 const TAKEN_SITES=['portal','myapp','webapp','test','app','demo','hello','azure','cloudlab','api','www','helloworld','mywebapp'];
-const TYPES={group:'Microsoft.Resources/resourceGroups',vm:'Microsoft.Compute/virtualMachines',disk:'Microsoft.Compute/disks',storage:'Microsoft.Storage/storageAccounts',vnet:'Microsoft.Network/virtualNetworks',nsg:'Microsoft.Network/networkSecurityGroups',pip:'Microsoft.Network/publicIPAddresses',nic:'Microsoft.Network/networkInterfaces',plan:'Microsoft.Web/serverFarms',webapp:'Microsoft.Web/sites',aks:'Microsoft.ContainerService/managedClusters',vmss:'Microsoft.Compute/virtualMachineScaleSets',lb:'Microsoft.Network/loadBalancers'};
+const TYPES={group:'Microsoft.Resources/resourceGroups',vm:'Microsoft.Compute/virtualMachines',disk:'Microsoft.Compute/disks',storage:'Microsoft.Storage/storageAccounts',vnet:'Microsoft.Network/virtualNetworks',nsg:'Microsoft.Network/networkSecurityGroups',pip:'Microsoft.Network/publicIPAddresses',nic:'Microsoft.Network/networkInterfaces',plan:'Microsoft.Web/serverFarms',webapp:'Microsoft.Web/sites',aks:'Microsoft.ContainerService/managedClusters',vmss:'Microsoft.Compute/virtualMachineScaleSets',lb:'Microsoft.Network/loadBalancers',kv:'Microsoft.KeyVault/vaults'};
 
 // ---------- Utilidades ----------
 const hexs=n=>Array.from({length:n},()=>'0123456789abcdef'[Math.random()*16|0]).join('');
@@ -244,6 +244,7 @@ const GLOBAL=[
 ];
 const GROUPS={
   '':'',account:'Manage Azure subscription information.',group:'Manage resource groups and template deployments.',vm:'Manage Linux or Windows virtual machines.','vm image':'Information on available virtual machine images.',storage:'Manage Azure Cloud Storage resources.','storage account':'Manage storage accounts.',network:'Manage Azure Network resources.','network vnet':'Check if a private IP address is available for use within a virtual network.','network vnet subnet':'Manage subnets in an Azure Virtual Network.',appservice:'Manage App Service plans.','appservice plan':'Manage app service plans.',webapp:'Manage web apps.',aks:'Azure Kubernetes Service.',role:'Manage Azure role-based access control (Azure RBAC).','role assignment':'Manage role assignments.','role definition':'Manage role definitions.',ad:'Manage Microsoft Entra ID (formerly known as Azure Active Directory, Azure AD, AAD) entities needed for Azure role-based access control (Azure RBAC) through Microsoft Graph API.','ad user':'Manage Microsoft Entra users.',resource:'Manage Azure resources.',
+  'storage container':'Manage blob storage containers.','storage blob':'Manage object storage for unstructured data (blobs).','storage account keys':'Manage storage account keys.','network nsg':'Manage Azure Network Security Groups (NSGs).','network nsg rule':'Manage network security group rules.','network public-ip':'Manage public IP addresses.',lock:'Manage Azure locks.',policy:'Manage resources defined and used by the Azure Policy service.','policy definition':'Manage resource policy definitions.','policy assignment':'Manage resource policy assignments.','policy state':'Manage policy compliance states.',keyvault:'Manage KeyVault keys, secrets, and certificates.','keyvault secret':'Manage secrets.',
 };
 const ROOT_EXTRA={login:'Log in to Azure.',logout:'Log out to remove access to Azure subscriptions.',configure:'Manage Azure CLI configuration. This command is interactive.',find:'I\'m an AI robot, my advice is based on our Azure documentation as well as the usage patterns of Azure CLI and Azure ARM users. Using me improves Azure products and documentation.',version:'Show the versions of Azure CLI modules and extensions in JSON format by default or format configured by --output.'};
 // Comandos reales de Azure CLI que existen pero no se simulan (para un mensaje honesto en lugar de "no existe").
@@ -256,12 +257,17 @@ const REAL={'':['account','acr','ad','advisor','afd','aks','ams','apim','appconf
   webapp:['auth','browse','config','connection','create','create-remote-connection','delete','deploy','deployment','list','list-instances','list-runtimes','log','restart','show','ssh','start','stop','traffic-routing','up','update','vnet-integration','webjob'],
   aks:['addon','approuting','browse','check-acr','command','connection','create','delete','disable-addons','enable-addons','get-credentials','get-upgrades','get-versions','install-cli','list','maintenanceconfiguration','mesh','nodepool','operation','rotate-certs','scale','show','snapshot','start','stop','update','upgrade','wait'],
   role:['assignment','definition'],'role assignment':['create','delete','list','list-changelogs','update'],'role definition':['create','delete','list','update'],ad:['app','group','signed-in-user','sp','user'],'ad user':['create','delete','get-member-groups','list','show','update'],resource:['create','delete','invoke-action','link','list','lock','move','show','tag','update','wait'],
+  lock:['create','delete','list','show','update'],policy:['assignment','definition','event','exemption','metadata','remediation','set-definition','state'],'policy assignment':['create','delete','identity','list','non-compliance-message','show','update'],'policy definition':['create','delete','list','show','update'],'policy state':['list','summarize','trigger-scan'],
+  keyvault:['backup','certificate','check-name','create','delete','delete-policy','key','list','list-deleted','network-rule','private-endpoint-connection','purge','recover','region','restore','role','secret','security-domain','set-policy','show','show-deleted','update','wait'],'keyvault secret':['backup','delete','download','list','list-deleted','list-versions','purge','recover','restore','set','set-attributes','show','show-deleted'],
+  'storage container':['create','delete','exists','generate-sas','immutability-policy','legal-hold','lease','list','metadata','policy','restore','set-permission','show','show-permission'],'storage blob':['copy','delete','delete-batch','download','download-batch','exists','generate-sas','immutability-policy','lease','list','metadata','query','restore','service-properties','set-legal-hold','set-tier','show','snapshot','sync','tag','undelete','update','upload','upload-batch','url'],'storage account keys':['list','renew'],
+  'network nsg':['create','delete','list','rule','show','update','wait'],'network nsg rule':['create','delete','list','show','update','wait'],'network public-ip':['create','delete','ddos-protection','list','prefix','show','update','wait'],
 };
-const C={};
-const cmd=(key,desc,args,ex,fn,extra={})=>{C[key]={key,desc,args,ex,fn,...extra}};
 
 // ---------- Simulador ----------
 function create(opts={}){
+  // Tabla de comandos propia de cada instancia (sus funciones usan el estado de esta instancia).
+  const C={};
+  const cmd=(key,desc,args,ex,fn,extra={})=>{C[key]={key,desc,args,ex,fn,...extra}};
   const yaml=opts.yaml||root.jsyaml;
   const now=opts.now||(()=>Date.now());
   let S,pending=null;
@@ -272,7 +278,7 @@ function create(opts={}){
     const t=now();
     S={v:1,createdAt:t,savedAt:t,loggedIn:false,tenant:{id:guid(),name:'Default Directory',domain:DOMAIN},
       subs:[{id:guid(),name:'Azure subscription 1',offer:'Pay-As-You-Go'},{id:guid(),name:'Cloud Lab Dev',offer:'Visual Studio Enterprise'}],
-      current:null,defaults:{},res:[],roles:[],merged:[],gone:[],sshKeys:false,vars:{},files:{},history:[],stats:{}};
+      current:null,defaults:{},res:[],roles:[],merged:[],gone:[],locks:[],policies:[],deletedVaults:[],sshKeys:false,vars:{},files:{},history:[],stats:{}};
     S.current=S.subs[0].id;
     for(const s of S.subs)S.roles.push({id:guid(),scope:`/subscriptions/${s.id}`,role:'Owner',principal:USERS[0].id,created:t-86400000*30});
   }
@@ -290,6 +296,7 @@ function create(opts={}){
     const g=findGroup(n);
     if(!g)arm('ResourceGroupNotFound',`Resource group '${n}' could not be found.`,3);
     if(forWrite&&g.busy&&g.busy.state==='Deleting')arm('ResourceGroupBeingDeleted',`The resource group '${g.name}' is in deprovisioning state and cannot perform this operation.`);
+    if(forWrite)guard('write',resId(g));
     return g;
   }
   function needRes(t,rg,n){
@@ -314,12 +321,14 @@ function create(opts={}){
     for(const r of S.res.slice())if(r.busy&&r.busy.until<=t){if(r.busy.state==='Deleting'){removeTree(r)}else delete r.busy}
   }
   function removeTree(r){
-    if(r.t==='group'){for(const x of S.res.filter(x=>x.sub===r.sub&&lc(x.rg)===lc(r.name)))removeRes(x);S.roles=S.roles.filter(a=>!lc(a.scope).startsWith(lc(resId(r))));del(r);return}
+    if(r.t==='group'){const gid=lc(resId(r));for(const x of S.res.filter(x=>x.sub===r.sub&&lc(x.rg)===lc(r.name)))removeRes(x);S.roles=S.roles.filter(a=>!lc(a.scope).startsWith(gid));S.locks=S.locks.filter(a=>!lc(a.scope).startsWith(gid));S.policies=S.policies.filter(a=>!lc(a.scope).startsWith(gid));del(r);return}
     removeRes(r);
   }
   function removeRes(x){
     if(x.t==='aks'){S.gone.push({name:x.name,fqdn:x.p.fqdn,id:x.p.uid});S.gone=S.gone.slice(-20);const mc=S.res.find(g=>g.t==='group'&&g.p.managedBy===resId(x));if(mc)removeTree(mc)}
     if(x.t==='plan')for(const w of S.res.filter(w=>w.t==='webapp'&&w.p.plan===resId(x)))del(w);
+    if(x.t==='kv')S.deletedVaults.push({name:x.name,rg:x.rg,location:x.location,sub:x.sub,id:resId(x),at:now(),created:x.created,retention:x.p.retention||90,purgeProtection:!!x.p.purgeProtection,p:x.p});
+    S.locks=S.locks.filter(a=>lc(a.scope)!==lc(resId(x)));
     del(x);
   }
 
@@ -533,8 +542,8 @@ function create(opts={}){
     for(const a of S.res.filter(a=>a.t==='aks'&&inSub(a)&&a.location===loc&&a.p.power==='Running')){const[c,,f]=SIZES[a.p.vmSize];total+=c*a.p.count;fam[f]=(fam[f]||0)+c*a.p.count}
     return{total,fam,vms};
   }
-  function checkQuota(loc,size,count=1){
-    const[c,,f]=SIZES[size],u=coreUsage(loc),need=c*count;
+  function checkQuota(loc,size,count=1,minus=0){
+    const[c,,f]=SIZES[size],u=coreUsage(loc),need=c*count-minus;
     const famUse=u.fam[f]||0,famLim=FAMILY_LIMIT(f);
     const q=(what,lim,cur)=>arm('QuotaExceeded',`Operation could not be completed as it results in exceeding approved ${what} quota. Additional details - Deployment Model: Resource Manager, Location: ${loc}, Current Limit: ${lim}, Current Usage: ${cur}, Additional Required: ${need}, (Minimum) New Limit Required: ${cur+need}. Setup Alerts when Quota reaches threshold. Learn more at https://aka.ms/quotamonitoringalerting . Submit a request for Quota increase at https://aka.ms/ProdportalCRP/#blade/Microsoft_Azure_Capacity/UsageAndQuota.ReactView/Parameters/%7B%22subscriptionId%22:%22${curSub()}%22,%22command%22:%22openQuotaApprovalBlade%22%7D by specifying parameters listed in the ‘Details’ section for deployment to succeed. Please read more about quota limits at https://docs.microsoft.com/en-us/azure/azure-supportability/regional-quota-requests\ncloudlab: la cuota de vCPU por región es ${QUOTA}. Las VM desasignadas (az vm deallocate) y los AKS detenidos no consumen cuota.`);
     if(famUse+need>famLim)q(`${f} Cores`,famLim,famUse);
@@ -598,6 +607,8 @@ function create(opts={}){
       if(bad.length||/\.$/.test(n)||n.length>90)arm('InvalidResourceGroup',`The provided resource group name '${n}' has these invalid characters: '${bad.join('')||'.'}'. The name can only be a letter, digit, '-', '.', '(', ')' or '_'. See https://aka.ms/ResourceGroupNamingRestrictions for more information.`);
       const loc=needLoc(v.location,'group');
       let g=findGroup(n);
+      guard('write',`/subscriptions/${curSub()}/resourceGroups/${g?g.name:n}`);
+      if(!g)policyCheck({t:'group',name:n,location:loc,tags:tagsOf(v.tags),id:`/subscriptions/${curSub()}/resourceGroups/${n}`});
       if(g&&busy(g)==='Deleting')arm('ResourceGroupBeingDeleted',`The resource group '${g.name}' is in deprovisioning state and cannot perform this operation.`);
       if(g&&g.location!==loc)arm('InvalidResourceGroupLocation',`Invalid resource group location '${loc}'. The Resource group already exists in location '${g.location}'.`);
       if(!g)g=add({t:'group',name:n,location:loc});
@@ -617,6 +628,7 @@ function create(opts={}){
       const go=()=>{
         if(g.p.managedBy)return{text:`cloudlab: este grupo lo gestiona un clúster AKS (managedBy). Borra el clúster con "az aks delete" y Azure eliminará también este grupo de nodos.`};
         if(busy(g)==='Deleting')return{};
+        guard('delete',resId(g),true);
         stat('groupDelete');
         if(v.noWait){g.busy={state:'Deleting',until:now()+30000};for(const x of S.res.filter(x=>x.sub===g.sub&&lc(x.rg)===lc(g.name)))x.busy={state:'Deleting',until:now()+30000};return{}}
         removeTree(g);return{};
@@ -667,6 +679,7 @@ function create(opts={}){
           warn.push("SSH key files '/home/user/.ssh/id_rsa' and '/home/user/.ssh/id_rsa.pub' have been generated under ~/.ssh to allow SSH access to the VM. If using machines without permanent storage, back up your keys to a safe location.");
         }
         if(SIZES[size][2].includes('NCAS')&&!['eastus','westeurope','southcentralus','westus2'].includes(loc))arm('SkuNotAvailable',`The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: ${size}' is currently not available in location '${loc}'. Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details.`);
+        policyCheck({t:'vm',name,location:loc,tags:tagsOf(v.tags),size,id:`${resId(g)}/providers/${TYPES.vm}/${name}`});
         checkQuota(loc,size);
         // Red: reutiliza una VNet del grupo en la misma región o crea <vm>VNET con <vm>Subnet.
         let vnet=v.vnet?findRes('vnet',v.rg,v.vnet):resOf('vnet',v.rg).find(x=>x.location===loc);
@@ -694,7 +707,7 @@ function create(opts={}){
       return finish(v.password);
     });
   function vmFind(v){return needRes('vm',v.rg,v.name)}
-  const powerCmd=(key,desc,long,fn,ex)=>cmd(key,desc,[NAME('The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`.'),RG(),NOWAIT,...(key==='vm stop'?[A('skipShutdown',['--skip-shutdown'],{type:'bool',desc:'Skip shutdown and power-off immediately.'})]:[])],ex,v=>{const vm=vmFind(v);if(busy(vm))arm('OperationNotAllowed',`Operation '${key.split(' ')[1]}' is not allowed on VM '${vm.name}' since the VM is ${lc(busy(vm))}.`,1);return fn(vm,v)||{}},{long});
+  const powerCmd=(key,desc,long,fn,ex)=>cmd(key,desc,[NAME('The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`.'),RG(),NOWAIT,...(key==='vm stop'?[A('skipShutdown',['--skip-shutdown'],{type:'bool',desc:'Skip shutdown and power-off immediately.'})]:[])],ex,v=>{const vm=vmFind(v);guard('write',resId(vm));if(busy(vm))arm('OperationNotAllowed',`Operation '${key.split(' ')[1]}' is not allowed on VM '${vm.name}' since the VM is ${lc(busy(vm))}.`,1);return fn(vm,v)||{}},{long});
   powerCmd('vm start','Start a stopped VM.',null,vm=>{if(vm.p.power==='deallocated')checkQuota(vm.location,vm.p.size);vm.p.power='running';stat('vmStart')},[['Start a stopped VM.','az vm start -g MyResourceGroup -n MyVm']]);
   powerCmd('vm stop','Power off (stop) a running VM.','The VM will continue to be billed. To avoid this, you can deallocate the VM through "az vm deallocate".',vm=>{if(vm.p.power!=='deallocated')vm.p.power='stopped';stat('vmStop');return{warn:['cloudlab: la VM está apagada pero sigue asignada, así que Azure sigue cobrando el cómputo. Para dejar de pagarlo usa az vm deallocate.']}},[['Power off (stop) a running VM.','az vm stop -g MyResourceGroup -n MyVm']]);
   powerCmd('vm deallocate','Deallocate a VM so that computing resources are no longer allocated (charges no longer apply). The status will change from \'Stopped\' to \'Stopped (Deallocated)\'.',null,vm=>{vm.p.power='deallocated';stat('vmDeallocate')},[['Deallocate a VM.','az vm deallocate -g MyResourceGroup -n MyVm']]);
@@ -703,7 +716,7 @@ function create(opts={}){
   cmd('vm show','Get the details of a VM.',[NAME('The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`.'),RG(),A('details',['--show-details','-d'],{type:'bool',desc:'Show public ip address, FQDN, and power states. command will run slow.'})],[['Show information about a VM.','az vm show -g MyResourceGroup -n MyVm -d']],v=>({data:vmView(vmFind(v),v.details)}),{table:d=>vmTable([d])});
   cmd('vm delete','Delete a VM.',[NAME('The name of the Virtual Machine.'),RG(),YES,NOWAIT,A('forceDeletion',['--force-deletion'],{type:'tbool',desc:'Optional parameter to force delete virtual machines.'})],[['Delete a VM without a prompt for confirmation.','az vm delete -g MyResourceGroup -n MyVm --yes']],v=>{
     const vm=vmFind(v);
-    const go=()=>{del(vm);for(const x of S.res.filter(x=>(x.t==='nic'||x.t==='disk')&&x.p.vm===vm.name&&lc(x.rg)===lc(vm.rg)))x.p.orphan=true;stat('vmDelete');return{}};
+    const go=()=>{guard('delete',resId(vm));del(vm);for(const x of S.res.filter(x=>(x.t==='nic'||x.t==='disk')&&x.p.vm===vm.name&&lc(x.rg)===lc(vm.rg)))x.p.orphan=true;stat('vmDelete');return{}};
     return v.yes?go():confirm(go);
   });
   cmd('vm list-sizes','List available sizes for VMs.',[A('location',['--location','-l'],{req:true,cfg:'location',desc:'Location. Values from: `az account list-locations`.'})],[['List the available VM sizes in the West US region.','az vm list-sizes -l westus']],v=>{
@@ -735,6 +748,7 @@ function create(opts={}){
       if(mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name))){if(mine.sub===curSub())arm('StorageAccountAlreadyExists',`The storage account named ${n} already exists under the subscription.`);arm('StorageAccountAlreadyTaken',`The storage account named ${n} is already taken.`)}
       if(!mine&&TAKEN_STORAGE.includes(n))arm('StorageAccountAlreadyTaken',`The storage account named ${n} is already taken.\ncloudlab: el nombre de una cuenta de almacenamiento es único en todo Azure (forma parte de https://${n}.blob.core.windows.net). Prueba con algo más personal, p. ej. st${n}${String(now()).slice(-4)}.`);
       const sku=v.sku||'Standard_RAGRS';
+      if(!mine)policyCheck({t:'storage',name:n,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.storage}/${n}`});
       if(sku.startsWith('Premium')&&(v.kind||'StorageV2')==='BlobStorage')err(`usage error: --sku ${sku} is not supported with --kind BlobStorage`);
       if(/ZRS/.test(sku)&&!REGION[loc].zones)arm('RedundancyConfigurationNotAvailableInRegion',`The requested storage account SKU '${sku}' is not supported in region '${loc}'. Region doesn't support zone-redundant storage.`);
       const s=mine||add({t:'storage',name:n,rg:g.name,location:loc,p:{}});
@@ -748,7 +762,7 @@ function create(opts={}){
   cmd('storage account show','Show storage account properties.',[NAME('The storage account name.'),RG()],[['Show properties for a storage account by resource ID.','az storage account show -g MyResourceGroup -n mystorageaccount']],v=>({data:storageView(needRes('storage',v.rg,v.name))}),{table:d=>storageTable([d])});
   cmd('storage account delete','Delete a storage account.',[NAME('The storage account name.'),RG(),YES],[['Delete a storage account using name and resource group.','az storage account delete -n mystorageaccount -g MyResourceGroup']],v=>{
     const s=needRes('storage',v.rg,v.name);
-    const go=()=>{del(s);return{}};
+    const go=()=>{guard('delete',resId(s));del(s);return{}};
     return v.yes?go():confirm(go);
   });
   cmd('storage account check-name','Check that the storage account name is valid and is not already in use.',[NAME('The storage account name.')],[['Check if a storage account name is available.','az storage account check-name --name mystorageaccount']],v=>{
@@ -787,6 +801,7 @@ function create(opts={}){
       const loc=v.location?needLoc(v.location,'vnet'):g.location;
       const prefixes=(v.prefixes||['10.0.0.0/16']).map(p=>checkPrefix(p,`/subscriptions/${curSub()}/resourceGroups/${g.name}/providers/${TYPES.vnet}/${v.name}`).net);
       let vnet=findRes('vnet',g.name,v.name);
+      if(!vnet)policyCheck({t:'vnet',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.vnet}/${v.name}`});
       if(vnet&&vnet.location!==loc)arm('InvalidResourceLocation',`The resource '${v.name}' already exists in location '${vnet.location}' in resource group '${g.name}'. A resource with the same name cannot be created in location '${loc}'. Please select a new resource name.`);
       if(!vnet)vnet=add({t:'vnet',name:v.name,rg:g.name,location:loc,p:{prefixes,subnets:[],etag:guid(),guid:guid()}});
       else vnet.p.prefixes=prefixes;
@@ -799,14 +814,14 @@ function create(opts={}){
   cmd('network vnet list','List virtual networks.',[RG(false)],[['List all virtual networks in a resource group.','az network vnet list -g MyResourceGroup -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('vnet',v.rg).map(vnetView)}},{table:vnetTable});
   cmd('network vnet show','Get the details of a virtual network.',[NAME('The virtual network (VNet) name.'),RG()],[['Get details for MyVNet.','az network vnet show -g MyResourceGroup -n MyVNet']],v=>({data:vnetView(needRes('vnet',v.rg,v.name))}),{table:d=>vnetTable([d])});
   cmd('network vnet delete','Delete a virtual network.',[NAME('The virtual network (VNet) name.'),RG(),NOWAIT],[['Delete a virtual network.','az network vnet delete -g MyResourceGroup -n myVNet']],v=>{
-    const vnet=needRes('vnet',v.rg,v.name);
+    const vnet=needRes('vnet',v.rg,v.name);guard('delete',resId(vnet));
     const nic=S.res.find(n=>n.t==='nic'&&n.p.subnet.startsWith(resId(vnet)+'/subnets/'));
     if(nic){const sn=nic.p.subnet.split('/').pop();arm('InUseSubnetCannotBeDeleted',`Subnet ${sn} is in use by ${resId(nic)}/ipConfigurations/ipconfig${nic.p.vm} and cannot be deleted. In order to delete the subnet, delete all the resources within the subnet. See aka.ms/deletesubnet.`)}
     del(vnet);return{};
   });
   cmd('network vnet subnet create','Create a subnet and associate an existing NSG and route table.',[NAME('The subnet name.'),RG(),A('vnet',['--vnet-name'],{req:true,desc:'The virtual network (VNet) name.'}),A('prefixes',['--address-prefixes','--address-prefix'],{type:'list',desc:'Space-separated list of address prefixes in CIDR format.'}),A('nsg',['--network-security-group'],{desc:'Name or ID of a network security group (NSG).'})],
     [['Create new subnet attached to an NSG with a custom route table.','az network vnet subnet create -g MyResourceGroup --vnet-name MyVnet -n MySubnet --address-prefixes 10.0.0.0/24']],v=>{
-      const vnet=needRes('vnet',v.rg,v.vnet);
+      const vnet=needRes('vnet',v.rg,v.vnet);guard('write',resId(vnet));
       if(!v.prefixes)arm('InvalidRequestFormat',`Cannot parse the request.\ncloudlab: indica el rango de la subred con --address-prefixes, p. ej. ${nextSubnet(vnet)||'10.0.1.0/24'}`);
       const sn=addSubnet(vnet,v.name,v.prefixes[0]);
       stat('subnetCreate');
@@ -815,7 +830,7 @@ function create(opts={}){
   const subnetTable=d=>d.map(x=>({AddressPrefix:x.addressPrefix,Name:x.name,PrivateEndpointNetworkPolicies:x.privateEndpointNetworkPolicies,PrivateLinkServiceNetworkPolicies:x.privateLinkServiceNetworkPolicies,ProvisioningState:x.provisioningState,ResourceGroup:x.resourceGroup}));
   cmd('network vnet subnet list','List the subnets in a virtual network.',[RG(),A('vnet',['--vnet-name'],{req:true,desc:'The virtual network (VNet) name.'})],[['List the subnets in a virtual network.','az network vnet subnet list -g MyResourceGroup --vnet-name MyVNet -o table']],v=>{const vnet=needRes('vnet',v.rg,v.vnet);return{data:vnet.p.subnets.map(sn=>subnetView(vnet,sn))}},{table:d=>subnetTable(d)});
   cmd('network vnet subnet delete','Delete a subnet.',[NAME('The subnet name.'),RG(),A('vnet',['--vnet-name'],{req:true,desc:'The virtual network (VNet) name.'})],[['Delete a subnet.','az network vnet subnet delete -g MyResourceGroup -n MySubnet --vnet-name MyVNet']],v=>{
-    const vnet=needRes('vnet',v.rg,v.vnet),sn=vnet.p.subnets.find(s=>lc(s.name)===lc(v.name));
+    const vnet=needRes('vnet',v.rg,v.vnet),sn=vnet.p.subnets.find(s=>lc(s.name)===lc(v.name));guard('write',resId(vnet));
     if(!sn)return{};
     const nic=S.res.find(n=>n.t==='nic'&&n.p.subnet===`${resId(vnet)}/subnets/${sn.name}`);
     if(nic)arm('InUseSubnetCannotBeDeleted',`Subnet ${sn.name} is in use by ${resId(nic)}/ipConfigurations/ipconfig${nic.p.vm} and cannot be deleted. In order to delete the subnet, delete all the resources within the subnet. See aka.ms/deletesubnet.`);
@@ -833,6 +848,7 @@ function create(opts={}){
       const free=S.res.filter(p=>p.t==='plan'&&inSub(p)&&p.location===loc&&(p.p.sku==='F1'||p.p.sku==='FREE')&&p.p.linux===linux&&lc(p.name)!==lc(v.name));
       if((sku==='F1'||sku==='FREE')&&free.length>=1)arm('Conflict',`The maximum number of Free ${linux?'Linux ':''}ServerFarms allowed in a Subscription is 1.\ncloudlab: Azure solo permite un plan gratuito (F1) ${linux?'Linux ':''}por región y suscripción. Ya tienes "${free[0].name}".`);
       let p=findRes('plan',g.name,v.name);
+      if(!p)policyCheck({t:'plan',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.plan}/${v.name}`});
       if(p&&p.p.linux!==linux)arm('Conflict',`Server farm with name ${v.name} already exists with a different OS type.`);
       if(!p)p=add({t:'plan',name:v.name,rg:g.name,location:loc,p:{}});
       Object.assign(p.p,{sku,linux,workers:v.workers||1});
@@ -844,7 +860,7 @@ function create(opts={}){
   cmd('appservice plan list','List app service plans.',[RG(false)],[['List all free tier App Service plans.',"az appservice plan list --query \"[?sku.tier=='Free']\""]],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('plan',v.rg).map(planView)}},{table:planTable});
   cmd('appservice plan delete','Delete an app service plan.',[NAME('The name of the app service plan.'),RG(),YES],[['Delete an app service plan.','az appservice plan delete --name MyAppServicePlan --resource-group MyResourceGroup']],v=>{
     const p=needRes('plan',v.rg,v.name);
-    const go=()=>{if(S.res.some(w=>w.t==='webapp'&&w.p.plan===resId(p)))arm('Conflict',`Server farm '${p.name}' cannot be deleted because it has web app(s) ${S.res.filter(w=>w.t==='webapp'&&w.p.plan===resId(p)).map(w=>w.name).join(',')} assigned to it.`);del(p);return{}};
+    const go=()=>{guard('delete',resId(p));if(S.res.some(w=>w.t==='webapp'&&w.p.plan===resId(p)))arm('Conflict',`Server farm '${p.name}' cannot be deleted because it has web app(s) ${S.res.filter(w=>w.t==='webapp'&&w.p.plan===resId(p)).map(w=>w.name).join(',')} assigned to it.`);del(p);return{}};
     return v.yes?go():confirm(go);
   });
   cmd('webapp create','Create a web app.',[NAME('Name of the new web app. Web app name can contain only allow alphanumeric characters and hyphens, it cannot start or end in a hyphen, and must be less than 64 characters.'),RG(),A('plan',['--plan','-p'],{desc:'Name or resource id of the app service plan. Use \'appservice plan create\' to get one. If using an App Service plan from a different resource group, the full resource id must be used and not the plan name.'}),A('runtime',['--runtime','-r'],{desc:'Canonicalized web runtime in the format of Framework:Version, e.g. "PHP:8.4". Use `az webapp list-runtimes` for available list.'}),A('deployLocalGit',['--deployment-local-git'],{type:'bool',desc:'Enable local git.'}),TAGS],
@@ -861,6 +877,7 @@ function create(opts={}){
       let runtime=v.runtime?v.runtime.replace('|',':'):null;
       const os=plan.p.linux?'linux':'windows';
       if(runtime){const m=RUNTIMES[os].find(r=>lc(r)===lc(runtime));if(!m)err(`${plan.p.linux?'Linux':'Windows'} Runtime '${v.runtime}' is not supported. Run 'az webapp list-runtimes --os-type ${os}' to cross check`);runtime=m}
+      policyCheck({t:'webapp',name:n,location:plan.location,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.webapp}/${n}`});
       const w=add({t:'webapp',name:n,rg:g.name,location:plan.location,tags:tagsOf(v.tags),p:{plan:resId(plan),linux:plan.p.linux,runtime:runtime||'',state:'Running',ips:Array.from({length:4},pubIp)}});
       stat('webappCreate');
       return{data:siteView(w)};
@@ -873,7 +890,7 @@ function create(opts={}){
     if(w.p.state!=='Running')return{text:`cloudlab: se abriría https://${w.name}.azurewebsites.net, pero la app está detenida: el navegador mostraría "Error 403 - This web app is stopped."`};
     return{text:`cloudlab: se abriría https://${w.name}.azurewebsites.net en tu navegador. Vista previa de lo que verías:\n\n  ┌${'─'.repeat(58)}┐\n  │  ${pad('Microsoft Azure',56)}│\n  │  ${pad('',56)}│\n  │  ${pad('Your web app is running and waiting for your content',56)}│\n  │  ${pad(w.name+'.azurewebsites.net',56)}│\n  │  ${pad(w.p.runtime?'Runtime: '+w.p.runtime:'Sin pila de ejecución configurada',56)}│\n  └${'─'.repeat(58)}┘`};
   });
-  cmd('webapp delete','Delete a web app.',[NAME('Name of the web app.'),RG(),A('keepPlan',['--keep-empty-plan'],{type:'bool',desc:'Keep empty app service plan.'})],[['Delete a web app.','az webapp delete --name MyWebapp --resource-group MyResourceGroup']],v=>{const w=needRes('webapp',v.rg,v.name);del(w);return{}});
+  cmd('webapp delete','Delete a web app.',[NAME('Name of the web app.'),RG(),A('keepPlan',['--keep-empty-plan'],{type:'bool',desc:'Keep empty app service plan.'})],[['Delete a web app.','az webapp delete --name MyWebapp --resource-group MyResourceGroup']],v=>{const w=needRes('webapp',v.rg,v.name);guard('delete',resId(w));del(w);return{}});
   cmd('webapp list-runtimes','List available built-in stacks which can be used for web apps.',[A('os',['--os-type','--os'],{choices:['linux','windows'],desc:'Limit the output to just windows or linux runtimes.'})],[['List available built-in stacks for Linux web apps.','az webapp list-runtimes --os-type linux']],v=>({data:v.os?RUNTIMES[v.os]:{linux:RUNTIMES.linux,windows:RUNTIMES.windows}}),{login:false});
 
   // ---------- Comandos: AKS ----------
@@ -894,6 +911,7 @@ function create(opts={}){
       if(findRes('aks',g.name,v.name))arm('OperationNotAllowed',`Managed cluster ${v.name} already exists. Use "az aks update" to modify it.`);
       const warn=[];
       if(!v.noSsh&&!S.sshKeys){if(!v.genKeys)err('An RSA key file or key value must be supplied to SSH Key Value. You can use --generate-ssh-keys to let CLI generate one for you');S.sshKeys=true;warn.push("SSH key files '/home/user/.ssh/id_rsa' and '/home/user/.ssh/id_rsa.pub' have been generated under ~/.ssh to allow SSH access to the VM. If using machines without permanent storage, back up your keys to a safe location.")}
+      policyCheck({t:'aks',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.aks}/${v.name}`});
       checkQuota(loc,vmSize,count);
       const dns=`${v.name.slice(0,10)}-${g.name.slice(0,16)}-${curSub().slice(0,6)}`.replace(/[^a-zA-Z0-9-]/g,'');
       const nodeRg=`MC_${g.name}_${v.name}_${loc}`;
@@ -923,7 +941,7 @@ function create(opts={}){
     });
   cmd('aks scale','Scale the node pool in a managed Kubernetes cluster.',[NAME('Name of the managed cluster.'),RG(),A('count',['--node-count','-c'],{type:'int',req:true,desc:'Number of nodes in the Kubernetes node pool.'}),A('pool',['--nodepool-name'],{desc:'Node pool name, up to 12 alphanumeric characters.'}),NOWAIT],
     [['Scale the node pool in a managed Kubernetes cluster.','az aks scale -g MyResourceGroup -n MyManagedCluster --node-count 3']],v=>{
-      const a=aksFind(v);aksBusy(a);
+      const a=aksFind(v);aksBusy(a);guard('write',resId(a));
       if(v.pool&&v.pool!=='nodepool1')err(`Could not find node pool ${v.pool}. Valid node pool names: nodepool1`);
       if(a.p.power==='Stopped')arm('OperationNotAllowed',`Operation is not allowed: Cluster is in stopped state. Please start the cluster first.`);
       if(v.count<0||v.count>1000)err('--node-count must be between 0 and 1000');
@@ -932,11 +950,11 @@ function create(opts={}){
       a.p.count=v.count;stat('aksScale');
       return v.noWait?{}:{data:aksView(a)};
     });
-  cmd('aks stop','Stop a managed cluster.',[NAME('Name of the managed cluster.'),RG(),NOWAIT],[['Stop a managed cluster.','az aks stop -g MyResourceGroup -n MyManagedCluster']],v=>{const a=aksFind(v);aksBusy(a);a.p.power='Stopped';stat('aksStop');return{}},{long:'This can only be performed on Azure Virtual Machine Scale set backed clusters. Stopping a cluster stops the control plane and agent nodes entirely, while maintaining all object and cluster state. A cluster does not accrue charges while it is stopped.'});
-  cmd('aks start','Start a previously stopped managed cluster.',[NAME('Name of the managed cluster.'),RG(),NOWAIT],[['Start a stopped cluster.','az aks start -g MyResourceGroup -n MyManagedCluster']],v=>{const a=aksFind(v);aksBusy(a);if(a.p.power==='Stopped')checkQuota(a.location,a.p.vmSize,a.p.count);a.p.power='Running';return{}});
+  cmd('aks stop','Stop a managed cluster.',[NAME('Name of the managed cluster.'),RG(),NOWAIT],[['Stop a managed cluster.','az aks stop -g MyResourceGroup -n MyManagedCluster']],v=>{const a=aksFind(v);aksBusy(a);guard('write',resId(a));a.p.power='Stopped';stat('aksStop');return{}},{long:'This can only be performed on Azure Virtual Machine Scale set backed clusters. Stopping a cluster stops the control plane and agent nodes entirely, while maintaining all object and cluster state. A cluster does not accrue charges while it is stopped.'});
+  cmd('aks start','Start a previously stopped managed cluster.',[NAME('Name of the managed cluster.'),RG(),NOWAIT],[['Start a stopped cluster.','az aks start -g MyResourceGroup -n MyManagedCluster']],v=>{const a=aksFind(v);aksBusy(a);guard('write',resId(a));if(a.p.power==='Stopped')checkQuota(a.location,a.p.vmSize,a.p.count);a.p.power='Running';return{}});
   cmd('aks delete','Delete a managed Kubernetes cluster.',[NAME('Name of the managed cluster.'),RG(),YES,NOWAIT],[['Delete a managed Kubernetes cluster.','az aks delete -g MyResourceGroup -n MyManagedCluster']],v=>{
     const a=aksFind(v);
-    const go=()=>{aksBusy(a);stat('aksDelete');if(v.noWait){a.busy={state:'Deleting',until:now()+60000,from:now()};return{}}removeTree(a);return{}};
+    const go=()=>{aksBusy(a);guard('delete',resId(a));stat('aksDelete');if(v.noWait){a.busy={state:'Deleting',until:now()+60000,from:now()};return{}}removeTree(a);return{}};
     return v.yes?go():confirm(go);
   });
   cmd('aks get-versions','Get the versions available for creating a managed Kubernetes cluster.',[A('location',['--location','-l'],{req:true,cfg:'location',desc:'Location. Values from: `az account list-locations`.'})],[['Get the versions available for creating a managed Kubernetes cluster.','az aks get-versions --location westus2 -o table']],v=>{
@@ -1023,6 +1041,454 @@ function create(opts={}){
     if(!ex.length)return`Sorry, I don't have any examples for "${s}". cloudlab: prueba con az find "vm", az find "storage account" o az find "aks".`;
     return`Finding examples...\n\nHere are the most common ways to use [${s}]:\n\n${ex.map(([d,x])=>`${d}\n${x}\n`).join('\n')}\nPlease let us know how we are doing: https://aka.ms/clihats\nand let us know if you're interested in trying out our newest features: https://aka.ms/CLIUXstudy`;
   }
+
+  // ---------- Etiquetas ----------
+  cmd('group update','Update a resource group.',[A('name',['--name','--resource-group','-n','-g'],{req:true,cfg:'group',desc:'Name of resource group.'}),TAGS,A('set',['--set'],{type:'list',desc:'Update an object by specifying a property path and value to set. Example: `--set property1.property2=<value>`.'}),A('remove',['--remove'],{type:'list',desc:'Remove a property or an element from a list. Example: `--remove property.list <indexToRemove>` OR `--remove propertyToRemove`.'})],
+    [['Update a resource group\'s tags.','az group update -n MyResourceGroup --tags env=dev team=web'],['Add or change one tag.','az group update -n MyResourceGroup --set tags.costCenter=1234']],v=>{
+      const g=needGroup(v.name);
+      guard('write',resId(g));
+      if(v.tags)g.tags=tagsOf(v.tags);
+      for(const s of v.set||[]){const m=s.match(/^tags\.([^=]+)=(.*)$/i);if(!m)err(`Couldn't find '${s.split('=')[0]}' in ''. Available options: ['id', 'location', 'managedBy', 'name', 'properties', 'tags', 'type']`);g.tags[m[1]]=m[2]}
+      for(const s of v.remove||[]){const m=s.match(/^tags\.(.+)$/i);if(m)delete g.tags[m[1]];else if(s==='tags')g.tags={}}
+      stat('tags');
+      return{data:groupView(g)};
+    },{table:d=>groupTable([d])});
+
+  // ---------- Bloqueos (locks) ----------
+  // Un bloqueo afecta a su ámbito y a todo lo que cuelga de él; para borrar, también cuentan los bloqueos de los hijos.
+  const lockHits=(id,children)=>S.locks.filter(l=>{const s=lc(l.scope),t=lc(id);return t===s||t.startsWith(s+'/')||(children&&s.startsWith(t+'/'))});
+  function guard(op,id,children){
+    const ls=lockHits(id,children).filter(l=>op==='delete'||l.level==='ReadOnly');
+    if(!ls.length)return;
+    stat('scopeLocked');
+    arm('ScopeLocked',`The scope '${id}' cannot perform ${op} operation because following scope(s) are locked: '${[...new Set(ls.map(l=>l.scope))].join("','")}'. Please remove the lock and try again.\ncloudlab: bloqueo${ls.length>1?'s':''} ${ls.map(l=>`"${l.name}" (${l.level})`).join(', ')}. Míralos con az lock list${ls[0].scope.split('/').length>3?` -g ${ls[0].scope.split('/')[4]}`:''} y quítalos con az lock delete.`);
+  }
+  function lockScope(v){
+    if(!v.rg)return`/subscriptions/${curSub()}`;
+    const g=needGroup(v.rg);
+    if(!v.resource)return resId(g);
+    if(v.resource.startsWith('/'))return v.resource;
+    if(!v.rtype)err('usage error: --resource-type is required when --resource is a name (Ex: --resource-type Microsoft.Network/virtualNetworks)',2);
+    const t=Object.keys(TYPES).find(k=>lc(TYPES[k])===lc(v.namespace?`${v.namespace}/${v.rtype}`:v.rtype)||lc(TYPES[k].split('/')[1])===lc(v.rtype));
+    const r=t&&findRes(t,g.name,v.resource);
+    if(!r)arm('ResourceNotFound',`The Resource '${v.namespace?v.namespace+'/':''}${v.rtype}/${v.resource}' under resource group '${g.name}' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix`,3);
+    return resId(r);
+  }
+  const lockView=l=>{const m=l.scope.match(/resourceGroups\/([^/]+)/i);return{id:`${l.scope}/providers/Microsoft.Authorization/locks/${l.name}`,level:l.level,name:l.name,notes:l.notes||null,owners:null,resourceGroup:m?m[1]:undefined,type:'Microsoft.Authorization/locks'}};
+  const LOCK_ARGS=[RG(false),A('resource',['--resource','--resource-name'],{desc:'Name or ID of the resource being locked. If an ID is given, other resource arguments should not be given.'}),A('rtype',['--resource-type'],{desc:"The resource type (Ex: 'resC'). Can also accept namespace/type format (Ex: 'Microsoft.Provider/resC')."}),A('namespace',['--namespace'],{desc:"Provider namespace (Ex: 'Microsoft.Provider')."})];
+  cmd('lock create','Create a lock.',[A('name',['--name','-n'],{req:true,desc:'Name of the lock.'}),A('level',['--lock-type','-t'],{req:true,choices:['CanNotDelete','ReadOnly'],desc:'The type of lock restriction.'}),A('notes',['--notes'],{desc:'Notes about this lock.'}),...LOCK_ARGS],
+    [['Create a read-only resource group level lock.','az lock create --name lockName --resource-group group --lock-type ReadOnly'],['Create a read-only resource level lock on a vnet resource.','az lock create --name lockName --resource-group group --lock-type ReadOnly --resource-type Microsoft.Network/virtualNetworks --resource myVnet']],v=>{
+      const scope=lockScope(v);
+      let l=S.locks.find(x=>lc(x.scope)===lc(scope)&&lc(x.name)===lc(v.name));
+      if(!l){l={name:v.name,scope,level:v.level,notes:v.notes,created:now()};S.locks.push(l)}
+      else Object.assign(l,{level:v.level,notes:v.notes??l.notes});
+      stat('lock');
+      return{data:lockView(l)};
+    });
+  const lockTable=d=>d.map(l=>({Name:l.name,ResourceGroup:l.resourceGroup||'',Level:l.level,Notes:l.notes||''}));
+  cmd('lock list','List lock information.',[...LOCK_ARGS],[['List out all locks on the subscription level.','az lock list -o table']],v=>{
+    const scope=lockScope(v);
+    // Como en Azure: incluye los bloqueos heredados de los ámbitos superiores y los de los recursos del grupo.
+    return{data:S.locks.filter(l=>l.scope.startsWith(`/subscriptions/${curSub()}`)&&(lc(scope).startsWith(lc(l.scope))||lc(l.scope).startsWith(lc(scope)))).map(lockView)};
+  },{table:lockTable});
+  cmd('lock show','Show the properties of a lock.',[A('name',['--name','-n'],{req:true,desc:'Name of the lock.'}),...LOCK_ARGS],[['Show a resource group level lock.','az lock show -n lockname -g MyResourceGroup']],v=>{
+    const scope=lockScope(v),l=S.locks.find(x=>lc(x.scope)===lc(scope)&&lc(x.name)===lc(v.name));
+    if(!l)arm('LockNotFound',`The lock '${v.name}' could not be found.`,3);
+    return{data:lockView(l)};
+  },{table:d=>lockTable([d])});
+  cmd('lock delete','Delete a lock.',[A('name',['--name','-n'],{req:true,desc:'Name of the lock.'}),...LOCK_ARGS],[['Delete a resource group level lock.','az lock delete --name lockName --resource-group group']],v=>{
+    const scope=lockScope(v);
+    S.locks=S.locks.filter(x=>!(lc(x.scope)===lc(scope)&&lc(x.name)===lc(v.name)));
+    return{};
+  });
+
+  // ---------- Azure Policy ----------
+  const P=(id,displayName,description,params,deny)=>({id,displayName,description,params,deny});
+  const POLICY_DEFS=[
+    P('e56962a6-4747-49cd-b67b-bf8b01975c4c','Allowed locations','This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the \'global\' region.',{listOfAllowedLocations:'Array'},(r,p)=>r.t!=='group'&&!p.listOfAllowedLocations.map(normLoc).includes(r.location)),
+    P('e765b5de-1225-4ba3-bd56-1ac6695af988','Allowed locations for resource groups','This policy enables you to restrict the locations your organization can create resource groups in. Use to enforce your geo-compliance requirements.',{listOfAllowedLocations:'Array'},(r,p)=>r.t==='group'&&!p.listOfAllowedLocations.map(normLoc).includes(r.location)),
+    P('871b6d14-10aa-478d-b590-94f262ecfa99','Require a tag on resources','Enforces existence of a tag. Does not apply to resource groups.',{tagName:'String'},(r,p)=>r.t!=='group'&&!(p.tagName in (r.tags||{}))),
+    P('96670d01-0a4d-4649-9c89-2d3abc0a5025','Require a tag on resource groups','Enforces existence of a tag on resource groups.',{tagName:'String'},(r,p)=>r.t==='group'&&!(p.tagName in (r.tags||{}))),
+    P('cccc23c7-8427-4f53-ad12-b6a63eb452b3','Allowed virtual machine size SKUs','This policy enables you to specify a set of virtual machine size SKUs that your organization can deploy.',{listOfAllowedSKUs:'Array'},(r,p)=>r.t==='vm'&&!p.listOfAllowedSKUs.map(lc).includes(lc(r.size))),
+    P('6c112d4e-5bc7-47ae-a041-ea2d9dccd749','Not allowed resource types','Restrict which resource types can be deployed in your environment. Limiting resource types can reduce the complexity and attack surface of your environment while also helping to manage costs.',{listOfResourceTypesNotAllowed:'Array'},(r,p)=>p.listOfResourceTypesNotAllowed.map(lc).includes(lc(TYPES[r.t]))),
+  ];
+  const defId=d=>`/providers/Microsoft.Authorization/policyDefinitions/${d.id}`;
+  const findDef=x=>{const k=lc(String(x).split('/').pop());return POLICY_DEFS.find(d=>d.id===k||lc(d.displayName)===lc(x))};
+  const assignId=a=>`${a.scope}/providers/Microsoft.Authorization/policyAssignments/${a.name}`;
+  // Evalúa las asignaciones con efecto "deny" que cubren el recurso que se va a crear.
+  function policyCheck(r){
+    const id=lc(r.id||resId(r));
+    for(const a of S.policies){
+      if(!(id===lc(a.scope)||id.startsWith(lc(a.scope)+'/'))||a.enforcement==='DoNotEnforce')continue;
+      const d=findDef(a.def);
+      if(!d||!d.deny(r,a.params))continue;
+      stat('policyDenied');
+      const ids=JSON.stringify([{policyAssignment:{name:a.displayName||a.name,id:assignId(a)},policyDefinition:{name:d.displayName,id:defId(d),version:'1.0.0'}}]);
+      arm('RequestDisallowedByPolicy',`Resource '${r.name}' was disallowed by policy. Policy identifiers: '${ids}'.\nTarget: ${r.name}\ncloudlab: la asignación "${a.name}" (${d.displayName}) deniega este recurso. Revisa sus parámetros con az policy assignment show -n ${a.name}${a.scope.includes('/resourceGroups/')?` -g ${a.scope.split('/')[4]}`:''}.`);
+    }
+  }
+  const defView=d=>({description:d.description,displayName:d.displayName,id:defId(d),metadata:{category:d.id==='cccc23c7-8427-4f53-ad12-b6a63eb452b3'?'Compute':d.displayName.includes('tag')?'Tags':'General',version:'1.0.0'},mode:d.displayName.includes('resource groups')?'All':'Indexed',name:d.id,parameters:Object.fromEntries(Object.entries(d.params).map(([k,t])=>[k,{allowedValues:null,defaultValue:null,metadata:{description:`The ${k} parameter.`,displayName:k},type:t}])),policyRule:{if:{field:d.displayName.includes('location')?'location':'type',notIn:`[parameters('${Object.keys(d.params)[0]}')]`},then:{effect:'deny'}},policyType:'BuiltIn',type:'Microsoft.Authorization/policyDefinitions',version:'1.0.0'});
+  cmd('policy definition list','List policy definitions.',[A('mg',['--management-group'],{desc:'The name of the management group of the policy definition(s).'})],[['List built-in policy definitions.',"az policy definition list --query \"[?policyType=='BuiltIn'].{name:name, displayName:displayName}\" -o table"]],()=>({warn:['cloudlab: se muestran solo algunas definiciones integradas. Azure real tiene miles.'],data:POLICY_DEFS.map(defView)}),{table:d=>d.map(x=>({Name:x.name,DisplayName:x.displayName,PolicyType:x.policyType,Mode:x.mode}))});
+  cmd('policy definition show','Show a policy definition.',[A('name',['--name','-n'],{req:true,desc:'The name of the policy definition.'})],[['Show the "Allowed locations" built-in policy definition.','az policy definition show -n e56962a6-4747-49cd-b67b-bf8b01975c4c']],v=>{const d=findDef(v.name);if(!d)arm('PolicyDefinitionNotFound',`The policy definition '${v.name}' could not be found.`,3);return{data:defView(d)}});
+  function parseParams(raw){
+    if(raw==null)return{};
+    let o;
+    try{o=JSON.parse(raw.startsWith('@')?(S.files[raw.slice(1)]??fail(`ERROR: [Errno 2] No such file or directory: '${raw.slice(1)}'`)):raw)}
+    catch(e){if(e instanceof AzError)throw e;err(`Failed to parse string as JSON:\n${raw}\nError detail: ${e.message}`)}
+    return Object.fromEntries(Object.entries(o).map(([k,x])=>[k,x&&typeof x==='object'&&!Array.isArray(x)&&'value' in x?x.value:x]));
+  }
+  const assignView=a=>{const d=findDef(a.def);return{description:null,displayName:a.displayName||null,enforcementMode:a.enforcement||'Default',id:assignId(a),identity:null,location:null,metadata:{createdBy:USERS[0].id,createdOn:iso(a.created),updatedBy:null,updatedOn:null},name:a.name,nonComplianceMessages:null,notScopes:null,parameters:Object.fromEntries(Object.entries(a.params).map(([k,x])=>[k,{value:x}])),policyDefinitionId:defId(d),scope:a.scope,systemData:null,type:'Microsoft.Authorization/policyAssignments'}};
+  const assignScope=v=>v.scope?checkScope(v.scope):v.rg?`/subscriptions/${curSub()}/resourceGroups/${needGroup(v.rg).name}`:`/subscriptions/${curSub()}`;
+  cmd('policy assignment create','Create a policy assignment.',[A('name',['--name','-n'],{desc:'Name of the new policy assignment.'}),A('policy',['--policy'],{desc:'Name or id of the policy definition.'}),A('displayName',['--display-name'],{desc:'Display name of the policy assignment.'}),A('params',['--params','-p'],{desc:'JSON formatted string or a path to a file or uri with parameter values of the policy rule.'}),A('scope',['--scope'],{desc:'Scope to which this policy assignment applies.'}),RG(false),A('enforcement',['--enforcement-mode','-e'],{choices:['Default','DoNotEnforce'],desc:"Enforcement mode of the policy assignment, e.g. Default, DoNotEnforce. Please visit https://aka.ms/azure-policyAssignment-enforcement-mode for more information."})],
+    [['Assign the "Allowed locations" policy at resource group scope.','az policy assignment create -n solo-europa --policy e56962a6-4747-49cd-b67b-bf8b01975c4c -g MyResourceGroup --params \'{"listOfAllowedLocations":{"value":["westeurope","northeurope"]}}\'']],v=>{
+      if(!v.policy)err('usage error: --policy NAME_OR_ID | --policy-set-definition NAME_OR_ID',2);
+      const d=findDef(v.policy);
+      if(!d)arm('PolicyDefinitionNotFound',`The policy definition '${v.policy}' could not be found.`,3);
+      const scope=assignScope(v),params=parseParams(v.params);
+      const missing=Object.keys(d.params).filter(k=>params[k]==null);
+      const name=v.name||hexs(24);
+      if(missing.length)arm('MissingPolicyParameter',`The policy assignment '${name}' is missing the parameter(s) '${missing.join("', '")}' as defined in the policy definition '${d.id}'.`);
+      for(const[k,t]of Object.entries(d.params))if(t==='Array'&&!Array.isArray(params[k])||t==='String'&&typeof params[k]!=='string')arm('InvalidPolicyParameters',`A function or parameter in policy '${d.id}' could not be validated. If using template functions, try following the tips in: https://aka.ms/policy-avoiding-template-failures. The inner exception 'The provided value for the template parameter '${k}' is not valid. Expected a value of type '${t}'.'.`);
+      S.policies=S.policies.filter(a=>!(lc(a.scope)===lc(scope)&&lc(a.name)===lc(name)));
+      const a={name,scope,def:d.id,params,displayName:v.displayName||d.displayName,enforcement:v.enforcement||'Default',created:now()};
+      S.policies.push(a);stat('policyAssign');
+      return{data:assignView(a)};
+    });
+  const assignTable=d=>d.map(a=>({Name:a.name,DisplayName:a.displayName,EnforcementMode:a.enforcementMode,Scope:a.scope}));
+  cmd('policy assignment list','List policy assignments.',[RG(false),A('scope',['--scope'],{desc:'Scope at which to list applicable policy assignments.'}),A('disableStrict',['--disable-scope-strict-match'],{type:'bool',desc:'Include policy assignments either inherited from parent scope or at child scope.'})],[['List policy assignments.','az policy assignment list -o table']],v=>{
+    const scope=lc(assignScope(v));
+    return{data:S.policies.filter(a=>a.scope.startsWith(`/subscriptions/${curSub()}`)&&(lc(a.scope)===scope||scope.startsWith(lc(a.scope)+'/')||(v.disableStrict&&lc(a.scope).startsWith(scope)))).map(assignView)};
+  },{table:assignTable});
+  cmd('policy assignment show','Show a policy assignment.',[A('name',['--name','-n'],{req:true,desc:'Name of the policy assignment.'}),RG(false),A('scope',['--scope'],{desc:'Scope of the policy assignment.'})],[['Show a policy assignment.','az policy assignment show -n MyPolicyAssignment']],v=>{
+    const scope=assignScope(v),a=S.policies.find(a=>lc(a.scope)===lc(scope)&&lc(a.name)===lc(v.name));
+    if(!a)arm('PolicyAssignmentNotFound',`The policy assignment '${v.name}' is not found.`,3);
+    return{data:assignView(a)};
+  },{table:d=>assignTable([d])});
+  cmd('policy assignment delete','Delete a policy assignment.',[A('name',['--name','-n'],{req:true,desc:'Name of the policy assignment.'}),RG(false),A('scope',['--scope'],{desc:'Scope of the policy assignment.'})],[['Delete a policy assignment.','az policy assignment delete -n MyPolicyAssignment']],v=>{
+    const scope=assignScope(v);
+    S.policies=S.policies.filter(a=>!(lc(a.scope)===lc(scope)&&lc(a.name)===lc(v.name)));
+    return{};
+  });
+  // La política no borra lo que ya existe: lo marca como no conforme.
+  function nonCompliant(){
+    const out=[];
+    for(const a of S.policies.filter(a=>a.scope.startsWith(`/subscriptions/${curSub()}`))){
+      const d=findDef(a.def);
+      for(const r of S.res.filter(r=>inSub(r)&&!['nic','disk','pip','nsg','vmss','lb'].includes(r.t)&&!(r.t==='group'&&r.p.managedBy))){
+        const id=lc(resId(r));
+        if(!(id===lc(a.scope)||id.startsWith(lc(a.scope)+'/')))continue;
+        const x={t:r.t,name:r.name,location:r.location,tags:r.tags,size:r.p.size};
+        if(d.deny(x,a.params))out.push({complianceState:'NonCompliant',isCompliant:false,policyAssignmentId:assignId(a),policyAssignmentName:a.name,policyAssignmentScope:a.scope,policyDefinitionAction:'deny',policyDefinitionId:defId(d),policyDefinitionName:d.id,resourceGroup:r.t==='group'?r.name:r.rg,resourceId:resId(r),resourceLocation:r.location,resourceType:TYPES[r.t],subscriptionId:curSub(),timestamp:iso(now())});
+      }
+    }
+    return out;
+  }
+  cmd('policy state list','List policy compliance states.',[RG(false),A('filter',['--filter'],{desc:'Filter expression using OData notation.'}),A('all',['--all'],{type:'bool',desc:'Within the specified time interval, get all policy states instead of the latest only.'})],[['Get non-compliant resources in the subscription.',"az policy state list --filter \"complianceState eq 'NonCompliant'\" -o table"]],v=>{
+    let d=nonCompliant();
+    if(v.rg)d=d.filter(x=>lc(x.resourceGroup)===lc(v.rg));
+    return{warn:['cloudlab: en Azure la evaluación de cumplimiento tarda minutos; aquí es inmediata.'],data:d};
+  },{table:d=>d.map(x=>({ResourceId:x.resourceId.split('/').slice(-1)[0],ResourceType:x.resourceType,ComplianceState:x.complianceState,PolicyAssignmentName:x.policyAssignmentName}))});
+  cmd('policy state summarize','Summarize policy compliance states.',[RG(false)],[['Get latest policy states summary in current subscription.','az policy state summarize']],v=>{
+    let d=nonCompliant();if(v.rg)d=d.filter(x=>lc(x.resourceGroup)===lc(v.rg));
+    const byA={};for(const x of d)(byA[x.policyAssignmentId]=byA[x.policyAssignmentId]||[]).push(x);
+    return{data:{odataid:null,policyAssignments:Object.entries(byA).map(([id,xs])=>({policyAssignmentId:id,results:{nonCompliantPolicies:1,nonCompliantResources:new Set(xs.map(x=>x.resourceId)).size}})),results:{nonCompliantPolicies:Object.keys(byA).length,nonCompliantResources:new Set(d.map(x=>x.resourceId)).size}}};
+  });
+
+  // ---------- Almacenamiento: claves, contenedores y blobs ----------
+  const keyOf=s=>{s.p.keys=s.p.keys||[0,1].map(()=>Array.from({length:64},()=>String.fromCharCode(33+Math.random()*90|0)).join('').replace(/[^A-Za-z0-9+/]/g,'A').slice(0,86)+'==');return s.p.keys};
+  const storErr=(msg,code,status=1)=>err(`${msg}\nRequestId:${guid()}\nTime:${new Date(now()).toISOString().replace(/\.\d{3}Z$/,'.0000000Z')}\nErrorCode:${code}`,status);
+  cmd('storage account keys list','List the access keys or Kerberos keys (if active directory enabled) for a storage account.',[A('name',['--account-name','-n'],{req:true,desc:'The storage account name.'}),RG(false)],[['List the access keys for a storage account.','az storage account keys list -g MyResourceGroup -n MyStorageAccount']],v=>{
+    const s=v.rg?needRes('storage',v.rg,v.name):resOf('storage').find(x=>x.name===v.name)||arm('ResourceNotFound',`The Resource 'Microsoft.Storage/storageAccounts/${v.name}' under resource group '' was not found.`,3);
+    guard('write',resId(s));
+    return{data:keyOf(s).map((k,i)=>({creationTime:iso(s.created),keyName:`key${i+1}`,permissions:'FULL',value:k}))};
+  });
+  cmd('storage account show-connection-string','Get the connection string for a storage account.',[NAME('The storage account name.'),RG(false)],[['Get a connection string for a storage account.','az storage account show-connection-string -g MyResourceGroup -n MyStorageAccount']],v=>{
+    const s=v.rg?needRes('storage',v.rg,v.name):resOf('storage').find(x=>x.name===v.name)||arm('ResourceNotFound',`The Resource 'Microsoft.Storage/storageAccounts/${v.name}' under resource group '' was not found.`,3);
+    guard('write',resId(s));
+    const ep=k=>`https://${s.name}.${k}.core.windows.net/`;
+    return{data:{connectionString:`DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=${s.name};AccountKey=${keyOf(s)[0]};BlobEndpoint=${ep('blob')};FileEndpoint=${ep('file')};QueueEndpoint=${ep('queue')};TableEndpoint=${ep('table')}`}};
+  });
+  const DATA_ARGS=[A('account',['--account-name'],{desc:'Storage account name. Related environment variable: AZURE_STORAGE_ACCOUNT. Must be used in conjunction with either storage account key or a SAS token. If neither are present, the command will try to query the storage account key using the authenticated Azure account.'}),A('key',['--account-key'],{desc:'Storage account key. Must be used in conjunction with storage account name. Environment variable: AZURE_STORAGE_KEY.'}),A('conn',['--connection-string'],{desc:'Storage account connection string. Environment variable: AZURE_STORAGE_CONNECTION_STRING.'}),A('sas',['--sas-token'],{desc:'A Shared Access Signature (SAS). Must be used in conjunction with storage account name. Environment variable: AZURE_STORAGE_SAS_TOKEN.'}),A('authMode',['--auth-mode'],{choices:['key','login'],desc:'The mode in which to run the command. "login" mode will directly use your login credentials for the authentication. The legacy "key" mode will attempt to query for an account key if no authentication parameters for the account are provided. Environment variable: AZURE_STORAGE_AUTH_MODE.'})];
+  const DATA_ROLES={read:['Storage Blob Data Owner','Storage Blob Data Contributor','Storage Blob Data Reader'],write:['Storage Blob Data Owner','Storage Blob Data Contributor']};
+  const hasRole=(names,id)=>S.roles.some(r=>r.principal===USERS[0].id&&names.includes(r.role)&&(lc(id)===lc(r.scope)||lc(id).startsWith(lc(r.scope)+'/')));
+  // Autenticación del plano de datos: --auth-mode login necesita un rol de datos (Owner no basta); sin credenciales se consulta la clave.
+  function dataAccount(v,op){
+    const warn=[];
+    let name=v.account||S.vars.AZURE_STORAGE_ACCOUNT,key=v.key||S.vars.AZURE_STORAGE_KEY;
+    if(v.conn){const m=Object.fromEntries(v.conn.split(';').map(p=>{const i=p.indexOf('=');return[p.slice(0,i),p.slice(i+1)]}));name=m.AccountName;key=m.AccountKey;if(!name)err('Connection string is missing required connection details.')}
+    if(!name)err('Missing account name. Please provide --account-name, --connection-string or set the environment variable AZURE_STORAGE_ACCOUNT.');
+    const s=S.res.find(r=>r.t==='storage'&&r.name===name);
+    if(!s){if(TAKEN_STORAGE.includes(name))storErr('Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.','AuthenticationFailed');err(`Storage account '${name}' not found.`)}
+    if(busy(s)==='Deleting')err(`Storage account '${name}' not found.`);
+    const mode=v.authMode||S.vars.AZURE_STORAGE_AUTH_MODE||'key';
+    if(mode==='login'&&!key&&!v.sas){
+      stat('authLogin');
+      if(!hasRole(DATA_ROLES[op],resId(s)))err(`\nYou do not have the required permissions needed to perform this operation.\nDepending on your operation, you may need to be assigned one of the following roles:\n    "Storage Blob Data Owner"\n    "Storage Blob Data Contributor"\n    "Storage Blob Data Reader"\n    "Storage Queue Data Contributor"\n    "Storage Queue Data Reader"\n    "Storage Table Data Contributor"\n    "Storage Table Data Reader"\n\nIf you want to use the old authentication method and allow querying for the right account key, please use the "--auth-mode" parameter and "key" value.\ncloudlab: el rol Owner gestiona el recurso, pero no da acceso a los datos. Asígnate un rol de datos sobre la cuenta (p. ej. "Storage Blob Data Contributor") con az role assignment create.`);
+      return{s,warn,login:true};
+    }
+    if(key){if(key!==keyOf(s)[0]&&key!==keyOf(s)[1])storErr('Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.','AuthenticationFailed');return{s,warn}}
+    if(v.sas)return{s,warn};
+    if(!S.loggedIn)err(`Please run 'az login' to setup account.`);
+    if(s.sub!==curSub()&&!S.subs.some(x=>x.id===s.sub))err(`Storage account '${name}' not found.`);
+    guard('write',resId(s));
+    warn.push('\nThere are no credentials provided in your command and environment, we will query for account key for your storage account.\nIt is recommended to provide --connection-string, --account-key or --sas-token in your command as credentials.\n\nYou also can add `--auth-mode login` in your command to use Azure Active Directory (Azure AD) for authorization if your login account is assigned required RBAC roles.\nFor more information about RBAC roles in storage, visit https://learn.microsoft.com/azure/storage/common/storage-auth-aad-rbac-cli.\n\nIn addition, setting the corresponding environment variables can avoid inputting credentials in your command. Please use --help to get more information about environment variable usage.');
+    return{s,warn};
+  }
+  const CONTAINER_RE=/^(?=.{3,63}$)[a-z0-9](?!.*--)[a-z0-9-]*[a-z0-9]$/;
+  const containers=s=>s.p.containers=s.p.containers||{};
+  function needContainer(s,c){const x=containers(s)[c];if(!x)storErr('The specified container does not exist.','ContainerNotFound');return x}
+  cmd('storage container create','Create a container in a storage account.',[NAME('The container name.'),A('pub',['--public-access'],{choices:['blob','container','off'],desc:'Specifies whether data in the container may be accessed publicly.'}),A('failIfExist',['--fail-on-exist'],{type:'bool',desc:'Throw an exception if the container already exists.'}),...DATA_ARGS],
+    [['Create a storage container in a storage account (with Microsoft Entra ID).','az storage container create -n mystoragecontainer --account-name mystorageaccount --auth-mode login']],v=>{
+      const{s,warn}=dataAccount(v,'write');
+      if(!CONTAINER_RE.test(v.name))storErr('The specifed resource name contains invalid characters.','InvalidResourceName');
+      if(v.pub&&v.pub!=='off'&&!s.p.blobPublic)storErr('Public access is not permitted on this storage account.','PublicAccessNotPermitted');
+      const exists=!!containers(s)[v.name];
+      if(exists&&v.failIfExist)storErr('The specified container already exists.','ContainerAlreadyExists');
+      if(!exists)containers(s)[v.name]={pub:v.pub||'off',created:now(),blobs:{}};
+      stat('containerCreate');
+      return{warn,data:{created:!exists}};
+    });
+  cmd('storage container list','List containers in a storage account.',[A('prefix',['--prefix'],{desc:'Filter the results to return only blobs whose name begins with the specified prefix.'}),...DATA_ARGS],[['List containers in a storage account.','az storage container list --account-name mystorageaccount --auth-mode login -o table']],v=>{
+    const{s,warn}=dataAccount(v,'read');
+    return{warn,data:Object.entries(containers(s)).filter(([n])=>!v.prefix||n.startsWith(v.prefix)).map(([n,c])=>({deleted:null,encryptionScope:{defaultEncryptionScope:'$account-encryption-key',preventEncryptionScopeOverride:false},immutableStorageWithVersioningEnabled:false,metadata:null,name:n,properties:{etag:`"0x8DD${hexs(11).toUpperCase()}"`,hasImmutabilityPolicy:false,hasLegalHold:false,lastModified:new Date(c.created).toISOString().replace(/\.\d{3}Z$/,'+00:00'),lease:{duration:null,state:'available',status:'unlocked'},publicAccess:c.pub==='off'?null:c.pub},version:null}))};
+  },{table:d=>d.map(c=>({Name:c.name,'Lease Status':c.properties.lease.status,'Last Modified':c.properties.lastModified}))});
+  cmd('storage container delete','Mark the specified container for deletion.',[NAME('The container name.'),A('failNotExist',['--fail-not-exist'],{type:'bool',desc:'Throw an exception if the container does not exist.'}),...DATA_ARGS],[['Delete a container.','az storage container delete -n mycontainer --account-name mystorageaccount --auth-mode login']],v=>{
+    const{s,warn}=dataAccount(v,'write');
+    const had=!!containers(s)[v.name];
+    if(!had&&v.failNotExist)storErr('The specified container does not exist.','ContainerNotFound');
+    delete containers(s)[v.name];
+    return{warn,data:{deleted:had}};
+  });
+  const mime=n=>({txt:'text/plain',html:'text/html',htm:'text/html',css:'text/css',js:'application/javascript',json:'application/json',yaml:'application/x-yaml',yml:'application/x-yaml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',svg:'image/svg+xml',csv:'text/csv',md:'text/markdown'})[String(n).split('.').pop().toLowerCase()]||'application/octet-stream';
+  function blobView(c,n,b){return{container:c,content:'',deleted:null,encryptionScope:null,metadata:{},name:n,objectReplicationDestinationPolicy:null,objectReplicationSourceProperties:[],properties:{appendBlobCommittedBlockCount:null,blobTier:b.tier,blobTierChangeTime:null,blobTierInferred:true,blobType:'BlockBlob',contentLength:b.content.length,contentRange:null,contentSettings:{cacheControl:null,contentDisposition:null,contentEncoding:null,contentLanguage:null,contentMd5:null,contentType:b.type},copy:{completionTime:null,destinationSnapshot:null,id:null,incrementalCopy:null,progress:null,source:null,status:null,statusDescription:null},creationTime:iso(b.created).replace(/\.\d+\+/,'+'),deletedTime:null,etag:b.etag,lastModified:iso(b.modified).replace(/\.\d+\+/,'+'),lease:{duration:null,state:'available',status:'unlocked'},pageBlobSequenceNumber:null,pageRanges:null,rehydrationStatus:null,remainingRetentionDays:null,serverEncrypted:true},snapshot:null,tagCount:null,tags:null,versionId:null}}
+  const blobTable=d=>d.map(b=>({Name:b.name,'Blob Type':b.properties.blobType,'Blob Tier':b.properties.blobTier,Length:b.properties.contentLength,'Content Type':b.properties.contentSettings.contentType,'Last Modified':b.properties.lastModified,Snapshot:b.snapshot||''}));
+  const PROGRESS='Finished[#############################################################]  100.0000%';
+  cmd('storage blob upload','Upload a file to a storage blob.',[A('container',['--container-name','-c'],{desc:'The container name.'}),A('name',['--name','-n'],{desc:'The blob name.'}),A('file',['--file','-f'],{desc:'Path of the file to upload as the blob content.'}),A('data',['--data'],{desc:'The blob data to upload.'}),A('overwrite',['--overwrite'],{type:'tbool',desc:'Whether the blob to be uploaded should overwrite the current data. If True, blob upload operation will overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. The exception to the above is with Append blob types: if set to False and the data already exists, an error will not be raised and the data will be appended to the existing blob.'}),A('tier',['--tier'],{choices:['Archive','Cold','Cool','Hot'],desc:'The tier value to set the blob to.'}),A('contentType',['--content-type'],{desc:'The content MIME type.'}),...DATA_ARGS],
+    [['Upload to a blob.','az storage blob upload -f /path/to/file -c mycontainer -n MyBlob --account-name mystorageaccount --auth-mode login'],['Upload a string to a blob.','az storage blob upload --data "teststring" -c mycontainer -n MyBlob --account-name mystorageaccount --auth-mode login']],v=>{
+      const{s,warn,login}=dataAccount(v,'write');
+      if(!v.container)err('the following arguments are required: --container-name/-c',2);
+      if(v.file==null&&v.data==null)err('usage error: --file FILE | --data DATA',2);
+      if(v.file!=null&&!(v.file in S.files))err(`[Errno 2] No such file or directory: '${v.file}'\ncloudlab: crea el fichero antes, p. ej.: echo "Hola Azure" > ${v.file}`);
+      const c=needContainer(s,v.container);
+      const name=v.name||String(v.file).split('/').pop();
+      if(c.blobs[name]&&!v.overwrite)storErr('The specified blob already exists.','BlobAlreadyExists');
+      const content=v.data!=null?v.data:S.files[v.file];
+      const b={content,type:v.contentType||mime(name),tier:v.tier||s.p.tier||'Hot',created:c.blobs[name]?c.blobs[name].created:now(),modified:now(),etag:`"0x8DD${hexs(11).toUpperCase()}"`,login:!!login};
+      c.blobs[name]=b;stat(login?'blobUploadLogin':'blobUpload');
+      return{warn:[...warn,PROGRESS],data:{client_request_id:guid(),content_md5:null,date:iso(now()).replace(/\.\d+\+/,'+'),encryption_key_sha256:null,encryption_scope:null,etag:b.etag,lastModified:iso(now()).replace(/\.\d+\+/,'+'),request_id:guid(),request_server_encrypted:true,version:'2026-02-06',version_id:null}};
+    });
+  cmd('storage blob list','List blobs in a given container.',[A('container',['--container-name','-c'],{req:true,desc:'The container name.'}),A('prefix',['--prefix'],{desc:'Filter the results to return only blobs whose name begins with the specified prefix.'}),...DATA_ARGS],[['List all blobs in a container.','az storage blob list -c mycontainer --account-name mystorageaccount --auth-mode login -o table']],v=>{
+    const{s,warn}=dataAccount(v,'read');
+    const c=needContainer(s,v.container);
+    return{warn,data:Object.entries(c.blobs).filter(([n])=>!v.prefix||n.startsWith(v.prefix)).map(([n,b])=>blobView(v.container,n,b))};
+  },{table:blobTable});
+  cmd('storage blob show','Get the details of a blob.',[A('container',['--container-name','-c'],{req:true,desc:'The container name.'}),NAME('The blob name.'),...DATA_ARGS],[['Show all properties of a blob.','az storage blob show -c mycontainer -n MyBlob --account-name mystorageaccount --auth-mode login']],v=>{
+    const{s,warn}=dataAccount(v,'read');
+    const b=needContainer(s,v.container).blobs[v.name];
+    if(!b)storErr('The specified blob does not exist.','BlobNotFound',3);
+    return{warn,data:blobView(v.container,v.name,b)};
+  },{table:d=>blobTable([d])});
+  cmd('storage blob download','Download a blob to a file path.',[A('container',['--container-name','-c'],{desc:'The container name.'}),A('name',['--name','-n'],{desc:'The blob name.'}),A('file',['--file','-f'],{desc:'Path of file to write out to. If not specified, stdout will be used and max_connections will be set to 1.'}),A('overwrite',['--overwrite'],{type:'tbool',desc:'Overwrite an existing file when specified. Default value is true.'}),...DATA_ARGS],[['Download a blob.','az storage blob download -c mycontainer -n MyBlob -f /path/to/file --account-name mystorageaccount --auth-mode login']],v=>{
+    const{s,warn}=dataAccount(v,'read');
+    if(!v.container||!v.name)err(`the following arguments are required: ${[!v.container&&'--container-name/-c',!v.name&&'--name/-n'].filter(Boolean).join(', ')}`,2);
+    const b=needContainer(s,v.container).blobs[v.name];
+    if(!b)storErr('The specified blob does not exist.','BlobNotFound',3);
+    if(v.file==null)return{warn,text:b.content.replace(/\n$/,'')};
+    if(v.file in S.files&&v.overwrite===false)err(`The specified path already exists. Please change to a valid path.`);
+    S.files[v.file]=b.content;
+    return{warn:[...warn,PROGRESS],data:blobView(v.container,v.name,b)};
+  });
+  cmd('storage blob delete','Mark a blob or snapshot for deletion.',[A('container',['--container-name','-c'],{req:true,desc:'The container name.'}),NAME('The blob name.'),...DATA_ARGS],[['Delete a blob.','az storage blob delete -c mycontainer -n MyBlob --account-name mystorageaccount --auth-mode login']],v=>{
+    const{s,warn}=dataAccount(v,'write');
+    const c=needContainer(s,v.container);
+    if(!c.blobs[v.name])storErr('The specified blob does not exist.','BlobNotFound',3);
+    delete c.blobs[v.name];
+    return{warn};
+  });
+
+  // ---------- Grupos de seguridad de red (NSG) e IP públicas ----------
+  const DEFAULT_RULES=[['AllowVnetInBound',65000,'Inbound','Allow','VirtualNetwork','VirtualNetwork','*','Allow inbound traffic from all VMs in VNET'],['AllowAzureLoadBalancerInBound',65001,'Inbound','Allow','AzureLoadBalancer','*','*','Allow inbound traffic from azure load balancer'],['DenyAllInBound',65500,'Inbound','Deny','*','*','*','Deny all inbound traffic'],['AllowVnetOutBound',65000,'Outbound','Allow','VirtualNetwork','VirtualNetwork','*','Allow outbound traffic from all VMs to all VMs in VNET'],['AllowInternetOutBound',65001,'Outbound','Allow','*','Internet','*','Allow outbound traffic from all VMs to Internet'],['DenyAllOutBound',65500,'Outbound','Deny','*','*','*','Deny all outbound traffic']];
+  const nsgRules=n=>{n.p.rules=(n.p.rules||[]).map(r=>typeof r==='string'?(r==='rdp'?{name:'rdp',priority:1000,direction:'Inbound',access:'Allow',protocol:'Tcp',src:['*'],dst:['*'],ports:['3389']}:{name:'default-allow-ssh',priority:1000,direction:'Inbound',access:'Allow',protocol:'Tcp',src:['*'],dst:['*'],ports:['22']}):r);return n.p.rules};
+  const one=(a,k)=>a.length===1?{[k]:a[0],[k+'es']:[]}:{[k]:null,[k+'es']:a};
+  function ruleView(n,r,dflt){
+    const id=`${resId(n)}/${dflt?'defaultSecurityRules':'securityRules'}/${r.name}`;
+    const src=one(r.src,'sourceAddressPrefix'),dst=one(r.dst,'destinationAddressPrefix');
+    return{access:r.access,description:r.desc||null,...dst,...(r.ports.length===1?{destinationPortRange:r.ports[0],destinationPortRanges:[]}:{destinationPortRange:null,destinationPortRanges:r.ports}),direction:r.direction,etag:`W/"${n.p.etag||(n.p.etag=guid())}"`,id,name:r.name,priority:r.priority,protocol:r.protocol,provisioningState:'Succeeded',resourceGroup:n.rg,...src,sourcePortRange:'*',sourcePortRanges:[],type:`Microsoft.Network/networkSecurityGroups/${dflt?'defaultSecurityRules':'securityRules'}`};
+  }
+  function nsgView(n){
+    const nics=S.res.filter(x=>x.t==='nic'&&x.p.nsg===resId(n));
+    return{defaultSecurityRules:DEFAULT_RULES.map(([name,priority,direction,access,s,d,p,desc])=>ruleView(n,{name,priority,direction,access,protocol:'*',src:[s],dst:[d],ports:[p],desc},true)),etag:`W/"${n.p.etag||(n.p.etag=guid())}"`,flushConnection:false,id:resId(n),location:n.location,name:n.name,networkInterfaces:nics.length?nics.map(x=>({id:resId(x),resourceGroup:x.rg})):null,provisioningState:'Succeeded',resourceGroup:n.rg,resourceGuid:n.p.guid||(n.p.guid=guid()),securityRules:nsgRules(n).map(r=>ruleView(n,r)),tags:n.tags,type:TYPES.nsg};
+  }
+  function addRule(n,r){
+    if(!(r.priority>=100&&r.priority<=4096))arm('SecurityRuleInvalidPriority',`Security rule has invalid Priority. Value provided: ${r.priority} Allowed range 100-4096.`);
+    const clash=nsgRules(n).find(x=>x.priority===r.priority&&x.direction===r.direction&&lc(x.name)!==lc(r.name));
+    if(clash)arm('SecurityRuleConflict',`Security rule ${r.name} conflicts with rule ${clash.name}. Rules cannot have the same Priority and Direction. To learn more, see aka.ms/nsgrules.`);
+    n.p.rules=nsgRules(n).filter(x=>lc(x.name)!==lc(r.name)).concat(r).sort((a,b)=>a.priority-b.priority);
+    return r;
+  }
+  cmd('network nsg create','Create a network security group.',[NAME('Name of the network security group.'),RG(),LOC(),TAGS],[['Create an NSG in a resource group within a region with tags.','az network nsg create -g MyResourceGroup -n MyNsg --tags super_secure no_80 no_22']],v=>{
+    const g=needGroup(v.rg,true);
+    const loc=v.location?needLoc(v.location,'nsg'):g.location;
+    policyCheck({t:'nsg',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.nsg}/${v.name}`});
+    let n=findRes('nsg',g.name,v.name);
+    if(!n)n=add({t:'nsg',name:v.name,rg:g.name,location:loc,tags:tagsOf(v.tags),p:{rules:[]}});
+    return{data:{NewNSG:nsgView(n)}};
+  });
+  const nsgTable=d=>d.map(n=>({Location:n.location,Name:n.name,ProvisioningState:n.provisioningState,ResourceGroup:n.resourceGroup,ResourceGuid:n.resourceGuid}));
+  cmd('network nsg list','List network security groups.',[RG(false)],[['List all NSGs in a resource group.','az network nsg list -g MyResourceGroup -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('nsg',v.rg).filter(n=>!S.res.some(g=>g.t==='group'&&g.p.managedBy&&lc(g.name)===lc(n.rg))).map(nsgView)}},{table:nsgTable});
+  cmd('network nsg show','Get information about a network security group.',[NAME('Name of the network security group.'),RG()],[['Get basic information about an NSG.','az network nsg show -g MyResourceGroup -n MyNsg']],v=>({data:nsgView(needRes('nsg',v.rg,v.name))}),{table:d=>nsgTable([d])});
+  cmd('network nsg delete','Delete a network security group.',[NAME('Name of the network security group.'),RG(),NOWAIT],[['Delete an NSG in a resource group.','az network nsg delete -g MyResourceGroup -n MyNsg']],v=>{
+    const n=needRes('nsg',v.rg,v.name);guard('delete',resId(n));
+    const nic=S.res.find(x=>x.t==='nic'&&x.p.nsg===resId(n));
+    if(nic)arm('InUseNetworkSecurityGroupCannotBeDeleted',`Network security group ${resId(n)} cannot be deleted because it is in use by the following resources: ${resId(nic)}. In order to delete the Network security group, remove the association with the resource(s). To learn how to do this, see aka.ms/deletensg.`);
+    del(n);return{};
+  });
+  const ruleTable=d=>d.map(r=>({Name:r.name,ResourceGroup:r.resourceGroup,Priority:r.priority,SourcePortRanges:r.sourcePortRange||r.sourcePortRanges.join(' '),SourceAddressPrefixes:r.sourceAddressPrefix||r.sourceAddressPrefixes.join(' '),SourceASG:'None',Access:r.access,Protocol:r.protocol,Direction:r.direction,DestinationPortRanges:r.destinationPortRange||r.destinationPortRanges.join(' '),DestinationAddressPrefixes:r.destinationAddressPrefix||r.destinationAddressPrefixes.join(' '),DestinationASG:'None'}));
+  cmd('network nsg rule create','Create a network security group rule.',[NAME('Name of the network security group rule.'),RG(),A('nsg',['--nsg-name'],{req:true,desc:'Name of the network security group.'}),A('priority',['--priority'],{req:true,type:'int',desc:'Rule priority, between 100 (highest priority) and 4096 (lowest priority). Must be unique for each rule in the collection.'}),A('access',['--access'],{choices:['Allow','Deny'],def:'Allow',desc:'Allow or deny access.'}),A('direction',['--direction'],{choices:['Inbound','Outbound'],def:'Inbound',desc:'Direction of traffic.'}),A('protocol',['--protocol'],{choices:['*','Ah','Esp','Icmp','Tcp','Udp'],def:'*',desc:'Network protocol this rule applies to.'}),A('src',['--source-address-prefixes'],{type:'list',desc:"Space-separated list of CIDR prefixes or IP ranges. Alternatively, specify ONE of 'VirtualNetwork', 'AzureLoadBalancer', 'Internet' or '*' to match all IPs."}),A('dst',['--destination-address-prefixes'],{type:'list',desc:'Space-separated list of CIDR prefixes or IP ranges.'}),A('ports',['--destination-port-ranges'],{type:'list',desc:'Space-separated list of ports or port ranges between 0-65535. Use \'*\' to match all ports.'}),A('srcPorts',['--source-port-ranges'],{type:'list',desc:'Space-separated list of ports or port ranges between 0-65535.'}),A('desc',['--description'],{desc:'Rule description.'})],
+    [['Create a basic "Allow" NSG rule with the highest priority.','az network nsg rule create -g MyResourceGroup --nsg-name MyNsg -n MyNsgRule --priority 100'],['Allow HTTP and HTTPS from the Internet.','az network nsg rule create -g MyResourceGroup --nsg-name MyNsg -n allow-web --priority 200 --protocol Tcp --destination-port-ranges 80 443 --access Allow']],v=>{
+      const n=needRes('nsg',v.rg,v.nsg);guard('write',resId(n));
+      for(const p of v.ports||[])if(!/^(\*|\d{1,5}(-\d{1,5})?)$/.test(p)||p.split('-').some(x=>x!=='*'&&+x>65535))arm('SecurityRuleInvalidPortRange',`Security rule has invalid Port range. Value provided: ${p}. Value should be an integer OR integer range with '-' delimiter. Valid range 0-65535.`);
+      const r=addRule(n,{name:v.name,priority:v.priority,direction:v.direction||'Inbound',access:v.access||'Allow',protocol:v.protocol||'*',src:v.src||['*'],dst:v.dst||['*'],ports:v.ports||['80'],desc:v.desc});
+      stat('nsgRule');
+      return{data:ruleView(n,r)};
+    },{table:d=>ruleTable([d])});
+  cmd('network nsg rule list','List all rules in a network security group.',[RG(),A('nsg',['--nsg-name'],{req:true,desc:'Name of the network security group.'}),A('includeDefault',['--include-default'],{type:'bool',desc:'Include default security rules in the output.'})],[['List all rules in a network security group.','az network nsg rule list -g MyResourceGroup --nsg-name MyNsg -o table']],v=>{
+    const n=needRes('nsg',v.rg,v.nsg),x=nsgView(n);
+    return{data:v.includeDefault?[...x.securityRules,...x.defaultSecurityRules]:x.securityRules};
+  },{table:ruleTable});
+  cmd('network nsg rule delete','Delete a network security group rule.',[NAME('Name of the network security group rule.'),RG(),A('nsg',['--nsg-name'],{req:true,desc:'Name of the network security group.'})],[['Delete a network security group rule.','az network nsg rule delete -g MyResourceGroup --nsg-name MyNsg -n MyNsgRule']],v=>{
+    const n=needRes('nsg',v.rg,v.nsg);guard('write',resId(n));
+    n.p.rules=nsgRules(n).filter(r=>lc(r.name)!==lc(v.name));return{};
+  });
+  function pipView(p){return{publicIp:undefined,ddosSettings:{protectionMode:'VirtualNetworkInherited'},etag:`W/"${p.p.etag||(p.p.etag=guid())}"`,id:resId(p),idleTimeoutInMinutes:4,ipAddress:p.p.ip,ipConfiguration:(n=>n?{id:`${resId(n)}/ipConfigurations/ipconfig${n.p.vm}`,resourceGroup:n.rg}:null)(S.res.find(n=>n.t==='nic'&&n.p.pip===resId(p))),ipTags:[],location:p.location,name:p.name,provisioningState:'Succeeded',publicIPAddressVersion:'IPv4',publicIPAllocationMethod:'Static',resourceGroup:p.rg,resourceGuid:p.p.guid||(p.p.guid=guid()),sku:{name:'Standard',tier:'Regional'},tags:p.tags,type:TYPES.pip,zones:p.p.zones||null}}
+  cmd('network public-ip create','Create a public IP address.',[NAME('The name of the public IP address.'),RG(),LOC(),A('sku',['--sku'],{choices:['Basic','Standard'],desc:'Name of a public IP address SKU. It is recommended to use Standard SKU.'}),A('alloc',['--allocation-method'],{choices:['Dynamic','Static'],desc:'IP address allocation method.'}),A('zone',['--zone','-z'],{type:'list',desc:'Space-separated list of availability zones into which to provision the resource. Allowed values: 1, 2, 3.'}),A('dns',['--dns-name'],{desc:'Globally unique DNS entry.'}),TAGS],
+    [['Create a Standard public IP address.','az network public-ip create -g MyResourceGroup -n MyIp --sku Standard']],v=>{
+      const g=needGroup(v.rg,true);
+      if(v.sku==='Basic')err(`cloudlab: Azure retiró las IP públicas de SKU Basic el 30 de septiembre de 2025 y ya no se pueden crear. Usa --sku Standard (es la opción por defecto).`);
+      if(v.alloc==='Dynamic')arm('StandardSkuPublicIPAddressesCannotHaveDynamicAllocation',`Standard sku publicIp ${resId(g)}/providers/${TYPES.pip}/${v.name} must have AllocationMethod set to Static.`);
+      const loc=v.location?needLoc(v.location,'pip'):g.location;
+      policyCheck({t:'pip',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.pip}/${v.name}`});
+      let p=findRes('pip',g.name,v.name);
+      if(!p)p=add({t:'pip',name:v.name,rg:g.name,location:loc,tags:tagsOf(v.tags),p:{ip:pubIp(),zones:v.zone||null,standalone:true}});
+      const x=pipView(p);delete x.publicIp;
+      return{data:{publicIp:x}};
+    });
+  cmd('network public-ip list','List public IP addresses.',[RG(false)],[['List all public IPs in a resource group.','az network public-ip list -g MyResourceGroup -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('pip',v.rg).filter(p=>!S.res.some(g=>g.t==='group'&&g.p.managedBy&&lc(g.name)===lc(p.rg))).map(p=>{const x=pipView(p);delete x.publicIp;return x})}},{table:d=>d.map(p=>({Name:p.name,ResourceGroup:p.resourceGroup,Location:p.location,Zones:(p.zones||[]).join(','),Address:p.ipAddress,AddressVersion:p.publicIPAddressVersion,AllocationMethod:p.publicIPAllocationMethod,IdleTimeoutInMinutes:p.idleTimeoutInMinutes,ProvisioningState:p.provisioningState}))});
+
+  // ---------- Más comandos de VM ----------
+  cmd('vm open-port','Opens a VM to inbound traffic on specified ports.',[NAME('The name of the Virtual Machine.'),RG(),A('port',['--port'],{req:true,desc:"The port or port range (ex: 80-100) to open inbound traffic to. Use '*' to allow traffic to all ports. Use comma separated values to specify more than one port or port range."}),A('priority',['--priority'],{type:'int',def:900,desc:'Rule priority, between 100 (highest priority) and 4096 (lowest priority). Must be unique for each rule in the collection.'}),A('nsgName',['--nsg-name'],{desc:'The name of the network security group to create if one does not exist. Ignored if an NSG already exists.'})],
+    [['Open all ports on a VM to inbound traffic.',"az vm open-port -g MyResourceGroup -n MyVm --port '*'"],['Open a range of ports on a VM to inbound traffic with the highest priority.','az vm open-port -g MyResourceGroup -n MyVm --port 80-100 --priority 100']],v=>{
+      const vm=vmFind(v);guard('write',resId(vm));
+      const nic=S.res.find(n=>n.t==='nic'&&resId(n)===vm.p.nic);
+      let n=nic&&S.res.find(x=>x.t==='nsg'&&resId(x)===nic.p.nsg);
+      if(!n){n=add({t:'nsg',name:v.nsgName||`${vm.name}NSG`,rg:vm.rg,location:vm.location,p:{rules:[]}});nic.p.nsg=resId(n)}
+      const ports=v.port.split(',').map(s=>s.trim());
+      addRule(n,{name:`open-port-${v.port==='*'?'all':ports.join('_')}`,priority:v.priority||900,direction:'Inbound',access:'Allow',protocol:'*',src:['*'],dst:['*'],ports});
+      stat('openPort');
+      return{data:nsgView(n)};
+    });
+  cmd('vm resize','Update a VM\'s size.',[NAME('The name of the Virtual Machine.'),RG(),A('size',['--size'],{req:true,desc:'The VM size.'}),NOWAIT],[['Resize a VM.','az vm resize -g MyResourceGroup -n MyVm --size Standard_DS3_v2']],v=>{
+    const vm=vmFind(v);guard('write',resId(vm));
+    const size=sizeName(v.size);
+    if(!size)arm('InvalidParameter',`The value ${v.size} provided for the VM size is not valid. The valid sizes in the current region are: ${Object.keys(SIZES).join(',')}.\nTarget: vmSize`);
+    policyCheck({t:'vm',name:vm.name,location:vm.location,tags:vm.tags,size,id:resId(vm)});
+    if(vm.p.power!=='deallocated'){const extra=SIZES[size][0]-SIZES[vm.p.size][0];if(extra>0)checkQuota(vm.location,size,1,SIZES[vm.p.size][0])}
+    vm.p.size=size;stat('vmResize');
+    return v.noWait?{}:{data:vmView(vm)};
+  },{table:d=>vmTable([d])});
+  cmd('vm list-ip-addresses','List IP addresses associated with a VM.',[RG(false),A('name',['--name','-n'],{desc:'The name of the virtual machine.'})],[['Get the IP addresses for a VM.','az vm list-ip-addresses -g MyResourceGroup -n MyVm -o table']],v=>{
+    if(v.rg)needGroup(v.rg);
+    return{data:resOf('vm',v.rg).filter(x=>!v.name||lc(x.name)===lc(v.name)).map(vm=>{const nic=S.res.find(n=>n.t==='nic'&&resId(n)===vm.p.nic),pip=nic&&S.res.find(p=>p.t==='pip'&&resId(p)===nic.p.pip);return{virtualMachine:{name:vm.name,network:{privateIpAddresses:nic?[nic.p.ip]:[],publicIpAddresses:pip?[{id:resId(pip),ipAddress:vm.p.power==='deallocated'?pip.p.ip:pip.p.ip,ipAllocationMethod:'Static',name:pip.name,resourceGroup:pip.rg,zone:null}]:[]},resourceGroup:vm.rg}}})};
+  },{table:d=>d.map(x=>({VirtualMachine:x.virtualMachine.name,PublicIPAddresses:x.virtualMachine.network.publicIpAddresses.map(p=>p.ipAddress).join(','),PrivateIPAddresses:x.virtualMachine.network.privateIpAddresses.join(',')}))});
+
+  // ---------- Key Vault ----------
+  const KV_RE=/^[a-zA-Z](?!.*--)[a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$/;
+  const TAKEN_VAULTS=['keyvault','mykeyvault','kv','kv-test','vault','secrets','test','demo','cloudlab'];
+  const KV_ROLES={read:['Key Vault Administrator','Key Vault Secrets Officer','Key Vault Secrets User'],write:['Key Vault Administrator','Key Vault Secrets Officer'],list:['Key Vault Administrator','Key Vault Secrets Officer','Key Vault Secrets User','Key Vault Reader']};
+  function kvView(k){return{id:resId(k),location:k.location,name:k.name,properties:{accessPolicies:[],createMode:null,enablePurgeProtection:k.p.purgeProtection||null,enableRbacAuthorization:k.p.rbac,enableSoftDelete:true,enabledForDeployment:false,enabledForDiskEncryption:null,enabledForTemplateDeployment:null,hsmPoolResourceId:null,networkAcls:null,privateEndpointConnections:null,provisioningState:'Succeeded',publicNetworkAccess:'Enabled',sku:{family:'A',name:k.p.sku},softDeleteRetentionInDays:k.p.retention,tenantId:S.tenant.id,vaultUri:`https://${k.name}.vault.azure.net/`},resourceGroup:k.rg,systemData:{createdAt:iso(k.created),createdBy:USERS[0].upn,createdByType:'User',lastModifiedAt:iso(k.created),lastModifiedBy:USERS[0].upn,lastModifiedByType:'User'},tags:k.tags,type:TYPES.kv}}
+  const kvTable=d=>d.map(k=>({Location:k.location,Name:k.name,ResourceGroup:k.resourceGroup}));
+  cmd('keyvault create','Create a Vault or HSM.',[A('name',['--name','-n'],{desc:'Name of the Vault.'}),RG(),LOC(),A('sku',['--sku'],{choices:['premium','standard'],def:'standard',desc:'Required. SKU details. Allowed values for Vault: premium, standard. Default: standard.'}),A('retention',['--retention-days'],{type:'int',desc:'Soft delete data retention days. It accepts >=7 and <=90. Defaults to 90 for keyvault creation.'}),A('rbac',['--enable-rbac-authorization'],{type:'tbool',desc:'Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. If null or not specified, the vault is created with the default value of true.'}),A('purge',['--enable-purge-protection'],{type:'tbool',desc:'Property specifying whether protection against purge is enabled for this vault/managed HSM pool. Setting this property to true activates protection against purge for this vault/managed HSM pool and its content - only the Key Vault/Managed HSM service may initiate a hard, irrecoverable deletion. The setting is effective only if soft delete is also enabled. Enabling this functionality is irreversible.'}),TAGS],
+    [['Create a key vault with network ACLs specified.','az keyvault create --location westus2 --name MyKeyVault --resource-group MyResourceGroup'],['Create a key vault using Azure RBAC for authorization (default).','az keyvault create -n kv-cloudlab-1234 -g MyResourceGroup']],v=>{
+      const g=needGroup(v.rg,true);
+      if(!v.name)err('usage error: --name/-n is required for creating a vault.',2);
+      if(!KV_RE.test(v.name))arm('VaultNameNotValid',`The vault name '${v.name}' is invalid. A vault's name must be between 3-24 alphanumeric characters. The name must begin with a letter, end with a letter or digit, and not contain consecutive hyphens. Follow this link for more information: https://go.microsoft.com/fwlink/?linkid=2147742`);
+      const loc=v.location?needLoc(v.location,'kv'):g.location;
+      if(v.retention!=null&&(v.retention<7||v.retention>90))err('--retention-days must be between 7 and 90');
+      const mine=S.res.find(r=>r.t==='kv'&&lc(r.name)===lc(v.name));
+      const gone=S.deletedVaults.find(d=>lc(d.name)===lc(v.name));
+      if(mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name))||TAKEN_VAULTS.includes(lc(v.name))||gone)arm('VaultAlreadyExists',`The vault name '${v.name}' is already in use. Vault names are globally unique so it is possible that the name is already taken. If you are sure that the vault name was not taken then it is possible that a vault with the same name was recently deleted but not purged after being placed in a recoverable state. If the vault is in a recoverable state then the vault will need to be purged before reusing the name. For more information on soft delete and purging a vault follow this link https://go.microsoft.com/fwlink/?linkid=2147740.${gone?`\ncloudlab: borraste "${gone.name}" hace poco y sigue en estado eliminado temporalmente (soft-delete). Recupéralo con az keyvault recover -n ${gone.name}${gone.purgeProtection?'; tiene protección de purga, así que no se puede purgar antes de que acabe la retención.':` o púrgalo con az keyvault purge -n ${gone.name}.`}`:''}`);
+      policyCheck({t:'kv',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.kv}/${v.name}`});
+      const k=mine||add({t:'kv',name:v.name,rg:g.name,location:loc,tags:tagsOf(v.tags),p:{secrets:{}}});
+      Object.assign(k.p,{sku:v.sku||k.p.sku||'standard',retention:v.retention||k.p.retention||90,rbac:v.rbac!==false,purgeProtection:v.purge||k.p.purgeProtection||false});
+      stat('kvCreate');
+      return{data:kvView(k)};
+    },{table:d=>kvTable([d])});
+  cmd('keyvault list','List Vaults and/or HSMs.',[RG(false),A('rtype',['--resource-type'],{choices:['hsm','vault'],desc:'When --resource-type is not present the command will list all Vaults and HSMs.'})],[['List Vaults in a resource group.','az keyvault list -g MyResourceGroup -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('kv',v.rg).map(k=>{const x=kvView(k);return{id:x.id,location:x.location,name:x.name,resourceGroup:x.resourceGroup,tags:x.tags,type:x.type}})}},{table:kvTable});
+  cmd('keyvault show','Show details of a Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the Vault.'}),RG(false)],[['Show details of a key vault.','az keyvault show --name MyKeyVault']],v=>({data:kvView(kvFind(v.name,v.rg))}),{table:d=>kvTable([d])});
+  function kvFind(name,rg){
+    const k=S.res.find(r=>r.t==='kv'&&inSub(r)&&lc(r.name)===lc(name)&&(!rg||lc(r.rg)===lc(rg)));
+    if(!k)arm('ResourceNotFound',`The Resource 'Microsoft.KeyVault/vaults/${name}' under resource group '${rg||'<resource group>'}' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix`,3);
+    return k;
+  }
+  cmd('keyvault delete','Delete a Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the Vault.'}),RG(false),NOWAIT],[['Delete a key vault.','az keyvault delete --name MyKeyVault --resource-group MyResourceGroup']],v=>{
+    const k=kvFind(v.name,v.rg);guard('delete',resId(k));
+    removeTree(k);
+    return{warn:[`cloudlab: el almacén queda eliminado temporalmente (soft-delete) durante ${k.p.retention} días: su nombre sigue reservado y puedes recuperarlo con az keyvault recover -n ${k.name}.`]};
+  });
+  cmd('keyvault list-deleted','Get information about the deleted Vaults or HSMs in a subscription.',[A('rtype',['--resource-type'],{choices:['hsm','vault'],desc:'When --resource-type is not present the command will list all deleted Vaults and HSMs.'})],[['List deleted key vaults.','az keyvault list-deleted -o table']],()=>({data:S.deletedVaults.filter(d=>d.sub===curSub()).map(d=>({id:`/subscriptions/${d.sub}/providers/Microsoft.KeyVault/locations/${d.location}/deletedVaults/${d.name}`,name:d.name,properties:{deletionDate:iso(d.at),location:d.location,purgeProtectionEnabled:d.purgeProtection||null,scheduledPurgeDate:iso(d.at+d.retention*86400000),tags:{},vaultId:d.id},type:'Microsoft.KeyVault/deletedVaults'}))}),{table:d=>d.map(x=>({Name:x.name,Location:x.properties.location,DeletionDate:x.properties.deletionDate,ScheduledPurgeDate:x.properties.scheduledPurgeDate}))});
+  cmd('keyvault purge','Permanently delete the specified Vault or HSM. Aka Purges the deleted Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the deleted Vault.'}),LOC(),NOWAIT],[['Purge a deleted key vault.','az keyvault purge --name MyKeyVault']],v=>{
+    const d=S.deletedVaults.find(x=>lc(x.name)===lc(v.name)&&x.sub===curSub());
+    if(!d)arm('ResourceNotFound',`The Resource 'Microsoft.KeyVault/locations/deletedVaults/${v.name}' was not found.`,3);
+    if(d.purgeProtection)arm('MethodNotAllowed',`Operation \"purge\" is not allowed because purge protection is enabled for this vault. Key Vault service will automatically purge it after the retention period has passed.\ncloudlab: con --enable-purge-protection ni siquiera el propietario puede purgarlo antes de tiempo.`);
+    S.deletedVaults=S.deletedVaults.filter(x=>x!==d);return{};
+  });
+  cmd('keyvault recover','Recover a Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the deleted Vault.'}),RG(false),LOC(),NOWAIT],[['Recover a deleted key vault.','az keyvault recover --name MyKeyVault']],v=>{
+    const d=S.deletedVaults.find(x=>lc(x.name)===lc(v.name)&&x.sub===curSub());
+    if(!d)arm('ResourceNotFound',`The Resource 'Microsoft.KeyVault/locations/deletedVaults/${v.name}' was not found.`,3);
+    if(!S.res.some(g=>g.t==='group'&&inSub(g)&&lc(g.name)===lc(d.rg)))arm('ResourceGroupNotFound',`Resource group '${d.rg}' could not be found.\ncloudlab: el grupo original ya no existe; créalo de nuevo con az group create -n ${d.rg} -l ${d.location} y repite.`,3);
+    S.deletedVaults=S.deletedVaults.filter(x=>x!==d);
+    const k=add({t:'kv',name:d.name,rg:d.rg,location:d.location,created:d.created,tags:{},p:d.p});
+    return{data:kvView(k)};
+  });
+  // Plano de datos: con RBAC, Owner no basta; hace falta un rol de datos de Key Vault.
+  function kvData(name,op,secret){
+    const k=S.res.find(r=>r.t==='kv'&&lc(r.name)===lc(name)&&S.subs.some(s=>s.id===r.sub));
+    if(!k){if(S.deletedVaults.some(d=>lc(d.name)===lc(name)))err(`(VaultNotFound) The vault '${name}' is in a deleted state.`);err(`Failed to resolve hostname '${name}.vault.azure.net': [Errno -2] Name or service not known\ncloudlab: no existe un Key Vault llamado "${name}". Créalo con az keyvault create -g <grupo> -n ${name}`)}
+    if(k.p.rbac&&!hasRole(KV_ROLES[op],resId(k))){
+      const action={read:'Microsoft.KeyVault/vaults/secrets/getSecret/action',write:'Microsoft.KeyVault/vaults/secrets/setSecret/action',list:'Microsoft.KeyVault/vaults/secrets/readMetadata/action'}[op];
+      const m=`Caller is not authorized to perform action on resource.\nIf role assignments, deny assignments or role definitions were changed recently, please observe propagation time.\nCaller: appid=04b07795-8ddb-461a-bbee-02f9e1bf7b46;oid=${USERS[0].id};iss=https://sts.windows.net/${S.tenant.id}/\nAction: '${action}'\nResource: '${lc(resId(k))}${secret?'/secrets/'+lc(secret):''}'\nAssignment: (not found)\nDenyAssignmentId: null\nDecisionReason: null \nVault: ${k.name};location=${k.location}\n`;
+      err(`(Forbidden) ${m}\nCode: Forbidden\nMessage: ${m}\nInner error: {\n    "code": "ForbiddenByRbac"\n}\ncloudlab: el almacén usa RBAC y tu rol Owner no da acceso a los secretos. Asígnate "Key Vault Secrets Officer" sobre el almacén con az role assignment create.`);
+    }
+    return k;
+  }
+  const secretView=(k,n,s,withValue=true)=>({attributes:{created:iso(s.created).replace(/\.\d+\+/,'+'),enabled:true,expires:null,notBefore:null,recoverableDays:k.p.retention,recoveryLevel:k.p.purgeProtection?'Recoverable':'Recoverable+Purgeable',updated:iso(s.updated).replace(/\.\d+\+/,'+')},contentType:s.contentType||null,id:`https://${k.name}.vault.azure.net/secrets/${n}${withValue?'/'+s.version:''}`,kid:null,managed:null,name:n,tags:{'file-encoding':'utf-8'},...(withValue?{value:s.value}:{})});
+  cmd('keyvault secret set','Create a secret (if one doesn\'t exist) or update a secret in a KeyVault.',[NAME('Name of the secret.'),A('vault',['--vault-name'],{req:true,desc:'Name of the Key Vault.'}),A('value',['--value'],{desc:'Plain text secret value. Cannot be used with --file or --encoding.'}),A('file',['--file','-f'],{desc:'Source file for secret. Use in conjunction with \'--encoding\'.'}),A('contentType',['--content-type'],{desc:'Description of the secret contents (e.g. \'password\', \'connection string\', etc).'})],
+    [['Create a secret with the value "Hello".','az keyvault secret set --vault-name MyKeyVault -n MySecret --value Hello']],v=>{
+      if(v.value==null&&v.file==null)err('usage error: --value VALUE | --file PATH',2);
+      if(!/^[0-9a-zA-Z-]{1,127}$/.test(v.name))err(`(BadParameter) The request URI contains an invalid name: ${v.name}`);
+      const k=kvData(v.vault,'write',v.name);
+      const value=v.value!=null?v.value:(v.file in S.files?S.files[v.file].replace(/\n$/,''):err(`[Errno 2] No such file or directory: '${v.file}'`));
+      const prev=k.p.secrets[v.name];
+      const s={value,contentType:v.contentType,created:prev?prev.created:now(),updated:now(),version:hexs(32)};
+      k.p.secrets[v.name]=s;stat('secretSet');
+      return{data:secretView(k,v.name,s)};
+    });
+  cmd('keyvault secret show','Get a specified secret from a given key vault.',[NAME('Name of the secret.'),A('vault',['--vault-name'],{req:true,desc:'Name of the Key Vault.'}),A('version',['--version'],{desc:'The secret version. If omitted, uses the latest version.'})],[['Show the value of a secret.','az keyvault secret show --vault-name MyKeyVault -n MySecret --query value -o tsv']],v=>{
+    const k=kvData(v.vault,'read',v.name),s=k.p.secrets[v.name];
+    if(!s)err(`(SecretNotFound) A secret with (name/id) ${v.name} was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182`,3);
+    stat('secretShow');
+    return{data:secretView(k,v.name,s)};
+  });
+  cmd('keyvault secret list','List secrets in a specified key vault.',[A('vault',['--vault-name'],{req:true,desc:'Name of the Key Vault.'}),A('maxResults',['--maxresults'],{type:'int',desc:'Maximum number of results to return in a page.'})],[['List secrets.','az keyvault secret list --vault-name MyKeyVault -o table']],v=>{
+    const k=kvData(v.vault,'list');
+    return{data:Object.entries(k.p.secrets).map(([n,s])=>secretView(k,n,s,false))};
+  },{table:d=>d.map(s=>({Name:s.name,ContentType:s.contentType||'',Enabled:s.attributes.enabled,Updated:s.attributes.updated}))});
+  cmd('keyvault secret delete','Delete all versions of a secret.',[NAME('Name of the secret.'),A('vault',['--vault-name'],{req:true,desc:'Name of the Key Vault.'})],[['Delete a secret.','az keyvault secret delete --vault-name MyKeyVault -n MySecret']],v=>{
+    const k=kvData(v.vault,'write',v.name),s=k.p.secrets[v.name];
+    if(!s)err(`(SecretNotFound) A secret with (name/id) ${v.name} was not found in this key vault.`,3);
+    delete k.p.secrets[v.name];
+    return{data:{...secretView(k,v.name,s,false),deletedDate:iso(now()),recoveryId:`https://${k.name}.vault.azure.net/deletedsecrets/${v.name}`,scheduledPurgeDate:iso(now()+k.p.retention*86400000)}};
+  });
 
   // ---------- Mini shell (variables, $(...), tuberías, redirecciones) ----------
   const SHELL_CMDS=['az','kubectl','k','clear','help','history','ls','cat','rm','echo','export','unset','env','lab','grep','wc','head','tail','pwd','whoami','date','touch','nano','vi','vim','jq'];
@@ -1255,7 +1721,7 @@ function create(opts={}){
       case'rg':return groups().map(g=>g.name);
       case'location':return REGIONS.map(r=>r[0]);
       case'image':return Object.keys(IMAGES);
-      case'size':case'vmSize':return Object.keys(SIZES);
+      case'vmSize':return Object.keys(SIZES);
       case'plan':return names('plan');
       case'vnet':return names('vnet');
       case'subnet':{const v=findRes('vnet',rg,get('--vnet-name')||'');return v?v.p.subnets.map(s=>s.name):[]}
@@ -1263,10 +1729,22 @@ function create(opts={}){
       case'assignee':return USERS.map(u=>u.upn);
       case'scope':return[`/subscriptions/${curSub()}`,...groups().map(g=>`/subscriptions/${curSub()}/resourceGroups/${g.name}`)];
       case'runtime':return RUNTIMES.linux;
+      case'vault':return resOf('kv').map(r=>r.name);
+      case'nsg':return names('nsg');
+      case'account':return resOf('storage').map(r=>r.name);
+      case'container':{const s=resOf('storage').find(r=>r.name===(get('--account-name')||S.vars.AZURE_STORAGE_ACCOUNT));return s?Object.keys(s.p.containers||{}):[]}
+      case'policy':return POLICY_DEFS.map(d=>d.id);
+      case'file':return Object.keys(S.files);
+      case'size':return Object.keys(SIZES);
       case'name':{
         if(key==='account set'||key==='account show')return S.subs.map(s=>s.id);
         if(key.startsWith('group'))return groups().map(g=>g.name);
-        const t=key.startsWith('vm ')?'vm':key.startsWith('storage')?'storage':key.startsWith('network vnet subnet')?null:key.startsWith('network vnet')?'vnet':key.startsWith('appservice plan')?'plan':key.startsWith('webapp')?'webapp':key.startsWith('aks')?'aks':null;
+        if(key.startsWith('keyvault secret')){const k=resOf('kv').find(r=>r.name===get('--vault-name'));return k?Object.keys(k.p.secrets):[]}
+        if(key.startsWith('lock'))return S.locks.map(l=>l.name);
+        if(key.startsWith('policy assignment'))return S.policies.map(a=>a.name);
+        if(key.startsWith('storage container')){const s=resOf('storage').find(r=>r.name===(get('--account-name')||S.vars.AZURE_STORAGE_ACCOUNT));return s?Object.keys(s.p.containers||{}):[]}
+        if(key.startsWith('storage blob')){const s=resOf('storage').find(r=>r.name===(get('--account-name')||S.vars.AZURE_STORAGE_ACCOUNT)),c=s&&(s.p.containers||{})[get('--container-name','-c')];return c?Object.keys(c.blobs):[]}
+        const t=key.startsWith('vm ')?'vm':key.startsWith('storage')?'storage':key.startsWith('keyvault')?'kv':key.startsWith('network nsg')?'nsg':key.startsWith('network public-ip')?'pip':key.startsWith('network vnet subnet')?null:key.startsWith('network vnet')?'vnet':key.startsWith('appservice plan')?'plan':key.startsWith('webapp')?'webapp':key.startsWith('aks')?'aks':null;
         if(key.startsWith('network vnet subnet')){const v=findRes('vnet',rg,get('--vnet-name')||'');return v?v.p.subnets.map(s=>s.name):[]}
         return t&&!key.endsWith('create')?names(t):[];
       }
@@ -1284,7 +1762,7 @@ function create(opts={}){
   // ---------- Persistencia ----------
   const TTL=48*3600*1000;
   function load(saved){
-    if(saved&&saved.v===1&&now()-saved.savedAt<TTL){S=clone(saved);S.history=S.history||[];S.files=S.files||{};S.vars=S.vars||{};S.stats=S.stats||{};S.gone=S.gone||[];S.merged=S.merged||[];S.cur=null;return true}
+    if(saved&&saved.v===1&&now()-saved.savedAt<TTL){S=clone(saved);S.history=S.history||[];S.files=S.files||{};S.vars=S.vars||{};S.stats=S.stats||{};S.gone=S.gone||[];S.merged=S.merged||[];S.locks=S.locks||[];S.policies=S.policies||[];S.deletedVaults=S.deletedVaults||[];S.cur=null;return true}
     fresh();return false;
   }
   const restored=load(opts.saved);
@@ -1296,7 +1774,7 @@ function create(opts={}){
     get pending(){return pending?{text:pending.ask.text,secret:pending.ask.secret}:null},
     restored,
     serialize:()=>{const o=clone(S);delete o.cur;return o},
-    view:{groupView,vmView,storageView,vnetView,planView,siteView,aksView,roleView,resId,busy,usage:coreUsage,powerText,disp},
+    view:{nsgRules,policyName:id=>(findDef(id)||{displayName:id}).displayName,groupView,vmView,storageView,vnetView,planView,siteView,aksView,roleView,resId,busy,usage:coreUsage,powerText,disp},
     ttlHours:TTL/3600000,
     expiresAt:()=>S.savedAt+TTL,
     VERSION:CLI_VERSION,
