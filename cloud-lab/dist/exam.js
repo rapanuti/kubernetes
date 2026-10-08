@@ -39,10 +39,10 @@ function prepare(q){
 }
 const P=Q.map(prepare);
 
-let results={},pos=0;
-try{results=JSON.parse(localStorage.getItem('cloudlab-az900')||'{}')||{};pos=+localStorage.getItem('cloudlab-az900-pos')||0}catch{}
+let results={},answers={},pos=0;
+try{results=JSON.parse(localStorage.getItem('cloudlab-az900')||'{}')||{};answers=JSON.parse(localStorage.getItem('cloudlab-az900-answers')||'{}')||{};pos=+localStorage.getItem('cloudlab-az900-pos')||0}catch{}
 if(!(pos>=0&&pos<Q.length))pos=0;
-function save(){try{localStorage.setItem('cloudlab-az900',JSON.stringify(results));localStorage.setItem('cloudlab-az900-pos',String(pos))}catch{}}
+function save(){try{localStorage.setItem('cloudlab-az900',JSON.stringify(results));localStorage.setItem('cloudlab-az900-answers',JSON.stringify(answers));localStorage.setItem('cloudlab-az900-pos',String(pos))}catch{}}
 function stopVoice(){if('speechSynthesis' in window)speechSynthesis.cancel()}
 function speak(q){
   if(!('speechSynthesis' in window))return;
@@ -130,7 +130,7 @@ window.renderExam=(app,part)=>{
   app.querySelector('[data-random]').onclick=()=>go(Math.floor(Math.random()*Q.length));
   app.querySelector('[data-pending]').onclick=()=>{const j=find(x=>!results[x.id]);j<0?alert('¡No te quedan preguntas pendientes!'):go(j)};
   app.querySelector('[data-failed]').onclick=()=>{const j=find(x=>results[x.id]==='ko');j<0?alert('No tienes preguntas falladas.'):go(j)};
-  app.querySelector('[data-reset]').onclick=()=>{if(confirm('¿Borrar todo tu progreso del simulador AZ-900?')){results={};pos=0;save();window.renderExam(app,part)}};
+  app.querySelector('[data-reset]').onclick=()=>{if(confirm('¿Borrar todo tu progreso del simulador AZ-900?')){results={};answers={};pos=0;save();window.renderExam(app,part)}};
   form.onsubmit=e=>{
     e.preventDefault();
     if(study)return;
@@ -141,11 +141,30 @@ window.renderExam=(app,part)=>{
     }
     const r=grade(q,p,form);
     if(r===null){fb.innerHTML='<p class="warn">Responde todas las partes antes de comprobar.</p>';return}
+    const fd=new FormData(form),saved={};
+    for(const[k,v]of fd.entries())(saved[k]=saved[k]||[]).push(v);
+    answers[q.id]=saved;
     record(r);
-    if(p.kind==='choice')markChoices(form,p);
-    fb.innerHTML=`<p class="${r?'good':'bad'}">${r?'✓ ¡Correcto!':'✗ Todavía no.'}</p>${r||p.kind==='choice'?'':`<p class="q-hint">Respuesta correcta</p>${solution(q,p)}`}<div class="explain">${h(q.explanation)}</div>`;
+    show(r);
     const m=app.querySelector(`[data-jump="${pos}"]`);m.classList.remove('ok','ko');m.classList.add(r?'ok':'ko');
   };
+  function show(r,again){
+    if(p.kind==='choice')markChoices(form,p);
+    fb.innerHTML=`${again?'<p class="q-hint">Tu respuesta anterior</p>':''}<p class="${r?'good':'bad'}">${r?'✓ ¡Correcto!':'✗ Todavía no.'}</p>${r||p.kind==='choice'?'':`<p class="q-hint">Respuesta correcta</p>${solution(q,p)}`}<div class="explain">${h(q.explanation)}</div>`;
+  }
+  // Al volver a una pregunta ya respondida se ve lo que marcaste y su corrección (puedes cambiarla y comprobar de nuevo).
+  const prev=answers[q.id];
+  if(!study&&prev&&p.kind!=='reveal'){
+    for(const[k,vals]of Object.entries(prev))for(const v of vals){
+      const el=form.querySelector(`[name="${k}"]`);
+      if(!el)continue;
+      if(el.tagName==='SELECT')el.value=v;
+      else{const box=form.querySelector(`[name="${k}"][value="${CSS.escape(v)}"]`);if(box)box.checked=true}
+    }
+    const r=grade(q,p,form);
+    if(r!==null)show(r,true);
+  }
+  else if(!study&&results[q.id]&&p.kind==='reveal')fb.innerHTML=`<p class="q-hint">Te autoevaluaste: ${results[q.id]==='ok'?'acertada':'fallada'}</p>`;
 };
 window.az900Stats=()=>({total:Q.length,answered:Object.keys(results).length});
 })();
