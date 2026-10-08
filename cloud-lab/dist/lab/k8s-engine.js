@@ -316,9 +316,9 @@ function create(opts={}){
     if(cl!=='minikube'){
       const all=((aks&&aks.clusters)||[]).filter(c=>c.name===cl);
       const info=aksInfo(cl),host=(all[all.length-1]||{fqdn:`${cl}-dns-${hashStr(cl,8)}.hcp.eastus.azmk8s.io`}).fqdn;
-      if(!info){if(silent)return;fail(`E1007 12:00:00.000000   memcache.go:265] couldn't get current server API group list: Get "https://${host}:443/api?timeout=32s": dial tcp: lookup ${host} on 127.0.0.53:53: no such host\nUnable to connect to the server: dial tcp: lookup ${host} on 127.0.0.53:53: no such host\ncloudlab: el clúster AKS "${cl}" ya no existe en Azure (¿lo borraste con az aks delete?). Vuelve a minikube con: kubectl config use-context minikube`)}
-      if(info.power==='Creating'&&!silent)fail(`Unable to connect to the server: dial tcp: lookup ${info.fqdn} on 127.0.0.53:53: no such host\ncloudlab: el clúster AKS "${cl}" todavía se está creando (--no-wait). Espera un poco y vuelve a intentarlo; míralo con az aks show en la terminal de Azure.`);
-      if(info.power==='Stopped'&&!silent)fail(`Unable to connect to the server: dial tcp 20.62.${parseInt(hashStr(cl,2),36)%250}.${parseInt(hashStr(cl+1,2),36)%250}:443: i/o timeout\ncloudlab: el clúster AKS "${cl}" está detenido. Arráncalo en la terminal de Azure con: az aks start -g ${info.rg} -n ${cl}`);
+      if(!info){if(silent)return;fail(`E1007 12:00:00.000000   memcache.go:265] couldn't get current server API group list: Get "https://${host}:443/api?timeout=32s": dial tcp: lookup ${host} on 127.0.0.53:53: no such host\nUnable to connect to the server: dial tcp: lookup ${host} on 127.0.0.53:53: no such host\nrapalab: el clúster AKS "${cl}" ya no existe en Azure (¿lo borraste con az aks delete?). Vuelve a minikube con: kubectl config use-context minikube`)}
+      if(info.power==='Creating'&&!silent)fail(`Unable to connect to the server: dial tcp: lookup ${info.fqdn} on 127.0.0.53:53: no such host\nrapalab: el clúster AKS "${cl}" todavía se está creando (--no-wait). Espera un poco y vuelve a intentarlo; míralo con az aks show en la terminal de Azure.`);
+      if(info.power==='Stopped'&&!silent)fail(`Unable to connect to the server: dial tcp 20.62.${parseInt(hashStr(cl,2),36)%250}.${parseInt(hashStr(cl+1,2),36)%250}:443: i/o timeout\nrapalab: el clúster AKS "${cl}" está detenido. Arráncalo en la terminal de Azure con: az aks start -g ${info.rg} -n ${cl}`);
     }
     useCluster(cl);
     syncAksNodes();
@@ -563,7 +563,7 @@ function create(opts={}){
   function typeOrFail(t){
     const k=resolveKind(t);
     if(!k){
-      if(KNOWN_UNSIMULATED.includes(String(t).toLowerCase().split('.')[0]))fail(`cloudlab: el tipo de recurso "${t}" existe en Kubernetes, pero todavía no está disponible en este simulador.\nRecursos simulados: pods, deployments, replicasets, services, configmaps, secrets, namespaces, nodes, events.`);
+      if(KNOWN_UNSIMULATED.includes(String(t).toLowerCase().split('.')[0]))fail(`rapalab: el tipo de recurso "${t}" existe en Kubernetes, pero todavía no está disponible en este simulador.\nRecursos simulados: pods, deployments, replicasets, services, configmaps, secrets, namespaces, nodes, events.`);
       fail(`error: the server doesn't have a resource type "${t}"`);
     }
     return k;
@@ -593,7 +593,7 @@ function create(opts={}){
     const cmd=args[0];
     if(cmd==='--version'||cmd==='version'&&false)return'';
     if(!KCMDS[cmd]){
-      if(KUBECTL_ALL.includes(cmd))return info(`cloudlab: "kubectl ${cmd}" existe en kubectl ${VERSION}, pero todavía no se simula aquí.\nEscribe "kubectl --help" para ver los comandos disponibles.`);
+      if(KUBECTL_ALL.includes(cmd))return info(`rapalab: "kubectl ${cmd}" existe en kubectl ${VERSION}, pero todavía no se simula aquí.\nEscribe "kubectl --help" para ver los comandos disponibles.`);
       const s=suggest(cmd,Object.keys(KCMDS).filter(k=>!k.includes(' ')));
       fail(`error: unknown command "${cmd}" for "kubectl"${s.length?`\n\nDid you mean this?\n${s.map(x=>'\t'+x).join('\n')}`:''}\n\nRun 'kubectl --help' for usage.`);
     }
@@ -706,7 +706,7 @@ function create(opts={}){
         const multi=groups.filter(g=>g.objs.length).length>1||pos[0]==='all'||pos[0].includes(',');
         out=groups.filter(g=>g.objs.length).map(g=>{let rows=rowsFor(g.kind,g.objs,{allNs,wide:flags.output==='wide',labels:flags['show-labels'],prefix:multi});if(flags['no-headers'])rows=rows.slice(1);return table(rows)}).join('\n\n');
       }
-      if(flags.watch)out+=`${out?'\n':''}cloudlab: -w (watch) no se simula; se muestra el estado actual. Repite el comando para ver cambios.`;
+      if(flags.watch)out+=`${out?'\n':''}rapalab: -w (watch) no se simula; se muestra el estado actual. Repite el comando para ver cambios.`;
       if(!found.length&&!errs.length)return{out:allNs?'No resources found':KINDS[kinds[0]].ns?`No resources found in ${ns} namespace.`:'No resources found',code:0};
       if(errs.length)return{out:[out,...errs].filter(Boolean).join('\n'),code:1,err:true};
       return out;
@@ -793,7 +793,7 @@ function create(opts={}){
         if(!objs.length){out.push(`No resources found`);continue}
         for(const o of objs){
           if(o.kind==='Namespace'&&['default',...SYSTEM_NS].includes(o.name)){out.push(`Error from server (Forbidden): namespaces "${o.name}" is forbidden: this namespace may not be deleted`);err=true;continue}
-          if(o.kind==='Node'&&o.name==='minikube'){out.push(`cloudlab: no puedes borrar el nodo del plano de control "minikube" en este simulador (te quedarías sin clúster). Usa "minikube node delete" para los nodos que añadas.`);err=true;continue}
+          if(o.kind==='Node'&&o.name==='minikube'){out.push(`rapalab: no puedes borrar el nodo del plano de control "minikube" en este simulador (te quedarías sin clúster). Usa "minikube node delete" para los nodos que añadas.`);err=true;continue}
           deleteObj(o);out.push(created(o,'deleted'));
         }
       }
@@ -817,8 +817,8 @@ function create(opts={}){
       requireNs(ns);exists('Pod',name,ns);
       const p=makePod(ns,name,{labels,containers:[c],restartPolicy:restart});
       let out=created(p);
-      if(flags.stdin&&flags.tty)out+=`\ncloudlab: las sesiones interactivas (-it) no se simulan. Ejecuta comandos con: kubectl exec ${name} -- <comando>`;
-      if(flags.rm)out+=`\ncloudlab: --rm se ignora en el simulador; borra el Pod con kubectl delete pod ${name}`;
+      if(flags.stdin&&flags.tty)out+=`\nrapalab: las sesiones interactivas (-it) no se simulan. Ejecuta comandos con: kubectl exec ${name} -- <comando>`;
+      if(flags.rm)out+=`\nrapalab: --rm se ignora en el simulador; borra el Pod con kubectl delete pod ${name}`;
       return out;
     },
     scale({flags,pos}){
@@ -832,7 +832,7 @@ function create(opts={}){
         if(!['Deployment','ReplicaSet'].includes(t.kind))fail(`error: no objects passed to scale ${KINDS[t.kind].plural} "${t.name}" is not scalable`);
         const o=getOne(t.kind,t.name,ns);
         if(flags['current-replicas']!=null&&o.spec.replicas!==flags['current-replicas'])fail(`error: Expected replicas to be ${flags['current-replicas']}, was ${o.spec.replicas}`);
-        if(t.kind==='ReplicaSet'&&o.owner){o.spec.replicas=flags.replicas;out.push(created(o,'scaled'));out.push('cloudlab: este ReplicaSet pertenece a un Deployment, que lo devolverá a su número de réplicas. Escala el Deployment.');continue}
+        if(t.kind==='ReplicaSet'&&o.owner){o.spec.replicas=flags.replicas;out.push(created(o,'scaled'));out.push('rapalab: este ReplicaSet pertenece a un Deployment, que lo devolverá a su número de réplicas. Escala el Deployment.');continue}
         o.spec.replicas=flags.replicas;out.push(created(o,'scaled'));
       }
       return out.join('\n');
@@ -875,7 +875,7 @@ function create(opts={}){
       if(flags.tail!=null&&flags.tail>=0)lines=lines.slice(-flags.tail);
       if(flags.timestamps)lines=lines.map((l,i)=>`${iso(p.status.scheduledAt+3000+i*400)} ${l}`);
       let out=[note,defNote,...lines].filter(Boolean).join('\n');
-      if(flags.follow)out+='\ncloudlab: -f (seguir los logs) no se simula; se muestran los logs actuales.';
+      if(flags.follow)out+='\nrapalab: -f (seguir los logs) no se simula; se muestran los logs actuales.';
       return out;
     },
     exec({flags,pos,dash}){
@@ -932,11 +932,11 @@ function create(opts={}){
     'rollout status'({flags,pos}){
       const d=depTarget(flags,pos);
       const s=depStatus(d);
-      if(d.spec.paused)return`Waiting for deployment "${d.name}" rollout to finish: 0 out of ${d.spec.replicas} new replicas have been updated...\ncloudlab: el despliegue está en pausa (kubectl rollout resume deployment/${d.name}).`;
+      if(d.spec.paused)return`Waiting for deployment "${d.name}" rollout to finish: 0 out of ${d.spec.replicas} new replicas have been updated...\nrapalab: el despliegue está en pausa (kubectl rollout resume deployment/${d.name}).`;
       if(s.updated===d.spec.replicas&&s.ready===d.spec.replicas&&s.current===d.spec.replicas)return`deployment "${d.name}" successfully rolled out`;
       const waitMsg=s.updated<d.spec.replicas?`${s.updated} out of ${d.spec.replicas} new replicas have been updated...`:s.current>s.updated?`${s.current-s.updated} old replicas are pending termination...`:`${s.ready} of ${s.updated} updated replicas are available...`;
       const bad=list('Pod',d.namespace).filter(p=>p.owner&&p.owner.name===d.status.currentRS).map(podView).find(v=>/ImagePull|ErrImage|CrashLoop|InvalidImage/.test(v.status));
-      return{out:`Waiting for deployment "${d.name}" rollout to finish: ${waitMsg}${bad?`\ncloudlab: algún Pod está en ${bad.status}. Revisa con kubectl describe pod o vuelve atrás con kubectl rollout undo deployment/${d.name}.`:'\ncloudlab: el simulador no espera; repite el comando en unos segundos.'}`,code:0};
+      return{out:`Waiting for deployment "${d.name}" rollout to finish: ${waitMsg}${bad?`\nrapalab: algún Pod está en ${bad.status}. Revisa con kubectl describe pod o vuelve atrás con kubectl rollout undo deployment/${d.name}.`:'\nrapalab: el simulador no espera; repite el comando en unos segundos.'}`,code:0};
     },
     'rollout history'({flags,pos}){
       const d=depTarget(flags,pos);
@@ -976,7 +976,7 @@ function create(opts={}){
       const exists=!!S.ctx.contexts[name];
       S.ctx.contexts[name]=S.ctx.contexts[name]||{cluster:'minikube',user:'minikube',namespace:'default'};
       if(flags.namespace)S.ctx.contexts[name].namespace=flags.namespace;
-      return`Context "${name}" ${exists?'modified':'created'}.${flags.namespace&&!find('Namespace',flags.namespace)?`\ncloudlab: ojo, el namespace "${flags.namespace}" todavía no existe.`:''}`;
+      return`Context "${name}" ${exists?'modified':'created'}.${flags.namespace&&!find('Namespace',flags.namespace)?`\nrapalab: ojo, el namespace "${flags.namespace}" todavía no existe.`:''}`;
     },
     'config view'(){
       const c=S.ctx.contexts;
@@ -991,7 +991,7 @@ function create(opts={}){
       const ds=pods.filter(p=>p.spec.system&&/kube-proxy/.test(p.name));
       if(bare.length&&!flags.force){n.spec.unschedulable=true;fail(`node/${n.name} cordoned\nerror: unable to drain node "${n.name}" due to error: cannot delete cached/standalone Pods that declare no controller (use --force to override): ${bare.map(p=>p.namespace+'/'+p.name).join(', ')}, continuing command...\nThere are pending nodes to be drained:\n ${n.name}\ncannot delete cached/standalone Pods that declare no controller (use --force to override): ${bare.map(p=>p.namespace+'/'+p.name).join(', ')}`)}
       if(ds.length&&!flags['ignore-daemonsets']){n.spec.unschedulable=true;fail(`node/${n.name} cordoned\nerror: unable to drain node "${n.name}" due to error: cannot delete DaemonSet-managed Pods (use --ignore-daemonsets to ignore): ${ds.map(p=>p.namespace+'/'+p.name).join(', ')}, continuing command...\nThere are pending nodes to be drained:\n ${n.name}`)}
-      if(n.name==='minikube'&&list('Node').length===1)var warn1=`cloudlab: este es el único nodo; los Pods desalojados quedarán en Pending hasta que hagas "kubectl uncordon ${n.name}" o añadas otro nodo con "minikube node add".`;
+      if(n.name==='minikube'&&list('Node').length===1)var warn1=`rapalab: este es el único nodo; los Pods desalojados quedarán en Pending hasta que hagas "kubectl uncordon ${n.name}" o añadas otro nodo con "minikube node add".`;
       n.spec.unschedulable=true;
       const out=[`node/${n.name} cordoned`];
       if(ds.length)out.push(`Warning: ignoring DaemonSet-managed Pods: ${ds.map(p=>p.namespace+'/'+p.name).join(', ')}`);
@@ -1026,7 +1026,7 @@ function create(opts={}){
       let rows=Object.entries(KINDS).map(([k,v])=>[v.plural,v.short.join(','),v.api,String(v.ns),k]);
       if(flags.namespaced)rows=rows.filter(r=>r[3]===flags.namespaced);
       if(flags.output==='name')return rows.map(r=>r[0]+(r[2].includes('/')?'.'+r[2].split('/')[0]:'')).join('\n');
-      return table([['NAME','SHORTNAMES','APIVERSION','NAMESPACED','KIND'],...rows.sort((a,b)=>a[0].localeCompare(b[0]))])+'\n\ncloudlab: se listan solo los recursos simulados. Un clúster real tiene más de 50 (kubectl api-resources).';
+      return table([['NAME','SHORTNAMES','APIVERSION','NAMESPACED','KIND'],...rows.sort((a,b)=>a[0].localeCompare(b[0]))])+'\n\nrapalab: se listan solo los recursos simulados. Un clúster real tiene más de 50 (kubectl api-resources).';
     },
     explain({pos}){
       if(!pos.length)fail(`You must specify the type of resource to explain. Use "kubectl api-resources" for a complete list of supported resources.`);
@@ -1051,7 +1051,7 @@ function create(opts={}){
       const o=getOne(typeOrFail(t),n,ns);
       const[l,r]=pos[1].includes(':')?pos[1].split(':'):[pos[1],pos[1]];
       if(o.kind==='Service'&&!endpoints(o).length)fail(`error: unable to forward port because pod is not running. Current status=Pending`);
-      return`Forwarding from 127.0.0.1:${l||r} -> ${r}\nForwarding from [::1]:${l||r} -> ${r}\ncloudlab: en un clúster real el comando se queda escuchando hasta Ctrl+C; aquí termina enseguida.`;
+      return`Forwarding from 127.0.0.1:${l||r} -> ${r}\nForwarding from [::1]:${l||r} -> ${r}\nrapalab: en un clúster real el comando se queda escuchando hasta Ctrl+C; aquí termina enseguida.`;
     },
     auth({pos}){
       if(pos[0]==='whoami')return table([['ATTRIBUTE','VALUE'],['Username','minikube-user'],['Groups','[system:masters system:authenticated]']]);
@@ -1071,7 +1071,7 @@ function create(opts={}){
       return{out:out.join('\n'),code:out.some(x=>x.startsWith('error'))?1:0};
     },
   };
-  function metrics(){if(!S.addons['metrics-server'])fail('error: Metrics API not available\ncloudlab: en minikube se activa con "minikube addons enable metrics-server".')}
+  function metrics(){if(!S.addons['metrics-server'])fail('error: Metrics API not available\nrapalab: en minikube se activa con "minikube addons enable metrics-server".')}
   function nodeArg(pos){if(!pos[0])fail('error: USAGE: cordon NODE [flags]\nSee \'kubectl cordon -h\' for help and examples');const n=find('Node',pos[0].replace(/^nodes?\//,''));if(!n)fail(`Error from server (NotFound): nodes "${pos[0]}" not found`);return n}
   function depTarget(flags,pos){
     const tg=targets(pos,false);
@@ -1162,18 +1162,18 @@ function create(opts={}){
     const env={PATH:'/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',HOSTNAME:p.name,...Object.fromEntries((c.env||[]).map(e=>[e.name,e.value])),KUBERNETES_SERVICE_HOST:'10.96.0.1',KUBERNETES_SERVICE_PORT:'443',HOME:'/root'};
     for(const s of list('Service',p.namespace))if(s.spec.clusterIP){const N=s.name.toUpperCase().replace(/-/g,'_');env[`${N}_SERVICE_HOST`]=s.spec.clusterIP;env[`${N}_SERVICE_PORT`]=String(s.spec.ports[0]?.port)}
     if((bin==='sh'||bin==='bash'||bin==='/bin/sh'||bin==='/bin/bash')&&cmd[1]==='-c')return execIn(p,tokenize(cmd.slice(2).join(' ')).filter(x=>typeof x==='string'),flags);
-    if(bin==='sh'||bin==='bash'||bin==='/bin/sh'||bin==='/bin/bash'){if(bin.endsWith('bash')&&/busybox|alpine/.test(c.image))fail(`error: Internal error occurred: Internal error occurred: error executing command in container: failed to exec in container: failed to start exec "${rand(12)}": OCI runtime exec failed: exec failed: unable to start container process: exec: "bash": executable file not found in $PATH: unknown\ncommand terminated with exit code 126`);return`cloudlab: las shells interactivas no se simulan. Ejecuta cada comando con:\n  kubectl exec ${p.name} -- <comando>\nPor ejemplo: kubectl exec ${p.name} -- env   |   kubectl exec ${p.name} -- ls /`}
+    if(bin==='sh'||bin==='bash'||bin==='/bin/sh'||bin==='/bin/bash'){if(bin.endsWith('bash')&&/busybox|alpine/.test(c.image))fail(`error: Internal error occurred: Internal error occurred: error executing command in container: failed to exec in container: failed to start exec "${rand(12)}": OCI runtime exec failed: exec failed: unable to start container process: exec: "bash": executable file not found in $PATH: unknown\ncommand terminated with exit code 126`);return`rapalab: las shells interactivas no se simulan. Ejecuta cada comando con:\n  kubectl exec ${p.name} -- <comando>\nPor ejemplo: kubectl exec ${p.name} -- env   |   kubectl exec ${p.name} -- ls /`}
     if(bin==='env'||bin==='printenv')return Object.entries(env).map(([k,v])=>`${k}=${v}`).join('\n');
     if(bin==='hostname')return p.name;
     if(bin==='whoami')return'root';
     if(bin==='date')return new Date(now()).toUTCString();
     if(bin==='pwd')return'/';
-    if(bin==='ls'){const dir=cmd.filter(x=>!x.startsWith('-'))[1]||'/';if(/nginx\/html/.test(dir))return'50x.html\nindex.html';if(dir==='/'||dir==='.')return'bin\nboot\ndev\netc\nhome\nlib\nmedia\nmnt\nopt\nproc\nroot\nrun\nsbin\nsrv\nsys\ntmp\nusr\nvar';if(/\/etc\/config|\/config/.test(dir)){return'cloudlab: monta un ConfigMap como volumen con un manifiesto (kubectl apply) para ver sus ficheros aquí.'}return`ls: ${dir}: No such file or directory`}
+    if(bin==='ls'){const dir=cmd.filter(x=>!x.startsWith('-'))[1]||'/';if(/nginx\/html/.test(dir))return'50x.html\nindex.html';if(dir==='/'||dir==='.')return'bin\nboot\ndev\netc\nhome\nlib\nmedia\nmnt\nopt\nproc\nroot\nrun\nsbin\nsrv\nsys\ntmp\nusr\nvar';if(/\/etc\/config|\/config/.test(dir)){return'rapalab: monta un ConfigMap como volumen con un manifiesto (kubectl apply) para ver sus ficheros aquí.'}return`ls: ${dir}: No such file or directory`}
     if(bin==='cat'){const f=cmd[1]||'';if(f==='/etc/hostname')return p.name;if(f==='/etc/os-release')return/alpine|busybox/.test(c.image)?'NAME="Alpine Linux"\nID=alpine\nVERSION_ID=3.22.1':'PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"\nNAME="Debian GNU/Linux"\nVERSION_ID="12"';if(f==='/etc/resolv.conf')return`search ${p.namespace}.svc.cluster.local svc.cluster.local cluster.local\nnameserver 10.96.0.10\noptions ndots:5`;if(/index\.html/.test(f)&&/nginx/.test(c.image))return nginxPage();return`cat: can't open '${f}': No such file or directory`}
     if(bin==='curl'||bin==='wget'){
       const url=cmd.slice(1).filter(x=>!x.startsWith('-'))[0];
       if(!url)return bin==='curl'?'curl: try \'curl --help\' for more information':'BusyBox v1.37.0 multi-call binary.\n\nUsage: wget [-cqS] [-O FILE] URL';
-      if(bin==='curl'&&/busybox/.test(c.image))fail(`error: Internal error occurred: exec: "curl": executable file not found in $PATH\ncommand terminated with exit code 126\ncloudlab: busybox no trae curl; usa wget -qO- <url>.`);
+      if(bin==='curl'&&/busybox/.test(c.image))fail(`error: Internal error occurred: exec: "curl": executable file not found in $PATH\ncommand terminated with exit code 126\nrapalab: busybox no trae curl; usa wget -qO- <url>.`);
       return httpGet(url.replace(/^https?:\/\//,''),p.namespace,bin);
     }
     if(bin==='nslookup'){const h=cmd[1]||'';const r=resolveSvc(h,p.namespace);if(!r)return`Server:\t\t10.96.0.10\nAddress:\t10.96.0.10:53\n\n** server can't find ${h}.${p.namespace}.svc.cluster.local: NXDOMAIN\ncommand terminated with exit code 1`;return`Server:\t\t10.96.0.10\nAddress:\t10.96.0.10:53\n\nName:\t${r.svc.name}.${r.svc.namespace}.svc.cluster.local\nAddress: ${r.svc.spec.clusterIP}`}
@@ -1198,7 +1198,7 @@ function create(opts={}){
     if(!r)return{out:bin==='curl'?`curl: (6) Could not resolve host: ${url.split('/')[0]}`:`wget: bad address '${url.split('/')[0]}'`,code:1,err:true};
     let pods;
     if(r.pod)pods=[r.pod];
-    else{if(r.svc.spec.type==='ExternalName')return`cloudlab: ${r.svc.name} es un alias DNS (CNAME) de ${r.svc.spec.externalName}; el simulador no sale a Internet.`;if(r.port&&!r.svc.spec.ports.some(p=>p.port===r.port))return{out:bin==='curl'?`curl: (28) Failed to connect to ${url.split('/')[0]} port ${r.port} after 3000 ms: Timeout was reached`:'wget: download timed out',code:1,err:true};pods=list('Pod',r.svc.namespace).filter(p=>r.svc.spec.selector&&selMatch(labelStr(r.svc.spec.selector),p.labels)&&podView(p).status==='Running')}
+    else{if(r.svc.spec.type==='ExternalName')return`rapalab: ${r.svc.name} es un alias DNS (CNAME) de ${r.svc.spec.externalName}; el simulador no sale a Internet.`;if(r.port&&!r.svc.spec.ports.some(p=>p.port===r.port))return{out:bin==='curl'?`curl: (28) Failed to connect to ${url.split('/')[0]} port ${r.port} after 3000 ms: Timeout was reached`:'wget: download timed out',code:1,err:true};pods=list('Pod',r.svc.namespace).filter(p=>r.svc.spec.selector&&selMatch(labelStr(r.svc.spec.selector),p.labels)&&podView(p).status==='Running')}
     if(!pods.length)return{out:bin==='curl'?`curl: (7) Failed to connect to ${url.split('/')[0]} port ${r.port||80} after 2 ms: Couldn't connect to server`:`wget: can't connect to remote host (${r.svc.spec.clusterIP}): Connection refused`,code:1,err:true};
     const target=pods[Math.floor(Math.random()*pods.length)];
     const img=target.spec.containers[0].image;
@@ -1239,11 +1239,11 @@ function create(opts={}){
     if(missing.length)fail(`error: error validating "${file}": error validating data: [${missing.map(k=>`${k} not set`).join(', ')}]; if you choose to ignore these errors, turn validation off with --validate=false`);
     const kind=Object.keys(KINDS).find(k=>k===m.kind);
     if(!kind){
-      if(/^(StatefulSet|DaemonSet|Job|CronJob|Ingress|PersistentVolumeClaim|PersistentVolume|StorageClass|ServiceAccount|Role|RoleBinding|ClusterRole|ClusterRoleBinding|NetworkPolicy|HorizontalPodAutoscaler|ResourceQuota|LimitRange)$/.test(m.kind))fail(`cloudlab: el kind "${m.kind}" es válido en Kubernetes, pero todavía no se simula. Recursos simulados: Pod, Deployment, ReplicaSet, Service, ConfigMap, Secret, Namespace.`);
+      if(/^(StatefulSet|DaemonSet|Job|CronJob|Ingress|PersistentVolumeClaim|PersistentVolume|StorageClass|ServiceAccount|Role|RoleBinding|ClusterRole|ClusterRoleBinding|NetworkPolicy|HorizontalPodAutoscaler|ResourceQuota|LimitRange)$/.test(m.kind))fail(`rapalab: el kind "${m.kind}" es válido en Kubernetes, pero todavía no se simula. Recursos simulados: Pod, Deployment, ReplicaSet, Service, ConfigMap, Secret, Namespace.`);
       fail(`error: resource mapping not found for name: "${m.metadata&&m.metadata.name||''}" namespace: "${m.metadata&&m.metadata.namespace||''}" from "${file}": no matches for kind "${m.kind}" in version "${m.apiVersion}"\nensure CRDs are installed first`);
     }
     if(KINDS[kind].api!==m.apiVersion)fail(`error: resource mapping not found for name: "${m.metadata&&m.metadata.name||''}" namespace: "" from "${file}": no matches for kind "${kind}" in version "${m.apiVersion}"\nensure CRDs are installed first`);
-    if(kind==='Node'||kind==='Event'||kind==='ReplicaSet'&&false)fail(`cloudlab: crear ${kind} con un manifiesto no se simula.`);
+    if(kind==='Node'||kind==='Event'||kind==='ReplicaSet'&&false)fail(`rapalab: crear ${kind} con un manifiesto no se simula.`);
     const md=m.metadata||{};
     const name=md.name;
     if(!name)fail(`error: error when retrieving current configuration of:\nResource: "${KINDS[kind].plural}", GroupVersionKind: "${KINDS[kind].api}, Kind=${kind}"\nName: "", Namespace: "${md.namespace||nsOf(flags)}"\nfrom server for: "${file}": resource name may not be empty`);
@@ -1270,7 +1270,7 @@ function create(opts={}){
       const strategy=spec.strategy&&spec.strategy.type;
       if(strategy&&!['RollingUpdate','Recreate'].includes(strategy))fail(`The Deployment "${name}" is invalid: spec.strategy.type: Unsupported value: "${strategy}": supported values: "Recreate", "RollingUpdate"`);
       obj={kind,namespace:ns,name,labels,annotations:md.annotations||{},spec:{replicas:spec.replicas??1,selector:sel,strategy,template:{labels:tl,...(spec.template.metadata.annotations?{annotations:spec.template.metadata.annotations}:{}),containers:cs}}};
-    }else if(kind==='ReplicaSet')fail('cloudlab: crea un Deployment en lugar de un ReplicaSet directamente (es lo recomendado y lo que simula Cloud Lab).');
+    }else if(kind==='ReplicaSet')fail('rapalab: crea un Deployment en lugar de un ReplicaSet directamente (es lo recomendado y lo que simula RapaLab).');
     else if(kind==='Service'){
       const type=spec.type||'ClusterIP';
       if(!['ClusterIP','NodePort','LoadBalancer','ExternalName'].includes(type))fail(`The Service "${name}" is invalid: spec.type: Unsupported value: "${type}": supported values: "ClusterIP", "ExternalName", "LoadBalancer", "NodePort"`);
@@ -1334,10 +1334,10 @@ function create(opts={}){
       case'start':if(S.running)return`😄  minikube ${MINIKUBE_VERSION} on Linux\n✨  Using the docker driver based on existing profile\n👍  Starting "minikube" primary control-plane node in "minikube" cluster\n🏃  Updating the running docker "minikube" container ...\n🐳  Preparing Kubernetes ${VERSION} on Docker 28.4.0 ...\n🔎  Verifying Kubernetes components...\n🌟  Enabled addons: storage-provisioner, default-storageclass\n🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default`;
         S.running=true;return`😄  minikube ${MINIKUBE_VERSION} on Linux\n✨  Using the docker driver based on existing profile\n👍  Starting "minikube" primary control-plane node in "minikube" cluster\n🔄  Restarting existing docker container for "minikube" ...\n🐳  Preparing Kubernetes ${VERSION} on Docker 28.4.0 ...\n🔎  Verifying Kubernetes components...\n🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default`;
       case'stop':if(!S.running)return'✋  Stopping node "minikube"  ...\n🛑  1 node stopped.';S.running=false;return`✋  Stopping node "minikube"  ...\n🛑  Powering off "minikube" via SSH ...\n🛑  ${nodeNames().length} node${nodeNames().length>1?'s':''} stopped.`;
-      case'delete':return'cloudlab: para borrar todo el clúster simulado y empezar de cero usa: lab reset';
+      case'delete':return'rapalab: para borrar todo el clúster simulado y empezar de cero usa: lab reset';
       case'ip':return`192.168.49.${2+((find('Node',(args.find(a=>a.startsWith('--node='))||'').slice(7))||{status:{index:0}}).status.index)}`;
-      case'dashboard':return'🤔  Verifying dashboard health ...\n🚀  Launching proxy ...\ncloudlab: el dashboard web no se simula. Usa el mapa del clúster que tienes al lado de la terminal 😉';
-      case'tunnel':{const lbs=list('Service').filter(s=>s.spec.type==='LoadBalancer');lbs.forEach(s=>s.status.externalIP='127.0.0.1');return`✅  Tunnel successfully started\n\n📌  NOTE: Please do not close this terminal as this process must stay alive for the tunnel to be accessible ...\n\n${lbs.map(s=>`🏃  Starting tunnel for service ${s.name}.`).join('\n')||'(no hay Services LoadBalancer)'}\ncloudlab: los Services LoadBalancer ya tienen EXTERNAL-IP 127.0.0.1.`}
+      case'dashboard':return'🤔  Verifying dashboard health ...\n🚀  Launching proxy ...\nrapalab: el dashboard web no se simula. Usa el mapa del clúster que tienes al lado de la terminal 😉';
+      case'tunnel':{const lbs=list('Service').filter(s=>s.spec.type==='LoadBalancer');lbs.forEach(s=>s.status.externalIP='127.0.0.1');return`✅  Tunnel successfully started\n\n📌  NOTE: Please do not close this terminal as this process must stay alive for the tunnel to be accessible ...\n\n${lbs.map(s=>`🏃  Starting tunnel for service ${s.name}.`).join('\n')||'(no hay Services LoadBalancer)'}\nrapalab: los Services LoadBalancer ya tienen EXTERNAL-IP 127.0.0.1.`}
       case'service':{
         const name=args.slice(1).find(a=>!a.startsWith('-'));
         if(!name)fail('❌  Exiting due to MK_USAGE: You must specify a service name');
@@ -1405,7 +1405,7 @@ function create(opts={}){
       case'date':return new Date(now()).toString();
       case'clear':return{out:'',clear:true};
       case'history':return S.history.map((h,i)=>`${pad(i+1,5)} ${h}`).join('\n');
-      case'nano':case'vi':case'vim':return`cloudlab: los editores no están disponibles. Crea o reemplaza un fichero así:\n  cat <<EOF > ${rest[0]||'deploy.yaml'}\n  apiVersion: v1\n  ...\n  EOF`;
+      case'nano':case'vi':case'vim':return`rapalab: los editores no están disponibles. Crea o reemplaza un fichero así:\n  cat <<EOF > ${rest[0]||'deploy.yaml'}\n  apiVersion: v1\n  ...\n  EOF`;
       case'grep':{
         const flags=rest.filter(x=>/^-[a-zA-Z]+$/.test(x)).join('');
         const pat=rest.find(x=>!/^-[a-zA-Z]+$/.test(x));
@@ -1419,17 +1419,17 @@ function create(opts={}){
       case'head':case'tail':{const n=+(rest.find(x=>/^-?\d+$/.test(x))||'10').replace('-','')||+(rest[rest.indexOf('-n')+1]||10);const l=String(stdin??'').split('\n');return(cmd==='head'?l.slice(0,n):l.slice(-n)).join('\n')}
       case'base64':{const s=String(stdin??'').replace(/\n$/,'');if(rest.includes('-d')||rest.includes('--decode')){const d=unb64(s.trim());return d===null?fail('base64: invalid input'):d}return b64(s)}
       case'lab':{
-        if(rest[0]==='reset'){fresh(true);return{out:'cloudlab: clúster reiniciado. Vuelves a tener un clúster minikube limpio.',reset:true}}
-        if(rest[0]==='status'||!rest[0])return`cloudlab: clúster simulado "minikube" (Kubernetes ${VERSION})\nCreado: ${new Date(S.createdAt).toLocaleString('es')}\nObjetos: ${S.items.length} · Ficheros: ${Object.keys(S.files).length}\nEl estado se guarda en este navegador y se borra tras 48 h sin uso.\nComandos: lab status | lab reset`;
+        if(rest[0]==='reset'){fresh(true);return{out:'rapalab: clúster reiniciado. Vuelves a tener un clúster minikube limpio.',reset:true}}
+        if(rest[0]==='status'||!rest[0])return`rapalab: clúster simulado "minikube" (Kubernetes ${VERSION})\nCreado: ${new Date(S.createdAt).toLocaleString('es')}\nObjetos: ${S.items.length} · Ficheros: ${Object.keys(S.files).length}\nEl estado se guarda en este navegador y se borra tras 48 h sin uso.\nComandos: lab status | lab reset`;
         fail(`lab: subcomando desconocido "${rest[0]}". Usa: lab status | lab reset`);
       }
     }
-    if(KUBECTL_ALL.includes(cmd)||Object.keys(KCMDS).includes(cmd))fail(`sh: ${cmd}: command not found\ncloudlab: ¿quisiste decir "kubectl ${cmd}"?`);
+    if(KUBECTL_ALL.includes(cmd)||Object.keys(KCMDS).includes(cmd))fail(`sh: ${cmd}: command not found\nrapalab: ¿quisiste decir "kubectl ${cmd}"?`);
     const s=suggest(cmd,SHELL_CMDS);
-    fail(`sh: ${cmd}: command not found${s.length?`\ncloudlab: ¿quisiste decir "${s[0]}"?`:''}`);
+    fail(`sh: ${cmd}: command not found${s.length?`\nrapalab: ¿quisiste decir "${s[0]}"?`:''}`);
   }
   function shellHelp(){
-    return`Terminal de Cloud Lab: un clúster de Kubernetes simulado (minikube, Kubernetes ${VERSION}).\nNada se ejecuta de verdad: el simulador imita el comportamiento y los errores reales.\n\n  kubectl ...        La CLI de Kubernetes (también con el alias k). Prueba: kubectl --help\n  minikube ...       Nodos y complementos: minikube node add, minikube addons enable metrics-server\n  cat <<EOF > f.yaml Crea un fichero (termina con una línea EOF) y aplícalo: kubectl apply -f f.yaml\n  ls, cat, rm        Gestiona los ficheros simulados\n  grep, wc, head     Filtra la salida con tuberías: kubectl get pods -A | grep kube\n  history, clear     Historial y limpiar la pantalla\n  lab status|reset   Estado del laboratorio o empezar de cero\n\nAtajos: Tab autocompleta (dos veces muestra opciones) · ↑/↓ historial · Ctrl+C cancela · Ctrl+L limpia`;
+    return`Terminal de RapaLab: un clúster de Kubernetes simulado (minikube, Kubernetes ${VERSION}).\nNada se ejecuta de verdad: el simulador imita el comportamiento y los errores reales.\n\n  kubectl ...        La CLI de Kubernetes (también con el alias k). Prueba: kubectl --help\n  minikube ...       Nodos y complementos: minikube node add, minikube addons enable metrics-server\n  cat <<EOF > f.yaml Crea un fichero (termina con una línea EOF) y aplícalo: kubectl apply -f f.yaml\n  ls, cat, rm        Gestiona los ficheros simulados\n  grep, wc, head     Filtra la salida con tuberías: kubectl get pods -A | grep kube\n  history, clear     Historial y limpiar la pantalla\n  lab status|reset   Estado del laboratorio o empezar de cero\n\nAtajos: Tab autocompleta (dos veces muestra opciones) · ↑/↓ historial · Ctrl+C cancela · Ctrl+L limpia`;
   }
 
   // Ejecuta una línea (con tuberías, &&, ; y redirecciones). stdin = cuerpo de un heredoc.
@@ -1451,7 +1451,7 @@ function create(opts={}){
           const r=builtin(p.args.slice(),stdin);
           last=typeof r==='string'?{out:r,code:0}:{out:r.out??'',code:r.code??0,err:r.err,clear:r.clear,reset:r.reset};
         }catch(e){
-          if(!(e instanceof CmdError)){console.error(e);last={out:`cloudlab: error interno del simulador (${e.message}). Prueba otra forma del comando o usa lab reset.`,code:1,err:true}}
+          if(!(e instanceof CmdError)){console.error(e);last={out:`rapalab: error interno del simulador (${e.message}). Prueba otra forma del comando o usa lab reset.`,code:1,err:true}}
           else last={out:e.message,code:e.code,err:true};
         }
         if(last.clear)clear=true;if(last.reset)reset=true;
@@ -1580,7 +1580,7 @@ function create(opts={}){
     exec(args,stdin){
       S.savedAt=now();
       try{const r=builtin(args.slice(),stdin);return typeof r==='string'?{out:r,code:0}:{out:r.out??'',code:r.code??0,err:r.err}}
-      catch(e){if(!(e instanceof CmdError)){console.error(e);return{out:`cloudlab: error interno del simulador (${e.message}).`,code:1,err:true}}return{out:e.message,code:e.code,err:true}}
+      catch(e){if(!(e instanceof CmdError)){console.error(e);return{out:`rapalab: error interno del simulador (${e.message}).`,code:1,err:true}}return{out:e.message,code:e.code,err:true}}
     },
     get state(){return S},
     restored,

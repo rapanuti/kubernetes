@@ -7,7 +7,7 @@ const h=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt
 let active=null;
 
 const loadAsset=src=>{
-  const cache=window.__cloudLabAssets=window.__cloudLabAssets||{};
+  const cache=window.__rapaLabAssets=window.__rapaLabAssets||{};
   return cache[src]=cache[src]||new Promise((res,rej)=>{
     if(src.endsWith('.css')){const l=document.createElement('link');l.rel='stylesheet';l.href=src;l.onload=res;l.onerror=()=>rej(new Error(src));document.head.appendChild(l);return}
     const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error(src));document.head.appendChild(s);
@@ -51,7 +51,7 @@ class Lab{
     this.freshUids=new Set();
     this.showSystem=false;
     el.innerHTML=`<div class="lab-head"><div><h2>Terminal de Kubernetes</h2><p>Un clúster <b>minikube</b> simulado con Kubernetes ${K8sSim.VERSION}. Nada se ejecuta de verdad, pero responde como un clúster real, errores incluidos.</p></div><div class="lab-actions"><button class="btn" data-cmd="help">? Ayuda</button><button class="btn" data-reset>↺ Reiniciar clúster</button></div></div>
-<div class="lab-grid"><div class="term-wrap"><div class="term-bar"><span class="dots"><i></i><i></i><i></i></span><span class="term-title">user@cloudlab: ~</span><span class="term-ctx"></span></div><div class="term"></div></div>
+<div class="lab-grid"><div class="term-wrap"><div class="term-bar"><span class="dots"><i></i><i></i><i></i></span><span class="term-title">user@rapalab: ~</span><span class="term-ctx"></span></div><div class="term"></div></div>
 <div class="map-wrap"><div class="map-bar"><b>Mapa del clúster</b><label class="map-toggle"><input type="checkbox" data-system> kube-system</label></div><div class="cmap" aria-live="polite"></div><p class="map-legend"><i class="st-run"></i>Running <i class="st-wait"></i>Creando/Pending <i class="st-err"></i>Error <i class="st-done"></i>Completed · Haz clic en un elemento para preparar su <code>describe</code>.</p></div></div>
 <div class="lab-retos lesson"><div class="retos-head"><h3>Retos guiados</h3><span class="retos-count"></span></div><ol class="retos"></ol></div>`;
     this.mapEl=el.querySelector('.cmap');
@@ -72,7 +72,7 @@ class Lab{
   // ---------- Terminal ----------
   initTerm(){
     const sim=this.sim;
-    const t=this.t=new CloudLabTerm(this.el.querySelector('.term'),{
+    const t=this.t=new RapaLabTerm(this.el.querySelector('.term'),{
       run:(line,stdin)=>{this.syncBridge();return sim.run(line,stdin)},
       complete:b=>sim.complete(b),
       prompt:()=>this.promptStr(),
@@ -82,7 +82,7 @@ class Lab{
     });
     this.term=t.term;
     const S=sim.state;
-    t.write(`\x1b[1;36mCloud Lab\x1b[0m · terminal de Kubernetes simulada (\x1b[36mminikube\x1b[0m, Kubernetes ${K8sSim.VERSION})\n`);
+    t.write(`\x1b[1;36mRapaLab\x1b[0m · terminal de Kubernetes simulada (\x1b[36mminikube\x1b[0m, Kubernetes ${K8sSim.VERSION})\n`);
     if(sim.restored){const left=Math.max(0,Math.round((sim.expiresAt()-Date.now())/3600000));t.write(`\x1b[2mClúster restaurado: ${S.items.filter(o=>!o.namespace||!['kube-system','kube-public','kube-node-lease'].includes(o.namespace)).length} objetos guardados. Se conserva ${left} h más si no lo usas.\x1b[0m\n`)}
     else t.write(`\x1b[2mClúster nuevo. Tu trabajo se guarda en este navegador durante 48 h desde el último uso.\x1b[0m\n`);
     const aks=Object.values(S.ctx.contexts).filter(c=>c.aks).length;
@@ -94,7 +94,7 @@ class Lab{
   promptStr(){
     const S=this.sim.state,ns=S.ctx.contexts[S.ctx.current].namespace||'default';
     this.ctxEl.textContent=`⎈ ${S.ctx.current} · ns: ${ns}`;
-    return`\x1b[1;32muser@cloudlab\x1b[0m:\x1b[1;34m~\x1b[0m \x1b[36m(⎈ ${S.ctx.current}|${ns})\x1b[0m$ `;
+    return`\x1b[1;32muser@rapalab\x1b[0m:\x1b[1;34m~\x1b[0m \x1b[36m(⎈ ${S.ctx.current}|${ns})\x1b[0m$ `;
   }
   setLine(s){this.t.setLine(s)}
   exec(line){this.t.exec(line)}
@@ -173,7 +173,7 @@ ${empty?'<p class="empty-s">Namespace vacío. Prueba: <code>kubectl create deplo
 function shortPod(n){const m=n.match(/^(.*)-([a-z0-9]{8,10})-([a-z0-9]{5})$/);return m?`${m[1]}-…${m[3]}`:n}
 function colorize(text,err){
   return text.split('\n').map((l,i)=>{
-    if(/^cloudlab:/.test(l))return`\x1b[33m${l}\x1b[0m`;
+    if(/^rapalab:/.test(l))return`\x1b[33m${l}\x1b[0m`;
     if(/^Warning:/.test(l))return`\x1b[33m${l}\x1b[0m`;
     if(err&&(/^(error|Error|The |sh:|E\d{4}|❌|🤷|😿|curl:|wget:|cat:|rm:|base64:|lab:|ls:)/.test(l)||i===0))return`\x1b[31m${l}\x1b[0m`;
     if(i===0&&/^([A-Z][A-Z()\-%]+ {2,})+[A-Z()\-%]+/.test(l))return`\x1b[1m${l}\x1b[0m`;

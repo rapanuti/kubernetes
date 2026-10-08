@@ -25,14 +25,14 @@ const IMAGES={CentOS85Gen2:'OpenLogic:CentOS:8_5-gen2:latest',Debian11:'Debian:d
 const RESERVED_USERS=['administrator','admin','user','user1','test','user2','test1','user3','admin1','1','123','a','actuser','adm','admin2','aspnet','backup','console','david','guest','john','owner','root','server','sql','support','support_388945a0','sys','test2','test3','user4','user5'];
 // Roles integrados de Azure (los identificadores son los reales).
 const ROLES={'Owner':'8e3af657-a8ff-443c-a75c-2fe8c4bcb635','Contributor':'b24988ac-6180-42a0-ab88-20f7382dd24c','Reader':'acdd72a7-3385-48ef-bd42-f606fba81ae7','User Access Administrator':'18d7d88d-d35e-4fb5-a5c3-7773c20a72d9','Role Based Access Control Administrator':'f58310d9-a9f6-439a-9e8d-f62e7b41a168','Virtual Machine Contributor':'9980e02c-c2be-4d73-94e8-173b1dc7cf3c','Network Contributor':'4d97b98b-1d4f-4787-a291-c67834d212e7','Storage Account Contributor':'17d1049b-9a84-46fb-8f53-869881c3d3ab','Storage Blob Data Contributor':'ba92f5b4-2d11-453d-a403-e96b0029c9fe','Storage Blob Data Reader':'2a2b9908-6ea1-4ae2-8e65-a410df84e7d1','Website Contributor':'de139f84-1756-47ae-9be6-808fbbe84772','Azure Kubernetes Service Cluster User Role':'4abbcc35-e782-43d8-92c5-2d3f1bd2253f','Azure Kubernetes Service RBAC Reader':'7f6c6a51-bcf8-42ba-9220-52d62157d7db','Storage Blob Data Owner':'b7e6dc6d-f1e8-4753-8033-0f276bb0955b','Key Vault Administrator':'00482a5a-887f-4fb3-b363-3b7fe8e74483','Key Vault Secrets Officer':'b86a8fe4-44ce-4948-aee5-eccb2c155cd7','Key Vault Secrets User':'4633458b-17de-408a-b874-0445c86b69e6','Key Vault Reader':'21090545-7ca7-4776-b22c-e363652d74d2','AcrPull':'7f951dda-4ed3-4680-a7ca-43fe172d538d','Monitoring Reader':'43d0d8ad-25c7-4714-9337-8ba259a9fe05','Cost Management Reader':'72fafb9e-0641-4937-9268-a91bfd8191a3'};
-const DOMAIN='cloudlabdemo.onmicrosoft.com';
-const USERS=[['user','Cloud Lab User','Cloud Lab','User'],['ana.garcia','Ana García','Ana','García'],['luis.perez','Luis Pérez','Luis','Pérez'],['marta.ruiz','Marta Ruiz','Marta','Ruiz']].map(([u,d,g,s],i)=>({upn:`${u}@${DOMAIN}`,displayName:d,givenName:g,surname:s,id:['3b0f9d6e-6c1a-4a8e-9f4a-2f1c0d7b8e11','5c2e4a7d-1b3f-4c6e-8a9d-0e1f2a3b4c5d','7d4f6b8e-2c5a-4d7f-9b1e-1f2a3b4c5d6e','9e6a8c0f-3d7b-4e8a-a2c3-2a3b4c5d6e7f'][i]}));
+const DOMAIN='rapalabdemo.onmicrosoft.com';
+const USERS=[['user','RapaLab User','RapaLab','User'],['ana.garcia','Ana García','Ana','García'],['luis.perez','Luis Pérez','Luis','Pérez'],['marta.ruiz','Marta Ruiz','Marta','Ruiz']].map(([u,d,g,s],i)=>({upn:`${u}@${DOMAIN}`,displayName:d,givenName:g,surname:s,id:['3b0f9d6e-6c1a-4a8e-9f4a-2f1c0d7b8e11','5c2e4a7d-1b3f-4c6e-8a9d-0e1f2a3b4c5d','7d4f6b8e-2c5a-4d7f-9b1e-1f2a3b4c5d6e','9e6a8c0f-3d7b-4e8a-a2c3-2a3b4c5d6e7f'][i]}));
 const RUNTIMES={linux:['NODE:22-lts','NODE:20-lts','PYTHON:3.13','PYTHON:3.12','PYTHON:3.11','DOTNETCORE:9.0','DOTNETCORE:8.0','JAVA:21-java21','JAVA:17-java17','PHP:8.4','PHP:8.3'],windows:['dotnet:9','dotnet:8','ASPNET:V4.8','NODE:22LTS','NODE:20LTS','JAVA:21','JAVA:17','PYTHON:3.12']};
 const PLAN_SKUS=['B1','B2','B3','D1','F1','FREE','P0V3','P1V2','P1V3','P2V2','P2V3','P3V2','P3V3','P0V4','P1V4','P2V4','P3V4','P1MV3','P2MV3','S1','S2','S3','SHARED','I1V2','I2V2','I3V2','WS1','WS2','WS3'];
 const STORAGE_SKUS=['Premium_LRS','Premium_ZRS','Standard_GRS','Standard_GZRS','Standard_LRS','Standard_RAGRS','Standard_RAGZRS','Standard_ZRS'];
 // Nombres globales que "ya usa otra persona" en Azure (storage y web apps son únicos en todo Azure).
-const TAKEN_STORAGE=['storage','mystorage','mystorageaccount','storageaccount','teststorage','test','azure','demo','cloudlab','backup','data','images','logs','prod','dev','files','media'];
-const TAKEN_SITES=['portal','myapp','webapp','test','app','demo','hello','azure','cloudlab','api','www','helloworld','mywebapp'];
+const TAKEN_STORAGE=['storage','mystorage','mystorageaccount','storageaccount','teststorage','test','azure','demo','rapalab','backup','data','images','logs','prod','dev','files','media'];
+const TAKEN_SITES=['portal','myapp','webapp','test','app','demo','hello','azure','rapalab','api','www','helloworld','mywebapp'];
 const TYPES={group:'Microsoft.Resources/resourceGroups',vm:'Microsoft.Compute/virtualMachines',disk:'Microsoft.Compute/disks',storage:'Microsoft.Storage/storageAccounts',vnet:'Microsoft.Network/virtualNetworks',nsg:'Microsoft.Network/networkSecurityGroups',pip:'Microsoft.Network/publicIPAddresses',nic:'Microsoft.Network/networkInterfaces',plan:'Microsoft.Web/serverFarms',webapp:'Microsoft.Web/sites',aks:'Microsoft.ContainerService/managedClusters',vmss:'Microsoft.Compute/virtualMachineScaleSets',lb:'Microsoft.Network/loadBalancers',kv:'Microsoft.KeyVault/vaults',sqlserver:'Microsoft.Sql/servers',acr:'Microsoft.ContainerRegistry/registries',ag:'Microsoft.Insights/actionGroups',alert:'Microsoft.Insights/metricAlerts'};
 
 // ---------- Utilidades ----------
@@ -62,9 +62,9 @@ class AzError extends Error{constructor(msg,code=1){super(msg);this.code=code}}
 class Ask{constructor(text,cont,secret){this.text=text;this.cont=cont;this.secret=!!secret}}
 const fail=(m,code=1)=>{throw new AzError(m,code)};
 const err=(m,code=1)=>fail('ERROR: '+m,code);
-// Error de Azure Resource Manager: "(Código) mensaje", luego Code/Message/Target y, al final, las notas de cloudlab.
+// Error de Azure Resource Manager: "(Código) mensaje", luego Code/Message/Target y, al final, las notas de rapalab.
 const arm=(c,m,code=1)=>{
-  const lines=m.split('\n'),i=lines.findIndex(l=>/^(Target|cloudlab):/.test(l)),head=(i<0?lines:lines.slice(0,i)).join('\n'),tail=i<0?[]:lines.slice(i);
+  const lines=m.split('\n'),i=lines.findIndex(l=>/^(Target|rapalab):/.test(l)),head=(i<0?lines:lines.slice(0,i)).join('\n'),tail=i<0?[]:lines.slice(i);
   const target=tail.filter(l=>l.startsWith('Target:')),notes=tail.filter(l=>!l.startsWith('Target:'));
   err([`(${c}) ${head}`,`Code: ${c}`,`Message: ${head}`,...target,...notes].join('\n'),code);
 };
@@ -283,7 +283,7 @@ function create(opts={}){
   function fresh(){
     const t=now();
     S={v:1,createdAt:t,savedAt:t,loggedIn:false,tenant:{id:guid(),name:'Default Directory',domain:DOMAIN},
-      subs:[{id:guid(),name:'Azure subscription 1',offer:'Pay-As-You-Go'},{id:guid(),name:'Cloud Lab Dev',offer:'Visual Studio Enterprise'}],
+      subs:[{id:guid(),name:'Azure subscription 1',offer:'Pay-As-You-Go'},{id:guid(),name:'RapaLab Dev',offer:'Visual Studio Enterprise'}],
       current:null,defaults:{},res:[],roles:[],merged:[],gone:[],locks:[],policies:[],deletedVaults:[],activity:[],budgets:[],offset:0,sshKeys:false,vars:{},files:{},history:[],stats:{}};
     S.current=S.subs[0].id;
     for(const s of S.subs)S.roles.push({id:guid(),scope:`/subscriptions/${s.id}`,role:'Owner',principal:USERS[0].id,created:t-86400000*30});
@@ -424,7 +424,7 @@ function create(opts={}){
     const{subs,cmds}=children(prefix);
     const w=Math.max(15,...[...subs,...cmds].map(k=>last(k).length));
     const row=(k,d)=>`    ${pad(last(k),w)} : ${d}`;
-    if(!prefix)return`\nGroup\n    az\n\nSubgroups:\n${subs.map(k=>row(k,GROUPS[k])).join('\n')}\n\nCommands:\n${cmds.map(k=>row(k,C[k].desc)).join('\n')}\n\nTo search AI knowledge base for examples, use: az find "az"\n\ncloudlab: se muestran los grupos simulados. Azure CLI real tiene más de 100.`;
+    if(!prefix)return`\nGroup\n    az\n\nSubgroups:\n${subs.map(k=>row(k,GROUPS[k])).join('\n')}\n\nCommands:\n${cmds.map(k=>row(k,C[k].desc)).join('\n')}\n\nTo search AI knowledge base for examples, use: az find "az"\n\nrapalab: se muestran los grupos simulados. Azure CLI real tiene más de 100.`;
     return`\nGroup\n    az ${prefix} : ${GROUPS[prefix]}\n${subs.length?`\nSubgroups:\n${subs.map(k=>row(k,GROUPS[k])).join('\n')}\n`:''}${cmds.length?`\nCommands:\n${cmds.map(k=>row(k,C[k].desc)).join('\n')}\n`:''}\nTo search AI knowledge base for examples, use: az find "az ${prefix}"\n`;
   }
   function cmdHelp(key){
@@ -451,7 +451,7 @@ function create(opts={}){
       if(GROUPS[cand]!=null){prefix=cand;i++;continue}
       const w=args[i];
       const real=(REAL[prefix]||[]).includes(w);
-      if(real)return{text:`cloudlab: "az ${cand}" existe en Azure CLI ${CLI_VERSION}, pero todavía no se simula aquí.\nEscribe "az ${prefix?prefix+' ':''}--help" para ver los comandos disponibles.`};
+      if(real)return{text:`rapalab: "az ${cand}" existe en Azure CLI ${CLI_VERSION}, pero todavía no se simula aquí.\nEscribe "az ${prefix?prefix+' ':''}--help" para ver los comandos disponibles.`};
       const opts=[...children(prefix).subs.map(last),...children(prefix).cmds.map(last),...(REAL[prefix]||[])];
       const s=similar(w,[...new Set(opts)]);
       fail(`${prefix?'az '+prefix:'az'}: '${w}' is not in the '${prefix?'az '+prefix:'az'}' command group. See '${prefix?'az '+prefix:'az'} --help'.${prefix?'':' If the command is from an extension, please make sure the corresponding extension is installed. To learn more about extensions, please visit https://learn.microsoft.com/en-us/cli/azure/azure-cli-extensions-overview'}${s.length?`\n\nThe most similar choice${s.length>1?'s':''} to '${w}' ${s.length>1?'are':'is'}:\n${s.map(x=>'\t'+x).join('\n')}`:''}`,2);
@@ -555,7 +555,7 @@ function create(opts={}){
   function checkQuota(loc,size,count=1,minus=0){
     const[c,,f]=SIZES[size],u=coreUsage(loc),need=c*count-minus;
     const famUse=u.fam[f]||0,famLim=FAMILY_LIMIT(f);
-    const q=(what,lim,cur)=>arm('QuotaExceeded',`Operation could not be completed as it results in exceeding approved ${what} quota. Additional details - Deployment Model: Resource Manager, Location: ${loc}, Current Limit: ${lim}, Current Usage: ${cur}, Additional Required: ${need}, (Minimum) New Limit Required: ${cur+need}. Setup Alerts when Quota reaches threshold. Learn more at https://aka.ms/quotamonitoringalerting . Submit a request for Quota increase at https://aka.ms/ProdportalCRP/#blade/Microsoft_Azure_Capacity/UsageAndQuota.ReactView/Parameters/%7B%22subscriptionId%22:%22${curSub()}%22,%22command%22:%22openQuotaApprovalBlade%22%7D by specifying parameters listed in the ‘Details’ section for deployment to succeed. Please read more about quota limits at https://docs.microsoft.com/en-us/azure/azure-supportability/regional-quota-requests\ncloudlab: la cuota de vCPU por región es ${QUOTA}. Las VM desasignadas (az vm deallocate) y los AKS detenidos no consumen cuota.`);
+    const q=(what,lim,cur)=>arm('QuotaExceeded',`Operation could not be completed as it results in exceeding approved ${what} quota. Additional details - Deployment Model: Resource Manager, Location: ${loc}, Current Limit: ${lim}, Current Usage: ${cur}, Additional Required: ${need}, (Minimum) New Limit Required: ${cur+need}. Setup Alerts when Quota reaches threshold. Learn more at https://aka.ms/quotamonitoringalerting . Submit a request for Quota increase at https://aka.ms/ProdportalCRP/#blade/Microsoft_Azure_Capacity/UsageAndQuota.ReactView/Parameters/%7B%22subscriptionId%22:%22${curSub()}%22,%22command%22:%22openQuotaApprovalBlade%22%7D by specifying parameters listed in the ‘Details’ section for deployment to succeed. Please read more about quota limits at https://docs.microsoft.com/en-us/azure/azure-supportability/regional-quota-requests\nrapalab: la cuota de vCPU por región es ${QUOTA}. Las VM desasignadas (az vm deallocate) y los AKS detenidos no consumen cuota.`);
     if(famUse+need>famLim)q(`${f} Cores`,famLim,famUse);
     if(u.total+need>QUOTA)q('Total Regional Cores',QUOTA,u.total);
   }
@@ -583,9 +583,9 @@ function create(opts={}){
   }
   cmd('login','Log in to Azure.',[A('device',['--use-device-code'],{type:'bool',desc:'Use CLI\'s old authentication flow based on device code.'}),A('tenant',['--tenant','-t'],{desc:'The Microsoft Entra tenant, must be provided when using a service principal.'}),A('username',['--username','-u'],{desc:'User name, service principal client ID, or managed identity ID.'}),A('password',['--password','-p'],{desc:'User password or service principal secret.'}),A('sp',['--service-principal'],{type:'bool',desc:'Log in with a service principal.'}),A('identity',['--identity'],{type:'bool',desc:'Log in using managed identity.'}),A('noSubs',['--allow-no-subscriptions'],{type:'bool',desc:'Support access tenants without subscriptions.'})],
     [['Log in interactively.','az login'],['Log in with device code.','az login --use-device-code']],v=>{
-      if(v.sp||v.identity||v.password)return{text:`cloudlab: en este simulador solo está disponible el inicio de sesión interactivo (az login o az login --use-device-code).\nEn Azure real, --service-principal y --identity sirven para automatización (pipelines, VMs con identidad administrada).`};
+      if(v.sp||v.identity||v.password)return{text:`rapalab: en este simulador solo está disponible el inicio de sesión interactivo (az login o az login --use-device-code).\nEn Azure real, --service-principal y --identity sirven para automatización (pipelines, VMs con identidad administrada).`};
       const code=Array.from({length:9},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
-      const pre=v.device?`To sign in, use a web browser to open the page https://login.microsoft.com/device and enter the code ${code} to authenticate.\ncloudlab: inicio de sesión simulado; no tienes que abrir nada.`:`A web browser has been opened at https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize. Please continue the login in the web browser. If no web browser is available or if the web browser fails to open, use device code flow with \`az login --use-device-code\`.\ncloudlab: inicio de sesión simulado como ${USERS[0].upn}; no se abre ningún navegador.`;
+      const pre=v.device?`To sign in, use a web browser to open the page https://login.microsoft.com/device and enter the code ${code} to authenticate.\nrapalab: inicio de sesión simulado; no tienes que abrir nada.`:`A web browser has been opened at https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize. Please continue the login in the web browser. If no web browser is available or if the web browser fails to open, use device code flow with \`az login --use-device-code\`.\nrapalab: inicio de sesión simulado como ${USERS[0].upn}; no se abre ningún navegador.`;
       const f=loginFlow(pre);
       return{text:f.pre,ask:f.ask};
     },{login:false});
@@ -596,7 +596,7 @@ function create(opts={}){
     return{data:accountView(s)};
   });
   cmd('account list','Get a list of subscriptions for the logged in account. By default, only \'Enabled\' subscriptions from the current cloud is shown.',[A('all',['--all'],{type:'bool',desc:'List all subscriptions from all clouds, rather than just \'Enabled\' ones.'}),A('refresh',['--refresh'],{type:'bool',desc:'Retrieve up-to-date subscriptions from server.'})],[['Get a list of subscriptions for the logged in account.','az account list -o table']],()=>({data:S.subs.map(accountView)}),{table:accTable});
-  cmd('account set','Set a subscription to be the current active subscription.',[A('name',['--name','--subscription','-n','-s'],{req:true,desc:'Name or ID of subscription.'})],[['Set the current active subscription.','az account set --subscription "Cloud Lab Dev"']],v=>{
+  cmd('account set','Set a subscription to be the current active subscription.',[A('name',['--name','--subscription','-n','-s'],{req:true,desc:'Name or ID of subscription.'})],[['Set the current active subscription.','az account set --subscription "RapaLab Dev"']],v=>{
     const s=S.subs.find(s=>s.id===v.name||lc(s.name)===lc(v.name));
     if(!s)err(`The subscription of '${v.name}' doesn't exist in cloud 'AzureCloud'.`);
     S.current=s.id;S.cur=null;stat('accountSet');return{};
@@ -605,7 +605,7 @@ function create(opts={}){
   cmd('configure','Manage Azure CLI configuration. This command is interactive.',[A('defaults',['--defaults','-d'],{type:'list',desc:'Space-separated \'name=value\' pairs for common argument defaults. E.g. \'--defaults group=myRG web=myweb vm=myvm\'. Use \'\' to clear the defaults.'}),A('list',['--list-defaults','-l'],{type:'tbool',desc:'List all applicable defaults.'}),A('scope',['--scope'],{choices:['global','local'],desc:'Scope of defaults.'})],[['Set default resource group and location.','az configure --defaults group=myRG location=eastus'],['List the defaults.','az configure --list-defaults -o table']],v=>{
     if(v.list)return{data:Object.entries(S.defaults).filter(([k])=>k!=='output').map(([name,value])=>({name,source:'/home/user/.azure/config',value}))};
     if(v.defaults){for(const d of v.defaults){const i=d.indexOf('=');if(i<0)err(`usage error: --defaults NAME=VALUE`,2);const k=d.slice(0,i),val=d.slice(i+1);if(val)S.defaults[k]=val;else delete S.defaults[k]}return{}}
-    return{text:`cloudlab: la configuración interactiva no está disponible. Usa az configure --defaults group=<grupo> location=<región>`};
+    return{text:`rapalab: la configuración interactiva no está disponible. Usa az configure --defaults group=<grupo> location=<región>`};
   },{login:false});
 
   // ---------- Comandos: grupos de recursos ----------
@@ -636,7 +636,7 @@ function create(opts={}){
     [['Delete a resource group.','az group delete -n MyResourceGroup']],v=>{
       const g=needGroup(v.name);
       const go=()=>{
-        if(g.p.managedBy)return{text:`cloudlab: este grupo lo gestiona un clúster AKS (managedBy). Borra el clúster con "az aks delete" y Azure eliminará también este grupo de nodos.`};
+        if(g.p.managedBy)return{text:`rapalab: este grupo lo gestiona un clúster AKS (managedBy). Borra el clúster con "az aks delete" y Azure eliminará también este grupo de nodos.`};
         if(busy(g)==='Deleting')return{};
         guard('delete',resId(g),true);
         stat('groupDelete');
@@ -654,7 +654,7 @@ function create(opts={}){
     if(alias)return{alias,urn:IMAGES[alias],windows:/^Win/.test(alias)};
     const parts=String(img).split(':');
     if(parts.length===4&&parts.every(Boolean))return{alias:null,urn:img,windows:/windows/i.test(parts[0]+parts[1])};
-    err(`Invalid image "${img}". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from [${Object.keys(IMAGES).map(k=>`'${k}'`).join(', ')}].\nSee vm create -h for more information on specifying an image.${/ubuntults|^ubuntu$/i.test(img)?'\ncloudlab: el alias UbuntuLTS se retiró; muchos tutoriales antiguos lo usan. Prueba con --image Ubuntu2204 o Ubuntu2404.':''}`);
+    err(`Invalid image "${img}". Use a valid image URN, custom image name, custom image id, VHD blob URI, or pick an image from [${Object.keys(IMAGES).map(k=>`'${k}'`).join(', ')}].\nSee vm create -h for more information on specifying an image.${/ubuntults|^ubuntu$/i.test(img)?'\nrapalab: el alias UbuntuLTS se retiró; muchos tutoriales antiguos lo usan. Prueba con --image Ubuntu2204 o Ubuntu2404.':''}`);
   }
   function validatePassword(pw,linux){
     const max=linux?72:123;
@@ -672,14 +672,14 @@ function create(opts={}){
       if(img.windows&&(name.length>15||/^\d+$/.test(name)||/[`~!@#$%^&*()=+_[\]{}\\|;:.'",<>/?]/.test(name)))arm('InvalidParameter',"Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ` ~ ! @ # $ % ^ & * ( ) = + _ [ ] { } \\ | ; : . ' \" , < > / ?.\nTarget: computerName");
       if(!img.windows&&(name.length>64||/[`~!@#$%^&*()=+_[\]{}\\|;:'",<>/?]/.test(name)))arm('InvalidParameter',"Linux host name cannot exceed 64 characters in length or contain the following characters: ` ~ ! @ # $ % ^ & * ( ) = + _ [ ] { } \\ | ; : ' \" , < > / ?.\nTarget: computerName");
       const size=sizeName(v.size||'Standard_D2s_v5');
-      if(!size)arm('InvalidParameter',`The value ${v.size} provided for the VM size is not valid. The valid sizes in the current region are: ${Object.keys(SIZES).join(',')}.\nTarget: vmSize\ncloudlab: consulta los tamaños con az vm list-sizes -l ${loc} -o table`);
+      if(!size)arm('InvalidParameter',`The value ${v.size} provided for the VM size is not valid. The valid sizes in the current region are: ${Object.keys(SIZES).join(',')}.\nTarget: vmSize\nrapalab: consulta los tamaños con az vm list-sizes -l ${loc} -o table`);
       const admin=v.admin||'azureuser';
       if(RESERVED_USERS.includes(lc(admin)))err(`This user name '${admin}' meets the general requirements, but is specifically disallowed for this image. Please try a different value.`);
       if(!img.windows&&/[A-Z\\/"[\]:|<>+=;,?*@#()!]|^[$-]/.test(admin))err('admin user name cannot contain upper case character A-Z, special characters \\/"[]:|<>+=;,?*@#()! or start with $ or -');
       const auth=v.auth||(img.windows||v.password?'password':'ssh');
       if(img.windows&&auth==='ssh')err('SSH not supported for Windows VMs.');
       const existing=findRes('vm',v.rg,name);
-      if(existing)arm('PropertyChangeNotAllowed',`Changing property 'osProfile.adminUsername' is not allowed.\nTarget: osProfile.adminUsername\ncloudlab: ya existe una VM "${existing.name}" en el grupo ${existing.rg}. Usa otro nombre o bórrala con az vm delete.`);
+      if(existing)arm('PropertyChangeNotAllowed',`Changing property 'osProfile.adminUsername' is not allowed.\nTarget: osProfile.adminUsername\nrapalab: ya existe una VM "${existing.name}" en el grupo ${existing.rg}. Usa otro nombre o bórrala con az vm delete.`);
       const finish=pw=>{
         if(pw!=null)validatePassword(pw,!img.windows);
         const warn=[];
@@ -719,7 +719,7 @@ function create(opts={}){
   function vmFind(v){return needRes('vm',v.rg,v.name)}
   const powerCmd=(key,desc,long,fn,ex)=>cmd(key,desc,[NAME('The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`.'),RG(),NOWAIT,...(key==='vm stop'?[A('skipShutdown',['--skip-shutdown'],{type:'bool',desc:'Skip shutdown and power-off immediately.'})]:[])],ex,v=>{const vm=vmFind(v);guard('write',resId(vm));if(busy(vm))arm('OperationNotAllowed',`Operation '${key.split(' ')[1]}' is not allowed on VM '${vm.name}' since the VM is ${lc(busy(vm))}.`,1);return fn(vm,v)||{}},{long});
   powerCmd('vm start','Start a stopped VM.',null,vm=>{if(vm.p.power==='deallocated')checkQuota(vm.location,vm.p.size);vm.p.power='running';stat('vmStart')},[['Start a stopped VM.','az vm start -g MyResourceGroup -n MyVm']]);
-  powerCmd('vm stop','Power off (stop) a running VM.','The VM will continue to be billed. To avoid this, you can deallocate the VM through "az vm deallocate".',vm=>{if(vm.p.power!=='deallocated')vm.p.power='stopped';stat('vmStop');return{warn:['cloudlab: la VM está apagada pero sigue asignada, así que Azure sigue cobrando el cómputo. Para dejar de pagarlo usa az vm deallocate.']}},[['Power off (stop) a running VM.','az vm stop -g MyResourceGroup -n MyVm']]);
+  powerCmd('vm stop','Power off (stop) a running VM.','The VM will continue to be billed. To avoid this, you can deallocate the VM through "az vm deallocate".',vm=>{if(vm.p.power!=='deallocated')vm.p.power='stopped';stat('vmStop');return{warn:['rapalab: la VM está apagada pero sigue asignada, así que Azure sigue cobrando el cómputo. Para dejar de pagarlo usa az vm deallocate.']}},[['Power off (stop) a running VM.','az vm stop -g MyResourceGroup -n MyVm']]);
   powerCmd('vm deallocate','Deallocate a VM so that computing resources are no longer allocated (charges no longer apply). The status will change from \'Stopped\' to \'Stopped (Deallocated)\'.',null,vm=>{vm.p.power='deallocated';stat('vmDeallocate')},[['Deallocate a VM.','az vm deallocate -g MyResourceGroup -n MyVm']]);
   powerCmd('vm restart','Restart VMs.',null,vm=>{if(vm.p.power!=='running')arm('OperationNotAllowed',`Operation 'restart' is not allowed on VM '${vm.name}' since the VM is ${vm.p.power==='deallocated'?'deallocated':'not running'}.`);},[['Restart a VM.','az vm restart -g MyResourceGroup -n MyVm']]);
   cmd('vm list','List details of Virtual Machines.',[RG(false),A('details',['--show-details','-d'],{type:'bool',desc:'Show public ip address, FQDN, and power states. command will run slow.'})],[['List all VMs.','az vm list'],['List all VMs by resource group with details.','az vm list -g MyResourceGroup -d -o table']],v=>{if(v.rg)needGroup(v.rg);return{data:resOf('vm',v.rg).map(x=>vmView(x,v.details))}},{table:vmTable});
@@ -742,7 +742,7 @@ function create(opts={}){
     let d=Object.entries(IMAGES).map(([alias,urn])=>{const[publisher,offer,sku,version]=urn.split(':');return{architecture:'x64',offer,publisher,sku,urn,urnAlias:alias,version}});
     if(v.publisher)d=d.filter(x=>lc(x.publisher).includes(lc(v.publisher)));
     if(v.offer)d=d.filter(x=>lc(x.offer).includes(lc(v.offer)));
-    return{warn:v.all?['cloudlab: --all consultaría el Marketplace completo (miles de imágenes); aquí se muestra la lista sin conexión.']:['You are viewing an offline list of images, use --all to retrieve an up-to-date list'],data:d};
+    return{warn:v.all?['rapalab: --all consultaría el Marketplace completo (miles de imágenes); aquí se muestra la lista sin conexión.']:['You are viewing an offline list of images, use --all to retrieve an up-to-date list'],data:d};
   },{login:false});
 
   // ---------- Comandos: almacenamiento ----------
@@ -756,7 +756,7 @@ function create(opts={}){
       const loc=v.location?needLoc(v.location,'storage'):g.location;
       const mine=S.res.find(r=>r.t==='storage'&&r.name===n);
       if(mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name))){if(mine.sub===curSub())arm('StorageAccountAlreadyExists',`The storage account named ${n} already exists under the subscription.`);arm('StorageAccountAlreadyTaken',`The storage account named ${n} is already taken.`)}
-      if(!mine&&TAKEN_STORAGE.includes(n))arm('StorageAccountAlreadyTaken',`The storage account named ${n} is already taken.\ncloudlab: el nombre de una cuenta de almacenamiento es único en todo Azure (forma parte de https://${n}.blob.core.windows.net). Prueba con algo más personal, p. ej. st${n}${String(now()).slice(-4)}.`);
+      if(!mine&&TAKEN_STORAGE.includes(n))arm('StorageAccountAlreadyTaken',`The storage account named ${n} is already taken.\nrapalab: el nombre de una cuenta de almacenamiento es único en todo Azure (forma parte de https://${n}.blob.core.windows.net). Prueba con algo más personal, p. ej. st${n}${String(now()).slice(-4)}.`);
       const sku=v.sku||'Standard_RAGRS';
       if(!mine)policyCheck({t:'storage',name:n,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.storage}/${n}`});
       if(sku.startsWith('Premium')&&(v.kind||'StorageV2')==='BlobStorage')err(`usage error: --sku ${sku} is not supported with --kind BlobStorage`);
@@ -832,7 +832,7 @@ function create(opts={}){
   cmd('network vnet subnet create','Create a subnet and associate an existing NSG and route table.',[NAME('The subnet name.'),RG(),A('vnet',['--vnet-name'],{req:true,desc:'The virtual network (VNet) name.'}),A('prefixes',['--address-prefixes','--address-prefix'],{type:'list',desc:'Space-separated list of address prefixes in CIDR format.'}),A('nsg',['--network-security-group'],{desc:'Name or ID of a network security group (NSG).'})],
     [['Create new subnet attached to an NSG with a custom route table.','az network vnet subnet create -g MyResourceGroup --vnet-name MyVnet -n MySubnet --address-prefixes 10.0.0.0/24']],v=>{
       const vnet=needRes('vnet',v.rg,v.vnet);guard('write',resId(vnet));
-      if(!v.prefixes)arm('InvalidRequestFormat',`Cannot parse the request.\ncloudlab: indica el rango de la subred con --address-prefixes, p. ej. ${nextSubnet(vnet)||'10.0.1.0/24'}`);
+      if(!v.prefixes)arm('InvalidRequestFormat',`Cannot parse the request.\nrapalab: indica el rango de la subred con --address-prefixes, p. ej. ${nextSubnet(vnet)||'10.0.1.0/24'}`);
       const sn=addSubnet(vnet,v.name,v.prefixes[0]);
       stat('subnetCreate');
       return{data:subnetView(vnet,sn)};
@@ -856,7 +856,7 @@ function create(opts={}){
       if(!/^[a-zA-Z0-9-]{1,60}$/.test(v.name))err(`Plan name '${v.name}' is invalid. It can only contain letters, numbers and hyphens (max 60 characters).`);
       const linux=v.linux!==false;
       const free=S.res.filter(p=>p.t==='plan'&&inSub(p)&&p.location===loc&&(p.p.sku==='F1'||p.p.sku==='FREE')&&p.p.linux===linux&&lc(p.name)!==lc(v.name));
-      if((sku==='F1'||sku==='FREE')&&free.length>=1)arm('Conflict',`The maximum number of Free ${linux?'Linux ':''}ServerFarms allowed in a Subscription is 1.\ncloudlab: Azure solo permite un plan gratuito (F1) ${linux?'Linux ':''}por región y suscripción. Ya tienes "${free[0].name}".`);
+      if((sku==='F1'||sku==='FREE')&&free.length>=1)arm('Conflict',`The maximum number of Free ${linux?'Linux ':''}ServerFarms allowed in a Subscription is 1.\nrapalab: Azure solo permite un plan gratuito (F1) ${linux?'Linux ':''}por región y suscripción. Ya tienes "${free[0].name}".`);
       let p=findRes('plan',g.name,v.name);
       if(!p)policyCheck({t:'plan',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.plan}/${v.name}`});
       if(p&&p.p.linux!==linux)arm('Conflict',`Server farm with name ${v.name} already exists with a different OS type.`);
@@ -883,7 +883,7 @@ function create(opts={}){
       if(!/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,58}[a-zA-Z0-9])?$/.test(n))arm('InvalidResourceName',`Resource name ${n} is invalid. The name can contain only letters, numbers and hyphens; it cannot start or end with a hyphen and must be between 2 and 60 characters.`);
       const mine=S.res.find(w=>w.t==='webapp'&&lc(w.name)===lc(n));
       if(mine&&lc(mine.rg)===lc(g.name)&&mine.sub===curSub()){return{warn:[`Webapp '${mine.name}' already exists. The command will use the existing app's settings.`],data:siteView(mine)}}
-      if(mine||TAKEN_SITES.includes(lc(n)))arm('Conflict',`Website with given name ${n} already exists.${mine?'':`\ncloudlab: el nombre forma parte de https://${n}.azurewebsites.net y es único en todo Azure. Prueba con algo como ${n}-${String(now()).slice(-5)}.`}`);
+      if(mine||TAKEN_SITES.includes(lc(n)))arm('Conflict',`Website with given name ${n} already exists.${mine?'':`\nrapalab: el nombre forma parte de https://${n}.azurewebsites.net y es único en todo Azure. Prueba con algo como ${n}-${String(now()).slice(-5)}.`}`);
       let runtime=v.runtime?v.runtime.replace('|',':'):null;
       const os=plan.p.linux?'linux':'windows';
       if(runtime){const m=RUNTIMES[os].find(r=>lc(r)===lc(runtime));if(!m)err(`${plan.p.linux?'Linux':'Windows'} Runtime '${v.runtime}' is not supported. Run 'az webapp list-runtimes --os-type ${os}' to cross check`);runtime=m}
@@ -897,8 +897,8 @@ function create(opts={}){
   cmd('webapp browse','Open a web app in a browser. This is not supported in Azure Cloud Shell.',[NAME('Name of the web app.'),RG(),A('logs',['--logs','-l'],{type:'bool',desc:'Enable viewing the log stream immediately after launching the web app.'})],[['Open a web app in a browser.','az webapp browse --name MyWebapp --resource-group MyResourceGroup']],v=>{
     const w=needRes('webapp',v.rg,v.name);
     stat('webappBrowse');
-    if(w.p.state!=='Running')return{text:`cloudlab: se abriría https://${w.name}.azurewebsites.net, pero la app está detenida: el navegador mostraría "Error 403 - This web app is stopped."`};
-    return{text:`cloudlab: se abriría https://${w.name}.azurewebsites.net en tu navegador. Vista previa de lo que verías:\n\n  ┌${'─'.repeat(58)}┐\n  │  ${pad('Microsoft Azure',56)}│\n  │  ${pad('',56)}│\n  │  ${pad('Your web app is running and waiting for your content',56)}│\n  │  ${pad(w.name+'.azurewebsites.net',56)}│\n  │  ${pad(w.p.runtime?'Runtime: '+w.p.runtime:'Sin pila de ejecución configurada',56)}│\n  └${'─'.repeat(58)}┘`};
+    if(w.p.state!=='Running')return{text:`rapalab: se abriría https://${w.name}.azurewebsites.net, pero la app está detenida: el navegador mostraría "Error 403 - This web app is stopped."`};
+    return{text:`rapalab: se abriría https://${w.name}.azurewebsites.net en tu navegador. Vista previa de lo que verías:\n\n  ┌${'─'.repeat(58)}┐\n  │  ${pad('Microsoft Azure',56)}│\n  │  ${pad('',56)}│\n  │  ${pad('Your web app is running and waiting for your content',56)}│\n  │  ${pad(w.name+'.azurewebsites.net',56)}│\n  │  ${pad(w.p.runtime?'Runtime: '+w.p.runtime:'Sin pila de ejecución configurada',56)}│\n  └${'─'.repeat(58)}┘`};
   });
   cmd('webapp delete','Delete a web app.',[NAME('Name of the web app.'),RG(),A('keepPlan',['--keep-empty-plan'],{type:'bool',desc:'Keep empty app service plan.'})],[['Delete a web app.','az webapp delete --name MyWebapp --resource-group MyResourceGroup']],v=>{const w=needRes('webapp',v.rg,v.name);guard('delete',resId(w));del(w);return{}});
   cmd('webapp list-runtimes','List available built-in stacks which can be used for web apps.',[A('os',['--os-type','--os'],{choices:['linux','windows'],desc:'Limit the output to just windows or linux runtimes.'})],[['List available built-in stacks for Linux web apps.','az webapp list-runtimes --os-type linux']],v=>({data:v.os?RUNTIMES[v.os]:{linux:RUNTIMES.linux,windows:RUNTIMES.windows}}),{login:false});
@@ -975,7 +975,7 @@ function create(opts={}){
   // ---------- Comandos: RBAC y Entra ID ----------
   function findPrincipal(a){
     const u=USERS.find(u=>lc(u.upn)===lc(a)||u.id===a||lc(u.upn.split('@')[0])===lc(a));
-    if(!u)err(`Cannot find user or service principal in graph database for '${a}'. If the assignee is an appId, make sure the corresponding service principal is created with 'az ad sp create --id ${a}'.\ncloudlab: usuarios del directorio simulado: ${USERS.map(u=>u.upn).join(', ')}`);
+    if(!u)err(`Cannot find user or service principal in graph database for '${a}'. If the assignee is an appId, make sure the corresponding service principal is created with 'az ad sp create --id ${a}'.\nrapalab: usuarios del directorio simulado: ${USERS.map(u=>u.upn).join(', ')}`);
     return u;
   }
   function checkScope(scope){
@@ -990,7 +990,7 @@ function create(opts={}){
   }
   const roleName=r=>Object.keys(ROLES).find(k=>lc(k)===lc(r)||ROLES[k]===r);
   cmd('role assignment create','Create a new role assignment for a user, group, or service principal.',[A('role',['--role'],{req:true,desc:'Role name or id.'}),A('scope',['--scope'],{req:true,desc:'Scope at which the role assignment or definition applies to, e.g., /subscriptions/0b1f6471-1bf0-4dda-aec3-111122223333, /subscriptions/0b1f6471-1bf0-4dda-aec3-111122223333/resourceGroups/myGroup, or /subscriptions/0b1f6471-1bf0-4dda-aec3-111122223333/resourceGroups/myGroup/providers/Microsoft.Compute/virtualMachines/myVM.'}),A('assignee',['--assignee'],{desc:'Represent a user, group, or service principal. supported format: object id, user sign-in name, or service principal name.'}),A('objectId',['--assignee-object-id'],{desc:"The assignee's object ID (also known as principal ID)."}),A('ptype',['--assignee-principal-type'],{choices:['ForeignGroup','Group','ServicePrincipal','User'],desc:'Use with --assignee-object-id to avoid errors caused by propagation latency in Microsoft Graph.'}),A('description',['--description'],{desc:'Description of role assignment.'})],
-    [['Create role assignment to grant the specified assignee the Reader role on a resource group.','az role assignment create --assignee ana.garcia@cloudlabdemo.onmicrosoft.com --role Reader --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup']],v=>{
+    [['Create role assignment to grant the specified assignee the Reader role on a resource group.','az role assignment create --assignee ana.garcia@rapalabdemo.onmicrosoft.com --role Reader --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup']],v=>{
       if(!v.assignee&&!v.objectId)err('usage error: --assignee STRING | --assignee-object-id GUID',2);
       const role=roleName(v.role);
       if(!role)err(`Role '${v.role}' doesn't exist.`);
@@ -1022,7 +1022,7 @@ function create(opts={}){
       const sc=v.scope?checkScope(v.scope):v.rg?`/subscriptions/${curSub()}/resourceGroups/${needGroup(v.rg).name}`:`/subscriptions/${curSub()}`;
       if(!v.ids)rs=rs.filter(r=>lc(r.scope)===lc(sc));
       if(!rs.length)err('No matched assignments were found to delete');
-      if(rs.some(r=>r.principal===USERS[0].id&&r.role==='Owner'&&r.scope.split('/').length===3))err('cloudlab: no puedes quitarte el rol Owner de la suscripción en este simulador (perderías el acceso a todo).');
+      if(rs.some(r=>r.principal===USERS[0].id&&r.role==='Owner'&&r.scope.split('/').length===3))err('rapalab: no puedes quitarte el rol Owner de la suscripción en este simulador (perderías el acceso a todo).');
       S.roles=S.roles.filter(r=>!rs.includes(r));return{};
     });
   cmd('role definition list','List role definitions.',[A('name',['--name','-n'],{desc:'A role\'s name, can be used to show details of a specific role definition.'}),A('custom',['--custom-role-only'],{type:'tbool',desc:'Custom roles only (vs. build-in ones).'})],[['List all built-in roles.','az role definition list --query "[].roleName" -o tsv']],v=>{
@@ -1033,7 +1033,7 @@ function create(opts={}){
   },{table:d=>d.map(r=>({Name:r.roleName,Type:r.roleType,Description:r.description}))});
   const userView=u=>({businessPhones:[],displayName:u.displayName,givenName:u.givenName,id:u.id,jobTitle:null,mail:null,mobilePhone:null,officeLocation:null,preferredLanguage:null,surname:u.surname,userPrincipalName:u.upn});
   cmd('ad user list','List users.',[A('displayName',['--display-name'],{desc:'Object\'s display name or its prefix.'}),A('upn',['--upn'],{desc:'User principal name.'})],[['List the sign-in names of all users.','az ad user list --query "[].userPrincipalName" -o tsv']],v=>({data:USERS.filter(u=>(!v.displayName||u.displayName.startsWith(v.displayName))&&(!v.upn||lc(u.upn)===lc(v.upn))).map(userView)}),{table:d=>d.map(u=>({DisplayName:u.displayName,GivenName:u.givenName,Surname:u.surname,UserPrincipalName:u.userPrincipalName,Id:u.id}))});
-  cmd('ad user show','Get the details of a user.',[A('id',['--id'],{req:true,desc:'User\'s object id or principal name.'})],[['Show a user.','az ad user show --id ana.garcia@cloudlabdemo.onmicrosoft.com']],v=>{const u=USERS.find(u=>u.id===v.id||lc(u.upn)===lc(v.id));if(!u)err(`Resource '${v.id}' does not exist or one of its queried reference-property objects are not present.`,3);return{data:userView(u)}});
+  cmd('ad user show','Get the details of a user.',[A('id',['--id'],{req:true,desc:'User\'s object id or principal name.'})],[['Show a user.','az ad user show --id ana.garcia@rapalabdemo.onmicrosoft.com']],v=>{const u=USERS.find(u=>u.id===v.id||lc(u.upn)===lc(v.id));if(!u)err(`Resource '${v.id}' does not exist or one of its queried reference-property objects are not present.`,3);return{data:userView(u)}});
   cmd('resource list','List resources.',[RG(false),A('type',['--resource-type'],{desc:'The resource type (Ex: \'resC\'). Can also accept namespace/type format (Ex: \'Microsoft.Provider/resC\').'}),A('location',['--location','-l'],{desc:'Location.'}),A('tag',['--tag'],{desc:'A single tag in \'key[=value]\' format.'})],[['List all the resources in a resource group.','az resource list -g MyResourceGroup -o table']],v=>{
     if(v.rg)needGroup(v.rg);
     let rs=S.res.filter(r=>r.t!=='group'&&inSub(r)&&(!v.rg||lc(r.rg)===lc(v.rg)));
@@ -1048,7 +1048,7 @@ function create(opts={}){
     if(!s)err('the following arguments are required: <CLI_TERM>',2);
     const keys=Object.keys(C).filter(k=>k===s||k.startsWith(s+' ')||(s.split(' ').every(w=>k.includes(w))));
     const ex=keys.flatMap(k=>C[k].ex||[]).slice(0,4);
-    if(!ex.length)return`Sorry, I don't have any examples for "${s}". cloudlab: prueba con az find "vm", az find "storage account" o az find "aks".`;
+    if(!ex.length)return`Sorry, I don't have any examples for "${s}". rapalab: prueba con az find "vm", az find "storage account" o az find "aks".`;
     return`Finding examples...\n\nHere are the most common ways to use [${s}]:\n\n${ex.map(([d,x])=>`${d}\n${x}\n`).join('\n')}\nPlease let us know how we are doing: https://aka.ms/clihats\nand let us know if you're interested in trying out our newest features: https://aka.ms/CLIUXstudy`;
   }
 
@@ -1071,7 +1071,7 @@ function create(opts={}){
     const ls=lockHits(id,children).filter(l=>op==='delete'||l.level==='ReadOnly');
     if(!ls.length)return;
     stat('scopeLocked');
-    arm('ScopeLocked',`The scope '${id}' cannot perform ${op} operation because following scope(s) are locked: '${[...new Set(ls.map(l=>l.scope))].join("','")}'. Please remove the lock and try again.\ncloudlab: bloqueo${ls.length>1?'s':''} ${ls.map(l=>`"${l.name}" (${l.level})`).join(', ')}. Míralos con az lock list${ls[0].scope.split('/').length>3?` -g ${ls[0].scope.split('/')[4]}`:''} y quítalos con az lock delete.`);
+    arm('ScopeLocked',`The scope '${id}' cannot perform ${op} operation because following scope(s) are locked: '${[...new Set(ls.map(l=>l.scope))].join("','")}'. Please remove the lock and try again.\nrapalab: bloqueo${ls.length>1?'s':''} ${ls.map(l=>`"${l.name}" (${l.level})`).join(', ')}. Míralos con az lock list${ls[0].scope.split('/').length>3?` -g ${ls[0].scope.split('/')[4]}`:''} y quítalos con az lock delete.`);
   }
   function lockScope(v){
     if(!v.rg)return`/subscriptions/${curSub()}`;
@@ -1134,11 +1134,11 @@ function create(opts={}){
       if(!d||!d.deny(r,a.params))continue;
       stat('policyDenied');
       const ids=JSON.stringify([{policyAssignment:{name:a.displayName||a.name,id:assignId(a)},policyDefinition:{name:d.displayName,id:defId(d),version:'1.0.0'}}]);
-      arm('RequestDisallowedByPolicy',`Resource '${r.name}' was disallowed by policy. Policy identifiers: '${ids}'.\nTarget: ${r.name}\ncloudlab: la asignación "${a.name}" (${d.displayName}) deniega este recurso. Revisa sus parámetros con az policy assignment show -n ${a.name}${a.scope.includes('/resourceGroups/')?` -g ${a.scope.split('/')[4]}`:''}.`);
+      arm('RequestDisallowedByPolicy',`Resource '${r.name}' was disallowed by policy. Policy identifiers: '${ids}'.\nTarget: ${r.name}\nrapalab: la asignación "${a.name}" (${d.displayName}) deniega este recurso. Revisa sus parámetros con az policy assignment show -n ${a.name}${a.scope.includes('/resourceGroups/')?` -g ${a.scope.split('/')[4]}`:''}.`);
     }
   }
   const defView=d=>({description:d.description,displayName:d.displayName,id:defId(d),metadata:{category:d.id==='cccc23c7-8427-4f53-ad12-b6a63eb452b3'?'Compute':d.displayName.includes('tag')?'Tags':'General',version:'1.0.0'},mode:d.displayName.includes('resource groups')?'All':'Indexed',name:d.id,parameters:Object.fromEntries(Object.entries(d.params).map(([k,t])=>[k,{allowedValues:null,defaultValue:null,metadata:{description:`The ${k} parameter.`,displayName:k},type:t}])),policyRule:{if:{field:d.displayName.includes('location')?'location':'type',notIn:`[parameters('${Object.keys(d.params)[0]}')]`},then:{effect:'deny'}},policyType:'BuiltIn',type:'Microsoft.Authorization/policyDefinitions',version:'1.0.0'});
-  cmd('policy definition list','List policy definitions.',[A('mg',['--management-group'],{desc:'The name of the management group of the policy definition(s).'})],[['List built-in policy definitions.',"az policy definition list --query \"[?policyType=='BuiltIn'].{name:name, displayName:displayName}\" -o table"]],()=>({warn:['cloudlab: se muestran solo algunas definiciones integradas. Azure real tiene miles.'],data:POLICY_DEFS.map(defView)}),{table:d=>d.map(x=>({Name:x.name,DisplayName:x.displayName,PolicyType:x.policyType,Mode:x.mode}))});
+  cmd('policy definition list','List policy definitions.',[A('mg',['--management-group'],{desc:'The name of the management group of the policy definition(s).'})],[['List built-in policy definitions.',"az policy definition list --query \"[?policyType=='BuiltIn'].{name:name, displayName:displayName}\" -o table"]],()=>({warn:['rapalab: se muestran solo algunas definiciones integradas. Azure real tiene miles.'],data:POLICY_DEFS.map(defView)}),{table:d=>d.map(x=>({Name:x.name,DisplayName:x.displayName,PolicyType:x.policyType,Mode:x.mode}))});
   cmd('policy definition show','Show a policy definition.',[A('name',['--name','-n'],{req:true,desc:'The name of the policy definition.'})],[['Show the "Allowed locations" built-in policy definition.','az policy definition show -n e56962a6-4747-49cd-b67b-bf8b01975c4c']],v=>{const d=findDef(v.name);if(!d)arm('PolicyDefinitionNotFound',`The policy definition '${v.name}' could not be found.`,3);return{data:defView(d)}});
   function parseParams(raw){
     if(raw==null)return{};
@@ -1196,7 +1196,7 @@ function create(opts={}){
   cmd('policy state list','List policy compliance states.',[RG(false),A('filter',['--filter'],{desc:'Filter expression using OData notation.'}),A('all',['--all'],{type:'bool',desc:'Within the specified time interval, get all policy states instead of the latest only.'})],[['Get non-compliant resources in the subscription.',"az policy state list --filter \"complianceState eq 'NonCompliant'\" -o table"]],v=>{
     let d=nonCompliant();
     if(v.rg)d=d.filter(x=>lc(x.resourceGroup)===lc(v.rg));
-    return{warn:['cloudlab: en Azure la evaluación de cumplimiento tarda minutos; aquí es inmediata.'],data:d};
+    return{warn:['rapalab: en Azure la evaluación de cumplimiento tarda minutos; aquí es inmediata.'],data:d};
   },{table:d=>d.map(x=>({ResourceId:x.resourceId.split('/').slice(-1)[0],ResourceType:x.resourceType,ComplianceState:x.complianceState,PolicyAssignmentName:x.policyAssignmentName}))});
   cmd('policy state summarize','Summarize policy compliance states.',[RG(false)],[['Get latest policy states summary in current subscription.','az policy state summarize']],v=>{
     let d=nonCompliant();if(v.rg)d=d.filter(x=>lc(x.resourceGroup)===lc(v.rg));
@@ -1233,7 +1233,7 @@ function create(opts={}){
     const mode=v.authMode||S.vars.AZURE_STORAGE_AUTH_MODE||'key';
     if(mode==='login'&&!key&&!v.sas){
       stat('authLogin');
-      if(!hasRole(DATA_ROLES[op],resId(s)))err(`\nYou do not have the required permissions needed to perform this operation.\nDepending on your operation, you may need to be assigned one of the following roles:\n    "Storage Blob Data Owner"\n    "Storage Blob Data Contributor"\n    "Storage Blob Data Reader"\n    "Storage Queue Data Contributor"\n    "Storage Queue Data Reader"\n    "Storage Table Data Contributor"\n    "Storage Table Data Reader"\n\nIf you want to use the old authentication method and allow querying for the right account key, please use the "--auth-mode" parameter and "key" value.\ncloudlab: el rol Owner gestiona el recurso, pero no da acceso a los datos. Asígnate un rol de datos sobre la cuenta (p. ej. "Storage Blob Data Contributor") con az role assignment create.`);
+      if(!hasRole(DATA_ROLES[op],resId(s)))err(`\nYou do not have the required permissions needed to perform this operation.\nDepending on your operation, you may need to be assigned one of the following roles:\n    "Storage Blob Data Owner"\n    "Storage Blob Data Contributor"\n    "Storage Blob Data Reader"\n    "Storage Queue Data Contributor"\n    "Storage Queue Data Reader"\n    "Storage Table Data Contributor"\n    "Storage Table Data Reader"\n\nIf you want to use the old authentication method and allow querying for the right account key, please use the "--auth-mode" parameter and "key" value.\nrapalab: el rol Owner gestiona el recurso, pero no da acceso a los datos. Asígnate un rol de datos sobre la cuenta (p. ej. "Storage Blob Data Contributor") con az role assignment create.`);
       return{s,warn,login:true};
     }
     if(key){if(key!==keyOf(s)[0]&&key!==keyOf(s)[1])storErr('Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.','AuthenticationFailed');return{s,warn}}
@@ -1278,7 +1278,7 @@ function create(opts={}){
       const{s,warn,login}=dataAccount(v,'write');
       if(!v.container)err('the following arguments are required: --container-name/-c',2);
       if(v.file==null&&v.data==null)err('usage error: --file FILE | --data DATA',2);
-      if(v.file!=null&&!(v.file in S.files))err(`[Errno 2] No such file or directory: '${v.file}'\ncloudlab: crea el fichero antes, p. ej.: echo "Hola Azure" > ${v.file}`);
+      if(v.file!=null&&!(v.file in S.files))err(`[Errno 2] No such file or directory: '${v.file}'\nrapalab: crea el fichero antes, p. ej.: echo "Hola Azure" > ${v.file}`);
       const c=needContainer(s,v.container);
       const name=v.name||String(v.file).split('/').pop();
       if(c.blobs[name]&&!v.overwrite)storErr('The specified blob already exists.','BlobAlreadyExists');
@@ -1374,7 +1374,7 @@ function create(opts={}){
   cmd('network public-ip create','Create a public IP address.',[NAME('The name of the public IP address.'),RG(),LOC(),A('sku',['--sku'],{choices:['Basic','Standard'],desc:'Name of a public IP address SKU. It is recommended to use Standard SKU.'}),A('alloc',['--allocation-method'],{choices:['Dynamic','Static'],desc:'IP address allocation method.'}),A('zone',['--zone','-z'],{type:'list',desc:'Space-separated list of availability zones into which to provision the resource. Allowed values: 1, 2, 3.'}),A('dns',['--dns-name'],{desc:'Globally unique DNS entry.'}),TAGS],
     [['Create a Standard public IP address.','az network public-ip create -g MyResourceGroup -n MyIp --sku Standard']],v=>{
       const g=needGroup(v.rg,true);
-      if(v.sku==='Basic')err(`cloudlab: Azure retiró las IP públicas de SKU Basic el 30 de septiembre de 2025 y ya no se pueden crear. Usa --sku Standard (es la opción por defecto).`);
+      if(v.sku==='Basic')err(`rapalab: Azure retiró las IP públicas de SKU Basic el 30 de septiembre de 2025 y ya no se pueden crear. Usa --sku Standard (es la opción por defecto).`);
       if(v.alloc==='Dynamic')arm('StandardSkuPublicIPAddressesCannotHaveDynamicAllocation',`Standard sku publicIp ${resId(g)}/providers/${TYPES.pip}/${v.name} must have AllocationMethod set to Static.`);
       const loc=v.location?needLoc(v.location,'pip'):g.location;
       policyCheck({t:'pip',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.pip}/${v.name}`});
@@ -1413,12 +1413,12 @@ function create(opts={}){
 
   // ---------- Key Vault ----------
   const KV_RE=/^[a-zA-Z](?!.*--)[a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$/;
-  const TAKEN_VAULTS=['keyvault','mykeyvault','kv','kv-test','vault','secrets','test','demo','cloudlab'];
+  const TAKEN_VAULTS=['keyvault','mykeyvault','kv','kv-test','vault','secrets','test','demo','rapalab'];
   const KV_ROLES={read:['Key Vault Administrator','Key Vault Secrets Officer','Key Vault Secrets User'],write:['Key Vault Administrator','Key Vault Secrets Officer'],list:['Key Vault Administrator','Key Vault Secrets Officer','Key Vault Secrets User','Key Vault Reader']};
   function kvView(k){return{id:resId(k),location:k.location,name:k.name,properties:{accessPolicies:[],createMode:null,enablePurgeProtection:k.p.purgeProtection||null,enableRbacAuthorization:k.p.rbac,enableSoftDelete:true,enabledForDeployment:false,enabledForDiskEncryption:null,enabledForTemplateDeployment:null,hsmPoolResourceId:null,networkAcls:null,privateEndpointConnections:null,provisioningState:'Succeeded',publicNetworkAccess:'Enabled',sku:{family:'A',name:k.p.sku},softDeleteRetentionInDays:k.p.retention,tenantId:S.tenant.id,vaultUri:`https://${k.name}.vault.azure.net/`},resourceGroup:k.rg,systemData:{createdAt:iso(k.created),createdBy:USERS[0].upn,createdByType:'User',lastModifiedAt:iso(k.created),lastModifiedBy:USERS[0].upn,lastModifiedByType:'User'},tags:k.tags,type:TYPES.kv}}
   const kvTable=d=>d.map(k=>({Location:k.location,Name:k.name,ResourceGroup:k.resourceGroup}));
   cmd('keyvault create','Create a Vault or HSM.',[A('name',['--name','-n'],{desc:'Name of the Vault.'}),RG(),LOC(),A('sku',['--sku'],{choices:['premium','standard'],def:'standard',desc:'Required. SKU details. Allowed values for Vault: premium, standard. Default: standard.'}),A('retention',['--retention-days'],{type:'int',desc:'Soft delete data retention days. It accepts >=7 and <=90. Defaults to 90 for keyvault creation.'}),A('rbac',['--enable-rbac-authorization'],{type:'tbool',desc:'Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. If null or not specified, the vault is created with the default value of true.'}),A('purge',['--enable-purge-protection'],{type:'tbool',desc:'Property specifying whether protection against purge is enabled for this vault/managed HSM pool. Setting this property to true activates protection against purge for this vault/managed HSM pool and its content - only the Key Vault/Managed HSM service may initiate a hard, irrecoverable deletion. The setting is effective only if soft delete is also enabled. Enabling this functionality is irreversible.'}),TAGS],
-    [['Create a key vault with network ACLs specified.','az keyvault create --location westus2 --name MyKeyVault --resource-group MyResourceGroup'],['Create a key vault using Azure RBAC for authorization (default).','az keyvault create -n kv-cloudlab-1234 -g MyResourceGroup']],v=>{
+    [['Create a key vault with network ACLs specified.','az keyvault create --location westus2 --name MyKeyVault --resource-group MyResourceGroup'],['Create a key vault using Azure RBAC for authorization (default).','az keyvault create -n kv-rapalab-1234 -g MyResourceGroup']],v=>{
       const g=needGroup(v.rg,true);
       if(!v.name)err('usage error: --name/-n is required for creating a vault.',2);
       if(!KV_RE.test(v.name))arm('VaultNameNotValid',`The vault name '${v.name}' is invalid. A vault's name must be between 3-24 alphanumeric characters. The name must begin with a letter, end with a letter or digit, and not contain consecutive hyphens. Follow this link for more information: https://go.microsoft.com/fwlink/?linkid=2147742`);
@@ -1426,7 +1426,7 @@ function create(opts={}){
       if(v.retention!=null&&(v.retention<7||v.retention>90))err('--retention-days must be between 7 and 90');
       const mine=S.res.find(r=>r.t==='kv'&&lc(r.name)===lc(v.name));
       const gone=S.deletedVaults.find(d=>lc(d.name)===lc(v.name));
-      if(mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name))||TAKEN_VAULTS.includes(lc(v.name))||gone)arm('VaultAlreadyExists',`The vault name '${v.name}' is already in use. Vault names are globally unique so it is possible that the name is already taken. If you are sure that the vault name was not taken then it is possible that a vault with the same name was recently deleted but not purged after being placed in a recoverable state. If the vault is in a recoverable state then the vault will need to be purged before reusing the name. For more information on soft delete and purging a vault follow this link https://go.microsoft.com/fwlink/?linkid=2147740.${gone?`\ncloudlab: borraste "${gone.name}" hace poco y sigue en estado eliminado temporalmente (soft-delete). Recupéralo con az keyvault recover -n ${gone.name}${gone.purgeProtection?'; tiene protección de purga, así que no se puede purgar antes de que acabe la retención.':` o púrgalo con az keyvault purge -n ${gone.name}.`}`:''}`);
+      if(mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name))||TAKEN_VAULTS.includes(lc(v.name))||gone)arm('VaultAlreadyExists',`The vault name '${v.name}' is already in use. Vault names are globally unique so it is possible that the name is already taken. If you are sure that the vault name was not taken then it is possible that a vault with the same name was recently deleted but not purged after being placed in a recoverable state. If the vault is in a recoverable state then the vault will need to be purged before reusing the name. For more information on soft delete and purging a vault follow this link https://go.microsoft.com/fwlink/?linkid=2147740.${gone?`\nrapalab: borraste "${gone.name}" hace poco y sigue en estado eliminado temporalmente (soft-delete). Recupéralo con az keyvault recover -n ${gone.name}${gone.purgeProtection?'; tiene protección de purga, así que no se puede purgar antes de que acabe la retención.':` o púrgalo con az keyvault purge -n ${gone.name}.`}`:''}`);
       policyCheck({t:'kv',name:v.name,location:loc,tags:tagsOf(v.tags),id:`${resId(g)}/providers/${TYPES.kv}/${v.name}`});
       const k=mine||add({t:'kv',name:v.name,rg:g.name,location:loc,tags:tagsOf(v.tags),p:{secrets:{}}});
       Object.assign(k.p,{sku:v.sku||k.p.sku||'standard',retention:v.retention||k.p.retention||90,rbac:v.rbac!==false,purgeProtection:v.purge||k.p.purgeProtection||false});
@@ -1443,19 +1443,19 @@ function create(opts={}){
   cmd('keyvault delete','Delete a Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the Vault.'}),RG(false),NOWAIT],[['Delete a key vault.','az keyvault delete --name MyKeyVault --resource-group MyResourceGroup']],v=>{
     const k=kvFind(v.name,v.rg);guard('delete',resId(k));
     removeTree(k);
-    return{warn:[`cloudlab: el almacén queda eliminado temporalmente (soft-delete) durante ${k.p.retention} días: su nombre sigue reservado y puedes recuperarlo con az keyvault recover -n ${k.name}.`]};
+    return{warn:[`rapalab: el almacén queda eliminado temporalmente (soft-delete) durante ${k.p.retention} días: su nombre sigue reservado y puedes recuperarlo con az keyvault recover -n ${k.name}.`]};
   });
   cmd('keyvault list-deleted','Get information about the deleted Vaults or HSMs in a subscription.',[A('rtype',['--resource-type'],{choices:['hsm','vault'],desc:'When --resource-type is not present the command will list all deleted Vaults and HSMs.'})],[['List deleted key vaults.','az keyvault list-deleted -o table']],()=>({data:S.deletedVaults.filter(d=>d.sub===curSub()).map(d=>({id:`/subscriptions/${d.sub}/providers/Microsoft.KeyVault/locations/${d.location}/deletedVaults/${d.name}`,name:d.name,properties:{deletionDate:iso(d.at),location:d.location,purgeProtectionEnabled:d.purgeProtection||null,scheduledPurgeDate:iso(d.at+d.retention*86400000),tags:{},vaultId:d.id},type:'Microsoft.KeyVault/deletedVaults'}))}),{table:d=>d.map(x=>({Name:x.name,Location:x.properties.location,DeletionDate:x.properties.deletionDate,ScheduledPurgeDate:x.properties.scheduledPurgeDate}))});
   cmd('keyvault purge','Permanently delete the specified Vault or HSM. Aka Purges the deleted Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the deleted Vault.'}),LOC(),NOWAIT],[['Purge a deleted key vault.','az keyvault purge --name MyKeyVault']],v=>{
     const d=S.deletedVaults.find(x=>lc(x.name)===lc(v.name)&&x.sub===curSub());
     if(!d)arm('ResourceNotFound',`The Resource 'Microsoft.KeyVault/locations/deletedVaults/${v.name}' was not found.`,3);
-    if(d.purgeProtection)arm('MethodNotAllowed',`Operation \"purge\" is not allowed because purge protection is enabled for this vault. Key Vault service will automatically purge it after the retention period has passed.\ncloudlab: con --enable-purge-protection ni siquiera el propietario puede purgarlo antes de tiempo.`);
+    if(d.purgeProtection)arm('MethodNotAllowed',`Operation \"purge\" is not allowed because purge protection is enabled for this vault. Key Vault service will automatically purge it after the retention period has passed.\nrapalab: con --enable-purge-protection ni siquiera el propietario puede purgarlo antes de tiempo.`);
     S.deletedVaults=S.deletedVaults.filter(x=>x!==d);return{};
   });
   cmd('keyvault recover','Recover a Vault or HSM.',[A('name',['--name','-n'],{req:true,desc:'Name of the deleted Vault.'}),RG(false),LOC(),NOWAIT],[['Recover a deleted key vault.','az keyvault recover --name MyKeyVault']],v=>{
     const d=S.deletedVaults.find(x=>lc(x.name)===lc(v.name)&&x.sub===curSub());
     if(!d)arm('ResourceNotFound',`The Resource 'Microsoft.KeyVault/locations/deletedVaults/${v.name}' was not found.`,3);
-    if(!S.res.some(g=>g.t==='group'&&inSub(g)&&lc(g.name)===lc(d.rg)))arm('ResourceGroupNotFound',`Resource group '${d.rg}' could not be found.\ncloudlab: el grupo original ya no existe; créalo de nuevo con az group create -n ${d.rg} -l ${d.location} y repite.`,3);
+    if(!S.res.some(g=>g.t==='group'&&inSub(g)&&lc(g.name)===lc(d.rg)))arm('ResourceGroupNotFound',`Resource group '${d.rg}' could not be found.\nrapalab: el grupo original ya no existe; créalo de nuevo con az group create -n ${d.rg} -l ${d.location} y repite.`,3);
     S.deletedVaults=S.deletedVaults.filter(x=>x!==d);
     const k=add({t:'kv',name:d.name,rg:d.rg,location:d.location,created:d.created,tags:{},p:d.p});
     return{data:kvView(k)};
@@ -1463,11 +1463,11 @@ function create(opts={}){
   // Plano de datos: con RBAC, Owner no basta; hace falta un rol de datos de Key Vault.
   function kvData(name,op,secret){
     const k=S.res.find(r=>r.t==='kv'&&lc(r.name)===lc(name)&&S.subs.some(s=>s.id===r.sub));
-    if(!k){if(S.deletedVaults.some(d=>lc(d.name)===lc(name)))err(`(VaultNotFound) The vault '${name}' is in a deleted state.`);err(`Failed to resolve hostname '${name}.vault.azure.net': [Errno -2] Name or service not known\ncloudlab: no existe un Key Vault llamado "${name}". Créalo con az keyvault create -g <grupo> -n ${name}`)}
+    if(!k){if(S.deletedVaults.some(d=>lc(d.name)===lc(name)))err(`(VaultNotFound) The vault '${name}' is in a deleted state.`);err(`Failed to resolve hostname '${name}.vault.azure.net': [Errno -2] Name or service not known\nrapalab: no existe un Key Vault llamado "${name}". Créalo con az keyvault create -g <grupo> -n ${name}`)}
     if(k.p.rbac&&!hasRole(KV_ROLES[op],resId(k))){
       const action={read:'Microsoft.KeyVault/vaults/secrets/getSecret/action',write:'Microsoft.KeyVault/vaults/secrets/setSecret/action',list:'Microsoft.KeyVault/vaults/secrets/readMetadata/action'}[op];
       const m=`Caller is not authorized to perform action on resource.\nIf role assignments, deny assignments or role definitions were changed recently, please observe propagation time.\nCaller: appid=04b07795-8ddb-461a-bbee-02f9e1bf7b46;oid=${USERS[0].id};iss=https://sts.windows.net/${S.tenant.id}/\nAction: '${action}'\nResource: '${lc(resId(k))}${secret?'/secrets/'+lc(secret):''}'\nAssignment: (not found)\nDenyAssignmentId: null\nDecisionReason: null \nVault: ${k.name};location=${k.location}\n`;
-      err(`(Forbidden) ${m}\nCode: Forbidden\nMessage: ${m}\nInner error: {\n    "code": "ForbiddenByRbac"\n}\ncloudlab: el almacén usa RBAC y tu rol Owner no da acceso a los secretos. Asígnate "Key Vault Secrets Officer" sobre el almacén con az role assignment create.`);
+      err(`(Forbidden) ${m}\nCode: Forbidden\nMessage: ${m}\nInner error: {\n    "code": "ForbiddenByRbac"\n}\nrapalab: el almacén usa RBAC y tu rol Owner no da acceso a los secretos. Asígnate "Key Vault Secrets Officer" sobre el almacén con az role assignment create.`);
     }
     return k;
   }
@@ -1502,7 +1502,7 @@ function create(opts={}){
 
   // ---------- Azure SQL ----------
   const SQL_SKUS={Basic:['Basic','Basic',5,2],S0:['Standard','Standard',10,250],S1:['Standard','Standard',20,250],S2:['Standard','Standard',50,250],P1:['Premium','Premium',125,500],GP_Gen5_2:['GeneralPurpose','GP_Gen5',2,32],GP_Gen5_4:['GeneralPurpose','GP_Gen5',4,32],GP_S_Gen5_1:['GeneralPurpose','GP_S_Gen5',1,32],GP_S_Gen5_2:['GeneralPurpose','GP_S_Gen5',2,32],BC_Gen5_2:['BusinessCritical','BC_Gen5',2,32],HS_Gen5_2:['Hyperscale','HS_Gen5',2,1024]};
-  const TAKEN_SQL=['sqlserver','mysqlserver','server','test','demo','sql','database','cloudlab'];
+  const TAKEN_SQL=['sqlserver','mysqlserver','server','test','demo','sql','database','rapalab'];
   const sqlFind=(rg,name)=>needRes('sqlserver',rg,name);
   function sqlView(s){return{administratorLogin:s.p.admin,administratorLoginPassword:null,administrators:null,externalGovernanceStatus:'Disabled',federatedClientId:null,fullyQualifiedDomainName:`${s.name}.database.windows.net`,id:resId(s),identity:null,keyId:null,kind:'v12.0',location:s.location,minimalTlsVersion:'1.2',name:s.name,primaryUserAssignedIdentityId:null,privateEndpointConnections:[],publicNetworkAccess:'Enabled',resourceGroup:s.rg,restrictOutboundNetworkAccess:'Disabled',state:'Ready',tags:Object.keys(s.tags).length?s.tags:null,type:TYPES.sqlserver,version:'12.0',workspaceFeature:null}}
   const sqlTable=d=>d.map(s=>({Name:s.name,ResourceGroup:s.resourceGroup,Location:s.location,FullyQualifiedDomainName:s.fullyQualifiedDomainName,AdministratorLogin:s.administratorLogin,State:s.state}));
@@ -1510,11 +1510,11 @@ function create(opts={}){
     [['Create a server.','az sql server create -l westus -g mygroup -n myserver -u myadminuser -p myadminpassword']],v=>{
       const g=needGroup(v.rg,true);
       if(!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(v.name))arm('InvalidResourceName',`Server name '${v.name}' cannot be empty or null. It can only be made up of lowercase letters 'a'-'z', the numbers 0-9 and the hyphen. The hyphen may not lead or trail in the name.`);
-      if(v.adOnly)err('cloudlab: la autenticación solo con Microsoft Entra ID no se simula. Crea el servidor con --admin-user y --admin-password.');
+      if(v.adOnly)err('rapalab: la autenticación solo con Microsoft Entra ID no se simula. Crea el servidor con --admin-user y --admin-password.');
       if(!v.admin||!v.password)err('Please specify --admin-user and --admin-password for SQL authentication, or enable Microsoft Entra-only authentication with --enable-ad-only-auth.',2);
-      if(['admin','administrator','sa','root','dbmanager','loginmanager','dbo','guest','public'].includes(lc(v.admin)))arm('InvalidParameterValue',`Invalid value given for parameter Login. Specify a valid parameter value.\ncloudlab: "${v.admin}" es un nombre reservado en Azure SQL. Prueba con sqladmin.`);
+      if(['admin','administrator','sa','root','dbmanager','loginmanager','dbo','guest','public'].includes(lc(v.admin)))arm('InvalidParameterValue',`Invalid value given for parameter Login. Specify a valid parameter value.\nrapalab: "${v.admin}" es un nombre reservado en Azure SQL. Prueba con sqladmin.`);
       const n=[/[a-z]/,/[A-Z]/,/\d/,/[^a-zA-Z0-9]/].filter(r=>r.test(v.password)).length;
-      if(v.password.length<8||v.password.length>128||n<3||lc(v.password).includes(lc(v.admin)))arm('PasswordNotComplex',`Password validation failed. The password does not meet policy requirements because it is not complex enough.\ncloudlab: entre 8 y 128 caracteres, con 3 de estos 4 tipos (minúsculas, mayúsculas, números, símbolos) y sin incluir el nombre de usuario.`);
+      if(v.password.length<8||v.password.length>128||n<3||lc(v.password).includes(lc(v.admin)))arm('PasswordNotComplex',`Password validation failed. The password does not meet policy requirements because it is not complex enough.\nrapalab: entre 8 y 128 caracteres, con 3 de estos 4 tipos (minúsculas, mayúsculas, números, símbolos) y sin incluir el nombre de usuario.`);
       const loc=v.location?needLoc(v.location,'sqlserver'):g.location;
       const mine=S.res.find(r=>r.t==='sqlserver'&&r.name===v.name);
       if(TAKEN_SQL.includes(v.name)||mine&&!(mine.sub===curSub()&&lc(mine.rg)===lc(g.name)))arm('NameAlreadyExists',`The name '${v.name}.database.windows.net' already exists. Choose a different name.`);
@@ -1579,7 +1579,7 @@ function create(opts={}){
     },{login:false});
 
   // ---------- Azure Container Registry ----------
-  const TAKEN_ACR=['myregistry','registry','acr','test','demo','docker','cloudlab','containers'];
+  const TAKEN_ACR=['myregistry','registry','acr','test','demo','docker','rapalab','containers'];
   const acrFind=(name,rg)=>{const r=S.res.find(x=>x.t==='acr'&&inSub(x)&&lc(x.name)===lc(name)&&(!rg||lc(x.rg)===lc(rg)));if(!r)arm('ResourceNotFound',`The Resource 'Microsoft.ContainerRegistry/registries/${name}' under resource group '${rg||'<resource group>'}' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix`,3);return r};
   const acrView=r=>({adminUserEnabled:!!r.p.admin,anonymousPullEnabled:false,creationDate:iso(r.created),dataEndpointEnabled:false,dataEndpointHostNames:[],encryption:{keyVaultProperties:null,status:'disabled'},id:resId(r),identity:null,location:r.location,loginServer:`${r.name}.azurecr.io`,metadataSearch:'Disabled',name:r.name,networkRuleBypassOptions:'AzureServices',networkRuleSet:null,policies:{azureAdAuthenticationAsArmPolicy:{status:'enabled'},exportPolicy:{status:'enabled'},quarantinePolicy:{status:'disabled'},retentionPolicy:{days:7,status:'disabled'},softDeletePolicy:{retentionDays:7,status:'disabled'},trustPolicy:{status:'disabled',type:'Notary'}},privateEndpointConnections:[],provisioningState:'Succeeded',publicNetworkAccess:'Enabled',resourceGroup:r.rg,sku:{name:r.p.sku,tier:r.p.sku},status:null,systemData:{createdAt:iso(r.created),createdBy:USERS[0].upn,createdByType:'User'},tags:r.tags,type:TYPES.acr,zoneRedundancy:'Disabled'});
   const acrTable=d=>d.map(r=>({NAME:r.name,'RESOURCE GROUP':r.resourceGroup,LOCATION:r.location,SKU:r.sku.name,'LOGIN SERVER':r.loginServer,'CREATION DATE':r.creationDate,'ADMIN ENABLED':r.adminUserEnabled}));
@@ -1612,9 +1612,9 @@ function create(opts={}){
       const r=acrFind(v.registry);
       const ctx=(v.__pos||[])[0];
       if(!ctx)err('the following arguments are required: <SOURCE_LOCATION>',2);
-      if(ctx!=='.')err(`cloudlab: usa "." como contexto: el Dockerfile y los ficheros están en el directorio actual (ls).`);
+      if(ctx!=='.')err(`rapalab: usa "." como contexto: el Dockerfile y los ficheros están en el directorio actual (ls).`);
       const df=v.file||'Dockerfile';
-      if(!(df in S.files))err(`Unable to find '${df}'.\ncloudlab: crea un Dockerfile con:\n  cat <<EOF > Dockerfile\n  FROM nginx\n  COPY index.html /usr/share/nginx/html/\n  EOF`);
+      if(!(df in S.files))err(`Unable to find '${df}'.\nrapalab: crea un Dockerfile con:\n  cat <<EOF > Dockerfile\n  FROM nginx\n  COPY index.html /usr/share/nginx/html/\n  EOF`);
       const lines=S.files[df].split('\n').map(l=>l.trim()).filter(l=>l&&!l.startsWith('#'));
       const from=(lines.find(l=>/^FROM\s/i.test(l))||'').split(/\s+/)[1];
       if(!from)err(`Dockerfile parse error: no FROM instruction found in '${df}'.`);
@@ -1626,7 +1626,7 @@ function create(opts={}){
       if(copies.length){log.push(`COPY failed: file not found in build context or excluded by .dockerignore: stat ${copies[0]}: file does not exist`,`${stamp(9)} Container failed during run: build. No retries remaining.`,`failed to run step ID: build: exit status 1`,'',`Run ID: ${run} failed after 10s. Error: failed during run, err: exit status 1`);return{text:log.join('\n'),code:1,errText:true}}
       log.push(`Successfully built ${hexs(12)}`,...tags.map(t=>`Successfully tagged ${r.name}.azurecr.io/${t}`),`${stamp(12)} Successfully executed container: build`,`${stamp(12)} Executing step ID: push. Timeout(sec): 3600, Working directory: '', Network: ''`,...tags.map(t=>`${stamp(13)} Pushing image: ${r.name}.azurecr.io/${t}, attempt 1`),...tags.map(t=>`${t.split(':')[1]}: digest: sha256:${hexs(64)} size: 1570`),`${stamp(16)} Successfully pushed image: ${r.name}.azurecr.io/${tags[0]||'(sin etiqueta)'}`,`${stamp(16)} Step ID: build marked as successful (elapsed time in seconds: 6.8)`,`${stamp(16)} Step ID: push marked as successful (elapsed time in seconds: 3.4)`,'',`Run ID: ${run} was successful after 18s`);
       for(const t of tags){const[repo,tag]=t.split(':');(r.p.repos[repo]=r.p.repos[repo]||[]).includes(tag)||r.p.repos[repo].push(tag)}
-      if(!tags.length)log.splice(log.length-1,0,`cloudlab: sin -t la imagen se construye pero no se guarda en el registro. Añade -t app:v1.`);
+      if(!tags.length)log.splice(log.length-1,0,`rapalab: sin -t la imagen se construye pero no se guarda en el registro. Añade -t app:v1.`);
       stat('acrBuild');
       return{text:log.join('\n')};
     },{positional:true});
@@ -1715,7 +1715,7 @@ function create(opts={}){
     [['Create a new action group with an email receiver.','az monitor action-group create -n MyActionGroup -g MyResourceGroup --action email admin admin@contoso.com']],v=>{
       const g=needGroup(v.rg,true);
       const emails=[];
-      if(v.action){const[type,name,addr]=v.action;if(lc(type)!=='email')err('cloudlab: solo se simulan acciones de tipo email: --action email <nombre> <correo>');if(!name||!addr)err('usage error: --action email NAME EMAIL_ADDRESS [usecommonalertschema]',2);emails.push({name,address:addr})}
+      if(v.action){const[type,name,addr]=v.action;if(lc(type)!=='email')err('rapalab: solo se simulan acciones de tipo email: --action email <nombre> <correo>');if(!name||!addr)err('usage error: --action email NAME EMAIL_ADDRESS [usecommonalertschema]',2);emails.push({name,address:addr})}
       const short=(v.short||v.name).slice(0,12);
       let a=findRes('ag',g.name,v.name);
       if(!a)a=add({t:'ag',name:v.name,rg:g.name,location:'global',p:{emails,short}});else Object.assign(a.p,{emails,short});
@@ -1735,7 +1735,7 @@ function create(opts={}){
     [['Create a high CPU usage alert on a VM with no action.','az monitor metrics alert create -n alert1 -g {ResourceGroup} --scopes {VirtualMachineID} --condition "avg Percentage CPU > 90" --description "High CPU"']],v=>{
       const g=needGroup(v.rg,true);
       const scope=v.scopes[0],r=S.res.find(x=>lc(resId(x))===lc(scope));
-      if(!r)arm('ResourceNotFound',`The Resource '${scope}' was not found.\ncloudlab: --scopes necesita el ID completo, p. ej. $(az vm show -g ${g.name} -n <vm> --query id -o tsv)`,3);
+      if(!r)arm('ResourceNotFound',`The Resource '${scope}' was not found.\nrapalab: --scopes necesita el ID completo, p. ej. $(az vm show -g ${g.name} -n <vm> --query id -o tsv)`,3);
       const cond=parseCondition(v.condition.join(' '),r);
       let ag=null;
       if(v.action){const x=v.action[0];const a=x.startsWith('/')?S.res.find(y=>y.t==='ag'&&lc(resId(y))===lc(x)):findRes('ag',g.name,x);if(!a)arm('ResourceNotFound',`The Resource 'Microsoft.Insights/actionGroups/${x.split('/').pop()}' under resource group '${g.name}' was not found.`,3);ag=resId(a)}
@@ -1755,7 +1755,7 @@ function create(opts={}){
     [['List usage details for the current billing period.','az consumption usage list --query "[].{name:instanceName, cost:pretaxCost}" -o table']],v=>{
       const rows=costRows().sort((a,b)=>b.cost-a.cost).slice(0,v.top||1000);
       const period=new Date(now()).toISOString().slice(0,7).replace('-','');
-      return{warn:[PREVIEW('consumption'),'cloudlab: costes estimados con precios aproximados de pago por uso (USD, East US) y el tiempo simulado. Avanza el reloj con lab tiempo +1d.'],data:rows.map(r=>({accountName:null,additionalInfo:null,billableQuantity:null,billingPeriodId:`/subscriptions/${curSub()}/providers/Microsoft.Billing/billingPeriods/${period}`,consumedService:r.service,costCenter:null,currency:'USD',departmentName:null,id:`/subscriptions/${curSub()}/providers/Microsoft.Consumption/usageDetails/${guid()}`,instanceId:r.id,instanceLocation:r.location,instanceName:r.name,invoiceId:null,isEstimated:true,meterId:guid(),name:guid(),pretaxCost:String(r.cost.toFixed(6)),product:r.meter,subscriptionGuid:curSub(),subscriptionName:sub().name,tags:null,type:'Microsoft.Consumption/usageDetails',usageEnd:iso(now()),usageQuantity:String(r.qty.toFixed(4)),usageStart:iso(Math.max(r.since,now()-30*86400000))}))};
+      return{warn:[PREVIEW('consumption'),'rapalab: costes estimados con precios aproximados de pago por uso (USD, East US) y el tiempo simulado. Avanza el reloj con lab tiempo +1d.'],data:rows.map(r=>({accountName:null,additionalInfo:null,billableQuantity:null,billingPeriodId:`/subscriptions/${curSub()}/providers/Microsoft.Billing/billingPeriods/${period}`,consumedService:r.service,costCenter:null,currency:'USD',departmentName:null,id:`/subscriptions/${curSub()}/providers/Microsoft.Consumption/usageDetails/${guid()}`,instanceId:r.id,instanceLocation:r.location,instanceName:r.name,invoiceId:null,isEstimated:true,meterId:guid(),name:guid(),pretaxCost:String(r.cost.toFixed(6)),product:r.meter,subscriptionGuid:curSub(),subscriptionName:sub().name,tags:null,type:'Microsoft.Consumption/usageDetails',usageEnd:iso(now()),usageQuantity:String(r.qty.toFixed(4)),usageStart:iso(Math.max(r.since,now()-30*86400000))}))};
     },{table:d=>d.map(r=>({InstanceName:r.instanceName,ConsumedService:r.consumedService,Product:r.product,UsageQuantity:r.usageQuantity,PretaxCost:r.pretaxCost,Currency:r.currency}))});
   const budgetView=b=>({amount:String(b.amount),category:'Cost',currentSpend:{amount:String(spend().toFixed(2)),unit:'USD'},eTag:null,id:`/subscriptions/${curSub()}/providers/Microsoft.Consumption/budgets/${b.name}`,name:b.name,notifications:{},timeGrain:b.grain,timePeriod:{endDate:`${b.end}T00:00:00Z`,startDate:`${b.start}T00:00:00Z`},type:'Microsoft.Consumption/budgets'});
   cmd('consumption budget create','Create a budget for an Azure subscription.',[A('name',['--budget-name'],{req:true,desc:'Name of a budget.'}),A('amount',['--amount'],{req:true,desc:'Amount of a budget.'}),A('category',['--category'],{req:true,choices:['cost','usage'],desc:'Category of the budget can be cost or usage.'}),A('grain',['--time-grain'],{req:true,choices:['annually','monthly','quarterly'],desc:'Time grain of the budget can be monthly, quarterly, or annually.'}),A('start',['--start-date','-s'],{req:true,desc:'Start date (YYYY-MM-DD in UTC) of time period of a budget.'}),A('end',['--end-date','-e'],{req:true,desc:'End date (YYYY-MM-DD in UTC) of time period of a budget.'})],
@@ -1806,7 +1806,7 @@ function create(opts={}){
     switch(c){
       case'az':return az(rest);
       case'kubectl':case'k':
-        if(!opts.kubectl)return{out:'cloudlab: kubectl no está disponible en esta terminal.',code:1,err:true};
+        if(!opts.kubectl)return{out:'rapalab: kubectl no está disponible en esta terminal.',code:1,err:true};
         stat('kubectl');
         return opts.kubectl(args,stdin,bridge());
       case'help':return shellHelp();
@@ -1823,8 +1823,8 @@ function create(opts={}){
       case'date':return new Date(now()).toString();
       case'clear':return{out:'',clear:true};
       case'history':return S.history.map((h,i)=>`${pad(i+1,5)} ${h}`).join('\n');
-      case'nano':case'vi':case'vim':return`cloudlab: los editores no están disponibles. Crea un fichero con:\n  cat <<EOF > ${rest[0]||'fichero.txt'}\n  ...\n  EOF`;
-      case'jq':return`cloudlab: jq no está instalado aquí. Usa --query (JMESPath), que viene con az: az vm list --query "[].name" -o tsv`;
+      case'nano':case'vi':case'vim':return`rapalab: los editores no están disponibles. Crea un fichero con:\n  cat <<EOF > ${rest[0]||'fichero.txt'}\n  ...\n  EOF`;
+      case'jq':return`rapalab: jq no está instalado aquí. Usa --query (JMESPath), que viene con az: az vm list --query "[].name" -o tsv`;
       case'grep':{
         const fl=rest.filter(x=>/^-[a-zA-Z]+$/.test(x)).join('');
         const pat=rest.find(x=>!/^-[a-zA-Z]+$/.test(x));
@@ -1837,31 +1837,31 @@ function create(opts={}){
       case'wc':{const s=String(stdin??'');const lines=s?s.split('\n').length:0;return rest.includes('-l')?String(lines):`${pad(lines,7)} ${pad(s.split(/\s+/).filter(Boolean).length,7)} ${s.length}`}
       case'head':case'tail':{const n=+(rest.find(x=>/^-?\d+$/.test(x))||'10').replace('-','')||+(rest[rest.indexOf('-n')+1]||10);const l=String(stdin??'').split('\n');return(c==='head'?l.slice(0,n):l.slice(-n)).join('\n')}
       case'lab':{
-        if(rest[0]==='reset'){fresh();return{out:'cloudlab: Azure reiniciado. Vuelves a tener dos suscripciones vacías y la sesión cerrada (empieza con az login).',reset:true}}
+        if(rest[0]==='reset'){fresh();return{out:'rapalab: Azure reiniciado. Vuelves a tener dos suscripciones vacías y la sesión cerrada (empieza con az login).',reset:true}}
         if(rest[0]==='tiempo'||rest[0]==='time'){
           const m=String(rest[1]||'').match(/^\+?(\d+)([dhm])$/i);
-          if(!m)return`cloudlab: reloj simulado: ${new Date(now()).toISOString().slice(0,16).replace('T',' ')} UTC (adelantado ${Math.round(S.offset/3600000)} h).\nAdelántalo con: lab tiempo +2h | +1d | +30m  (sirve para ver costes, métricas y el registro de actividad).`;
+          if(!m)return`rapalab: reloj simulado: ${new Date(now()).toISOString().slice(0,16).replace('T',' ')} UTC (adelantado ${Math.round(S.offset/3600000)} h).\nAdelántalo con: lab tiempo +2h | +1d | +30m  (sirve para ver costes, métricas y el registro de actividad).`;
           meter();S.offset+=+m[1]*({d:86400000,h:3600000,m:60000}[m[2].toLowerCase()]);settle();
-          return`cloudlab: el reloj avanza ${m[1]}${m[2]}. Ahora son ${new Date(now()).toISOString().slice(0,16).replace('T',' ')} UTC. Coste estimado acumulado de la suscripción: $${spend().toFixed(2)}.`;
+          return`rapalab: el reloj avanza ${m[1]}${m[2]}. Ahora son ${new Date(now()).toISOString().slice(0,16).replace('T',' ')} UTC. Coste estimado acumulado de la suscripción: $${spend().toFixed(2)}.`;
         }
-        if(rest[0]==='status'||!rest[0])return`cloudlab: Azure simulado (Azure CLI ${CLI_VERSION})\nCreado: ${new Date(S.createdAt).toLocaleString('es')}\nSesión: ${S.loggedIn?USERS[0].upn:'sin iniciar'} · Suscripción: ${sub().name}\nGrupos: ${S.res.filter(r=>r.t==='group').length} · Recursos: ${S.res.filter(r=>r.t!=='group').length}\nEl estado se guarda en este navegador y se borra tras 48 h sin uso.\nComandos: lab status | lab reset`;
+        if(rest[0]==='status'||!rest[0])return`rapalab: Azure simulado (Azure CLI ${CLI_VERSION})\nCreado: ${new Date(S.createdAt).toLocaleString('es')}\nSesión: ${S.loggedIn?USERS[0].upn:'sin iniciar'} · Suscripción: ${sub().name}\nGrupos: ${S.res.filter(r=>r.t==='group').length} · Recursos: ${S.res.filter(r=>r.t!=='group').length}\nEl estado se guarda en este navegador y se borra tras 48 h sin uso.\nComandos: lab status | lab reset`;
         fail(`lab: subcomando desconocido "${rest[0]}". Usa: lab status | lab reset | lab tiempo +1d`);
       }
     }
-    if(C[c]||GROUPS[c]||ROOT_EXTRA[c]||(REAL['']||[]).includes(c))fail(`bash: ${c}: command not found\ncloudlab: ¿quisiste decir "az ${c}"?`,127);
-    if(c==='minikube')fail(`bash: minikube: command not found\ncloudlab: minikube está en la terminal de Kubernetes. Aquí puedes usar kubectl con los clústeres AKS que conectes con az aks get-credentials.`,127);
+    if(C[c]||GROUPS[c]||ROOT_EXTRA[c]||(REAL['']||[]).includes(c))fail(`bash: ${c}: command not found\nrapalab: ¿quisiste decir "az ${c}"?`,127);
+    if(c==='minikube')fail(`bash: minikube: command not found\nrapalab: minikube está en la terminal de Kubernetes. Aquí puedes usar kubectl con los clústeres AKS que conectes con az aks get-credentials.`,127);
     const s=similar(c,SHELL_CMDS);
-    fail(`bash: ${c}: command not found${s.length?`\ncloudlab: ¿quisiste decir "${s[0]}"?`:''}`,127);
+    fail(`bash: ${c}: command not found${s.length?`\nrapalab: ¿quisiste decir "${s[0]}"?`:''}`,127);
   }
   function shellHelp(){
-    return`Terminal de Cloud Lab: Azure CLI ${CLI_VERSION} simulada, como Azure Cloud Shell.\nNada se crea de verdad ni cuesta dinero: el simulador imita el comportamiento y los errores reales.\n\n  az login              Inicia sesión (simulada) y elige suscripción\n  az --help             Grupos de comandos; az vm --help, az vm create --help...\n  az find "vm"          Ejemplos de uso de un grupo o comando\n  -o table|json|tsv     Formato de salida; --query "[].name" filtra con JMESPath\n  RG=mi-grupo           Variables de bash: az group show -n $RG\n  $(az ... -o tsv)      Sustitución de comandos: --scope $(az group show -n $RG --query id -o tsv)\n  kubectl ...           Tras az aks get-credentials, maneja el clúster AKS (compartido con la terminal de Kubernetes)\n  grep, wc, head        Filtra la salida con tuberías: az vm list-sizes -l eastus -o table | grep B1\n  history, clear        Historial y limpiar la pantalla\n  lab tiempo +1d        Adelanta el reloj simulado (costes, métricas, registro de actividad)
+    return`Terminal de RapaLab: Azure CLI ${CLI_VERSION} simulada, como Azure Cloud Shell.\nNada se crea de verdad ni cuesta dinero: el simulador imita el comportamiento y los errores reales.\n\n  az login              Inicia sesión (simulada) y elige suscripción\n  az --help             Grupos de comandos; az vm --help, az vm create --help...\n  az find "vm"          Ejemplos de uso de un grupo o comando\n  -o table|json|tsv     Formato de salida; --query "[].name" filtra con JMESPath\n  RG=mi-grupo           Variables de bash: az group show -n $RG\n  $(az ... -o tsv)      Sustitución de comandos: --scope $(az group show -n $RG --query id -o tsv)\n  kubectl ...           Tras az aks get-credentials, maneja el clúster AKS (compartido con la terminal de Kubernetes)\n  grep, wc, head        Filtra la salida con tuberías: az vm list-sizes -l eastus -o table | grep B1\n  history, clear        Historial y limpiar la pantalla\n  lab tiempo +1d        Adelanta el reloj simulado (costes, métricas, registro de actividad)
   lab status|reset      Estado del laboratorio o empezar de cero\n\nAtajos: Tab autocompleta (dos veces muestra opciones) · ↑/↓ historial · Ctrl+C cancela · Ctrl+L limpia`;
   }
   // Convierte una respuesta del comando az en salida de terminal.
   function render(r){
     const parts=[];
     if(r.text!=null&&r.text!=='')parts.push({out:r.text});
-    if(r.warn&&r.warn.length&&!(r.G&&r.G.onlyErrors))parts.push({out:r.warn.map(w=>w.startsWith('cloudlab:')||/\[#{10,}\]/.test(w)?w:'WARNING: '+w).join('\n'),warn:true});
+    if(r.warn&&r.warn.length&&!(r.G&&r.G.onlyErrors))parts.push({out:r.warn.map(w=>w.startsWith('rapalab:')||/\[#{10,}\]/.test(w)?w:'WARNING: '+w).join('\n'),warn:true});
     if(r.data!==undefined){const out=format(r,r.G||{});if(out)parts.push({out})}
     return parts;
   }
@@ -1882,7 +1882,7 @@ function create(opts={}){
           if(e instanceof Ask){state.ci=ci+1;state.redirect=p.redirect;return{ask:e}}
           if(e instanceof AzError)r={out:e.message,code:e.code,err:true};
           else if(e&&e.code!=null&&e.message&&!(e instanceof TypeError)&&!(e instanceof ReferenceError))r={out:e.message,code:e.code,err:true};
-          else{if(typeof console!=='undefined')console.error(e);r={out:`cloudlab: error interno del simulador (${e.message}). Prueba otra forma del comando o usa lab reset.`,code:1,err:true}}
+          else{if(typeof console!=='undefined')console.error(e);r={out:`rapalab: error interno del simulador (${e.message}). Prueba otra forma del comando o usa lab reset.`,code:1,err:true}}
         }
         let res;
         if(typeof r==='string')res={parts:r?[{out:r}]:[],code:0};

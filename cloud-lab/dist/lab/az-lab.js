@@ -8,7 +8,7 @@ const h=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt
 let active=null;
 
 const loadAsset=src=>{
-  const cache=window.__cloudLabAssets=window.__cloudLabAssets||{};
+  const cache=window.__rapaLabAssets=window.__rapaLabAssets||{};
   return cache[src]=cache[src]||new Promise((res,rej)=>{
     if(src.endsWith('.css')){const l=document.createElement('link');l.rel='stylesheet';l.href=src;l.onload=res;l.onerror=()=>rej(new Error(src));document.head.appendChild(l);return}
     const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error(src));document.head.appendChild(s);
@@ -19,28 +19,28 @@ const readJSON=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{
 const writeJSON=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 
 // ---------- Retos guiados (se comprueban contra el estado simulado) ----------
-const RG='rg-cloudlab';
+const RG='rg-rapalab';
 const RETOS=[
   {id:'login',t:'Inicia sesión en Azure y elige la suscripción',hint:'az login  →  pulsa Enter para quedarte con la suscripción por defecto',ok:S=>S.loggedIn},
   {id:'rg',t:`Crea el grupo de recursos ${RG} en la región Spain Central`,hint:`az group create -n ${RG} -l spaincentral`,ok:(S,x)=>x.group(RG)&&x.group(RG).location==='spaincentral'},
   {id:'query',t:'Lista tus grupos en formato tabla y luego solo sus nombres con --query',hint:'az group list -o table  →  az group list --query "[].name" -o tsv',ok:S=>S.stats.table>0&&S.stats.query>0},
   {id:'vm',t:`Crea una VM Ubuntu pequeña (Standard_B1s) llamada vm-web en ${RG}`,hint:`az vm create -g ${RG} -n vm-web --image Ubuntu2204 --size Standard_B1s --generate-ssh-keys`,ok:(S,x)=>{const v=x.res('vm',RG,'vm-web');return v&&v.p.size==='Standard_B1s'}},
   {id:'dealloc',t:'Desasigna vm-web para dejar de pagar el cómputo (apagarla con stop no basta)',hint:`az vm stop -g ${RG} -n vm-web  →  mira el aviso  →  az vm deallocate -g ${RG} -n vm-web  →  az vm list -d -o table`,ok:(S,x)=>{const v=x.res('vm',RG,'vm-web');return v&&v.p.power==='deallocated'}},
-  {id:'storage',t:'Crea una cuenta de almacenamiento con nombre válido y único y redundancia LRS',hint:`az storage account check-name -n stcloudlab$RANDOM  →  az storage account create -g ${RG} -n <nombre> --sku Standard_LRS`,ok:(S,x)=>x.all('storage').some(s=>s.p.sku==='Standard_LRS')},
-  {id:'vnet',t:'Crea la red virtual vnet-cloudlab (10.10.0.0/16) con la subred web (10.10.1.0/24)',hint:`az network vnet create -g ${RG} -n vnet-cloudlab --address-prefixes 10.10.0.0/16 --subnet-name web --subnet-prefixes 10.10.1.0/24`,ok:(S,x)=>{const v=x.all('vnet').find(v=>v.name==='vnet-cloudlab');return v&&v.p.prefixes.includes('10.10.0.0/16')&&v.p.subnets.some(s=>s.name==='web'&&s.prefix==='10.10.1.0/24')}},
-  {id:'subnet',t:'Añade la subred db a vnet-cloudlab sin que se solape con web',hint:`az network vnet subnet create -g ${RG} --vnet-name vnet-cloudlab -n db --address-prefixes 10.10.2.0/24`,ok:(S,x)=>{const v=x.all('vnet').find(v=>v.name==='vnet-cloudlab');return v&&v.p.subnets.some(s=>s.name==='db')}},
-  {id:'webapp',t:'Publica una web app en un plan de App Service gratuito (F1)',hint:`az appservice plan create -g ${RG} -n plan-cloudlab --sku F1  →  az webapp create -g ${RG} -p plan-cloudlab -n <nombre-único> --runtime "NODE:22-lts"  →  az webapp browse ...`,ok:(S,x)=>x.all('webapp').some(w=>{const p=S.res.find(p=>p.t==='plan'&&x.id(p)===w.p.plan);return p&&(p.p.sku==='F1'||p.p.sku==='FREE')})},
-  {id:'rbac',t:`Da a ana.garcia el rol Reader solo sobre ${RG} (mínimo privilegio)`,hint:`az role assignment create --assignee ana.garcia@cloudlabdemo.onmicrosoft.com --role Reader --scope $(az group show -n ${RG} --query id -o tsv)`,ok:S=>S.roles.some(r=>r.role==='Reader'&&/\/resourceGroups\/rg-cloudlab$/i.test(r.scope)&&r.principal==='5c2e4a7d-1b3f-4c6e-8a9d-0e1f2a3b4c5d')},
-  {id:'aks',t:'Crea un clúster AKS de 1 nodo',hint:`az aks create -g ${RG} -n aks-cloudlab --node-count 1 --generate-ssh-keys`,ok:(S,x)=>x.all('aks').some(a=>a.p.count===1)},
-  {id:'kubectl',t:'Conecta kubectl al clúster AKS y lista sus nodos',hint:`az aks get-credentials -g ${RG} -n aks-cloudlab  →  kubectl get nodes  (el contexto también aparece en la terminal de Kubernetes)`,ok:S=>S.merged.length>0&&S.stats.kubectl>0},
+  {id:'storage',t:'Crea una cuenta de almacenamiento con nombre válido y único y redundancia LRS',hint:`az storage account check-name -n strapalab$RANDOM  →  az storage account create -g ${RG} -n <nombre> --sku Standard_LRS`,ok:(S,x)=>x.all('storage').some(s=>s.p.sku==='Standard_LRS')},
+  {id:'vnet',t:'Crea la red virtual vnet-rapalab (10.10.0.0/16) con la subred web (10.10.1.0/24)',hint:`az network vnet create -g ${RG} -n vnet-rapalab --address-prefixes 10.10.0.0/16 --subnet-name web --subnet-prefixes 10.10.1.0/24`,ok:(S,x)=>{const v=x.all('vnet').find(v=>v.name==='vnet-rapalab');return v&&v.p.prefixes.includes('10.10.0.0/16')&&v.p.subnets.some(s=>s.name==='web'&&s.prefix==='10.10.1.0/24')}},
+  {id:'subnet',t:'Añade la subred db a vnet-rapalab sin que se solape con web',hint:`az network vnet subnet create -g ${RG} --vnet-name vnet-rapalab -n db --address-prefixes 10.10.2.0/24`,ok:(S,x)=>{const v=x.all('vnet').find(v=>v.name==='vnet-rapalab');return v&&v.p.subnets.some(s=>s.name==='db')}},
+  {id:'webapp',t:'Publica una web app en un plan de App Service gratuito (F1)',hint:`az appservice plan create -g ${RG} -n plan-rapalab --sku F1  →  az webapp create -g ${RG} -p plan-rapalab -n <nombre-único> --runtime "NODE:22-lts"  →  az webapp browse ...`,ok:(S,x)=>x.all('webapp').some(w=>{const p=S.res.find(p=>p.t==='plan'&&x.id(p)===w.p.plan);return p&&(p.p.sku==='F1'||p.p.sku==='FREE')})},
+  {id:'rbac',t:`Da a ana.garcia el rol Reader solo sobre ${RG} (mínimo privilegio)`,hint:`az role assignment create --assignee ana.garcia@rapalabdemo.onmicrosoft.com --role Reader --scope $(az group show -n ${RG} --query id -o tsv)`,ok:S=>S.roles.some(r=>r.role==='Reader'&&/\/resourceGroups\/rg-rapalab$/i.test(r.scope)&&r.principal==='5c2e4a7d-1b3f-4c6e-8a9d-0e1f2a3b4c5d')},
+  {id:'aks',t:'Crea un clúster AKS de 1 nodo',hint:`az aks create -g ${RG} -n aks-rapalab --node-count 1 --generate-ssh-keys`,ok:(S,x)=>x.all('aks').some(a=>a.p.count===1)},
+  {id:'kubectl',t:'Conecta kubectl al clúster AKS y lista sus nodos',hint:`az aks get-credentials -g ${RG} -n aks-rapalab  →  kubectl get nodes  (el contexto también aparece en la terminal de Kubernetes)`,ok:S=>S.merged.length>0&&S.stats.kubectl>0},
   {id:'tags',t:`Etiqueta ${RG} con env=dev para organizar costes`,hint:`az group update -n ${RG} --tags env=dev  →  az group list --tag env=dev -o table`,ok:(S,x)=>{const g=x.group(RG);return g&&g.tags.env==='dev'}},
   {id:'port',t:'Abre el puerto 80 de vm-web (regla en su NSG)',hint:`az vm open-port -g ${RG} -n vm-web --port 80  →  az network nsg rule list -g ${RG} --nsg-name vm-webNSG -o table`,ok:(S,x)=>{const v=x.res('vm',RG,'vm-web');const nic=v&&S.res.find(n=>n.t==='nic'&&x.id(n)===v.p.nic);const nsg=nic&&S.res.find(n=>n.t==='nsg'&&x.id(n)===nic.p.nsg);return!!nsg&&x.rules(nsg).some(r=>r.direction==='Inbound'&&r.access==='Allow'&&r.ports.some(p=>p==='80'||p==='*'||/^\d+-\d+$/.test(p)&&+p.split('-')[0]<=80&&+p.split('-')[1]>=80))}},
-  {id:'blob',t:'Sube un fichero a un contenedor usando tu identidad (--auth-mode login)',hint:`echo "Hola Azure" > hola.txt  →  az storage container create -n datos --account-name <cuenta> --auth-mode login  →  si falta permiso: az role assignment create --assignee user@cloudlabdemo.onmicrosoft.com --role "Storage Blob Data Contributor" --scope $(az storage account show -g ${RG} -n <cuenta> --query id -o tsv)  →  az storage blob upload -c datos -f hola.txt --account-name <cuenta> --auth-mode login`,ok:S=>S.stats.blobUploadLogin>0},
-  {id:'kv',t:'Guarda un secreto en un Key Vault (usa RBAC: Owner no basta)',hint:`az keyvault create -g ${RG} -n kv-cloudlab-$RANDOM  →  az keyvault secret set --vault-name <almacén> -n db-password --value "S3cr3t!"  →  lee el error  →  az role assignment create --assignee user@cloudlabdemo.onmicrosoft.com --role "Key Vault Secrets Officer" --scope $(az keyvault show -n <almacén> --query id -o tsv)`,ok:S=>S.stats.secretSet>0},
-  {id:'lock',t:`Protege ${RG} con un bloqueo CanNotDelete y comprueba que no se puede borrar`,hint:`az lock create -n no-borrar -g ${RG} --lock-type CanNotDelete  →  az group delete -n ${RG} --yes`,ok:S=>S.stats.scopeLocked>0&&(S.locks.some(l=>/\/resourceGroups\/rg-cloudlab$/i.test(l.scope)&&l.level==='CanNotDelete')||S.stats.lock>0)},
+  {id:'blob',t:'Sube un fichero a un contenedor usando tu identidad (--auth-mode login)',hint:`echo "Hola Azure" > hola.txt  →  az storage container create -n datos --account-name <cuenta> --auth-mode login  →  si falta permiso: az role assignment create --assignee user@rapalabdemo.onmicrosoft.com --role "Storage Blob Data Contributor" --scope $(az storage account show -g ${RG} -n <cuenta> --query id -o tsv)  →  az storage blob upload -c datos -f hola.txt --account-name <cuenta> --auth-mode login`,ok:S=>S.stats.blobUploadLogin>0},
+  {id:'kv',t:'Guarda un secreto en un Key Vault (usa RBAC: Owner no basta)',hint:`az keyvault create -g ${RG} -n kv-rapalab-$RANDOM  →  az keyvault secret set --vault-name <almacén> -n db-password --value "S3cr3t!"  →  lee el error  →  az role assignment create --assignee user@rapalabdemo.onmicrosoft.com --role "Key Vault Secrets Officer" --scope $(az keyvault show -n <almacén> --query id -o tsv)`,ok:S=>S.stats.secretSet>0},
+  {id:'lock',t:`Protege ${RG} con un bloqueo CanNotDelete y comprueba que no se puede borrar`,hint:`az lock create -n no-borrar -g ${RG} --lock-type CanNotDelete  →  az group delete -n ${RG} --yes`,ok:S=>S.stats.scopeLocked>0&&(S.locks.some(l=>/\/resourceGroups\/rg-rapalab$/i.test(l.scope)&&l.level==='CanNotDelete')||S.stats.lock>0)},
   {id:'policy',t:'Asigna la política "Allowed locations" (solo Europa) y comprueba que deniega otra región',hint:`az policy assignment create -n solo-europa --policy e56962a6-4747-49cd-b67b-bf8b01975c4c --params '{"listOfAllowedLocations":{"value":["spaincentral","westeurope"]}}'  →  az storage account create -g ${RG} -n <nombre> -l eastus  →  az policy state list -o table`,ok:S=>S.stats.policyDenied>0},
-  {id:'sql',t:'Crea una base de datos Azure SQL y permite el acceso de los servicios de Azure (regla 0.0.0.0)',hint:`az sql server create -g ${RG} -n sql-cloudlab-$RANDOM -u sqladmin -p "Rapa2026!Lab"  →  az sql server firewall-rule create -g ${RG} -s <servidor> -n AllowAzure --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0  →  az sql db create -g ${RG} -s <servidor> -n appdb --service-objective Basic`,ok:(S,x)=>x.all('sqlserver').some(s=>Object.keys(s.p.dbs||{}).length&&s.p.rules.some(r=>r.start==='0.0.0.0'&&r.end==='0.0.0.0'))},
-  {id:'acr',t:'Construye una imagen en Azure Container Registry y conecta el registro a tu AKS',hint:`az acr create -g ${RG} -n acrcloudlab$RANDOM --sku Basic  →  cat <<EOF > Dockerfile (FROM nginx) EOF  →  az acr build -r <registro> -t web:v1 .  →  az aks update -g ${RG} -n aks-cloudlab --attach-acr <registro>  →  kubectl create deployment web --image=<registro>.azurecr.io/web:v1`,ok:S=>S.stats.acrBuild>0&&S.res.some(a=>a.t==='aks'&&(a.p.acr||[]).length)},
+  {id:'sql',t:'Crea una base de datos Azure SQL y permite el acceso de los servicios de Azure (regla 0.0.0.0)',hint:`az sql server create -g ${RG} -n sql-rapalab-$RANDOM -u sqladmin -p "Rapa2026!Lab"  →  az sql server firewall-rule create -g ${RG} -s <servidor> -n AllowAzure --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0  →  az sql db create -g ${RG} -s <servidor> -n appdb --service-objective Basic`,ok:(S,x)=>x.all('sqlserver').some(s=>Object.keys(s.p.dbs||{}).length&&s.p.rules.some(r=>r.start==='0.0.0.0'&&r.end==='0.0.0.0'))},
+  {id:'acr',t:'Construye una imagen en Azure Container Registry y conecta el registro a tu AKS',hint:`az acr create -g ${RG} -n acrrapalab$RANDOM --sku Basic  →  cat <<EOF > Dockerfile (FROM nginx) EOF  →  az acr build -r <registro> -t web:v1 .  →  az aks update -g ${RG} -n aks-rapalab --attach-acr <registro>  →  kubectl create deployment web --image=<registro>.azurecr.io/web:v1`,ok:S=>S.stats.acrBuild>0&&S.res.some(a=>a.t==='aks'&&(a.p.acr||[]).length)},
   {id:'activity',t:'Consulta el registro de actividad para ver qué se cambió y quién',hint:`az monitor activity-log list -g ${RG} --offset 1d --query "[].{op:operationName.value, estado:status.value, hora:eventTimestamp}" -o table`,ok:S=>S.stats.activityLog>0},
   {id:'budget',t:'Crea un presupuesto mensual y mira el coste estimado tras adelantar el reloj',hint:'az consumption budget create --budget-name mensual --amount 50 --category cost --time-grain monthly --start-date 2026-10-01 --end-date 2027-09-30  →  lab tiempo +7d  →  az consumption budget list -o table',ok:S=>S.budgets.length>0&&S.offset>0},
   {id:'cleanup',t:`Borra el grupo ${RG} para no dejar nada facturando`,hint:`az lock delete -n no-borrar -g ${RG}  →  az group delete -n ${RG}  →  responde y  →  az group list -o table`,ok:(S,x,done)=>!!done.rg&&S.stats.groupDelete>0&&!x.group(RG)},
@@ -91,7 +91,7 @@ class AzLab{
   // ---------- Terminal ----------
   initTerm(){
     const sim=this.sim;
-    const t=this.t=new CloudLabTerm(this.el.querySelector('.term'),{
+    const t=this.t=new RapaLabTerm(this.el.querySelector('.term'),{
       run:(line,stdin)=>sim.run(line,stdin),
       answer:a=>sim.answer(a),
       cancel:()=>sim.cancel(),
@@ -102,7 +102,7 @@ class AzLab{
       after:r=>this.afterRun(r),
     });
     const S=sim.state;
-    t.write(`\x1b[1;36mCloud Lab\x1b[0m · Azure CLI ${AzSim.VERSION} simulada (\x1b[36mAzure Cloud Shell\x1b[0m)\n`);
+    t.write(`\x1b[1;36mRapaLab\x1b[0m · Azure CLI ${AzSim.VERSION} simulada (\x1b[36mAzure Cloud Shell\x1b[0m)\n`);
     if(sim.restored){const left=Math.max(0,Math.round((sim.expiresAt()-Date.now())/3600000));t.write(`\x1b[2mEstado restaurado: ${S.res.filter(r=>r.t==='group').length} grupos de recursos. Se conserva ${left} h más si no lo usas.\x1b[0m\n`)}
     else t.write(`\x1b[2mAzure nuevo. Tu trabajo se guarda en este navegador durante 48 h desde el último uso.\x1b[0m\n`);
     t.write(S.loggedIn?`Escribe \x1b[33mhelp\x1b[0m para ver la ayuda o \x1b[33maz --help\x1b[0m para los comandos. \x1b[33mTab\x1b[0m autocompleta.\n\n`:`Empieza con \x1b[33maz login\x1b[0m. Escribe \x1b[33mhelp\x1b[0m para ver la ayuda; \x1b[33mTab\x1b[0m autocompleta.\n\n`);
@@ -118,7 +118,7 @@ class AzLab{
     if(r.reset){this.done={};writeJSON(DONE,this.done);this.t.clearHistory()}
     writeJSON(STORE,this.sim.serialize());
     writeJSON(BRIDGE,this.sim.bridge());
-    if(r.kube)this.t.write(`\x1b[2mcloudlab: el contexto también está disponible en la terminal de Kubernetes (Kubernetes → Práctica).\x1b[0m\n`);
+    if(r.kube)this.t.write(`\x1b[2mrapalab: el contexto también está disponible en la terminal de Kubernetes (Kubernetes → Práctica).\x1b[0m\n`);
     this.snapshot(true);
     this.drawMap();this.drawRetos(true);
   }
@@ -192,7 +192,7 @@ ${empty?`<p class="empty-s">Grupo vacío. Prueba: <code>az vm create -g ${h(g.na
       const quota=regions.map(l=>{const u=V.usage(l);return`<span class="mini-tag quota${u.total>=10?' full':''}" title="vCPU en uso en ${h(V.disp(l))} (las VM desasignadas no cuentan)">${h(V.disp(l))}: ${u.total}/10 vCPU</span>`}).join('');
       const total=V.spend(),budgets=S.budgets.filter(b=>b.sub===sub.id);
       const money=`<div class="azcost"><span>💲 Coste estimado <b>$${total.toFixed(2)}</b></span><small>${new Date(V.now()).toISOString().slice(0,16).replace('T',' ')} UTC${S.offset?` · reloj +${Math.round(S.offset/3600000)} h`:''}</small></div>${budgets.map(b=>{const pct=Math.min(100,total/b.amount*100);return`<div class="azbudget" title="Presupuesto ${h(b.name)}"><div><span>${h(b.name)} · ${h(b.grain)}</span><b>$${total.toFixed(2)} / $${h(b.amount)}</b></div><i><em style="width:${pct.toFixed(1)}%" class="${pct>=100?'over':pct>=80?'warn':''}"></em></i></div>`}).join('')}`;
-      body=`<div class="csec"><div class="azsub"><span class="ico">▲</span><div><b>${h(sub.name)}</b><small>${h(sub.id)} · ${h(sub.offer)}</small></div></div>${money}${(()=>{const sid=`/subscriptions/${sub.id}`,m=lockTags(sid)+polTags(sid)+roleTags(sid)+quota;return m?`<div class="conf">${m}</div>`:''})()}</div><div class="csec"><p class="csec-t">Grupos de recursos</p><div class="cnss">${gHtml||'<p class="empty-s">Aún no hay grupos de recursos. Crea uno: <code>az group create -n rg-cloudlab -l spaincentral</code></p>'}</div></div>`;
+      body=`<div class="csec"><div class="azsub"><span class="ico">▲</span><div><b>${h(sub.name)}</b><small>${h(sub.id)} · ${h(sub.offer)}</small></div></div>${money}${(()=>{const sid=`/subscriptions/${sub.id}`,m=lockTags(sid)+polTags(sid)+roleTags(sid)+quota;return m?`<div class="conf">${m}</div>`:''})()}</div><div class="csec"><p class="csec-t">Grupos de recursos</p><div class="cnss">${gHtml||'<p class="empty-s">Aún no hay grupos de recursos. Crea uno: <code>az group create -n rg-rapalab -l spaincentral</code></p>'}</div></div>`;
     }
     if(fromTimer&&body===this.lastMap)return;
     this.lastMap=body;
@@ -215,7 +215,7 @@ ${empty?`<p class="empty-s">Grupo vacío. Prueba: <code>az vm create -g ${h(g.na
 function colorize(text,err,warn){
   const lines=text.split('\n');
   return lines.map((l,i)=>{
-    if(/^cloudlab:/.test(l))return`\x1b[33m${l}\x1b[0m`;
+    if(/^rapalab:/.test(l))return`\x1b[33m${l}\x1b[0m`;
     if(/^WARNING:/.test(l)||warn)return`\x1b[33m${l}\x1b[0m`;
     if(err)return`\x1b[31m${l}\x1b[0m`;
     if(/^-{2,}(\s+-{2,})*$/.test(l))return`\x1b[2m${l}\x1b[0m`;

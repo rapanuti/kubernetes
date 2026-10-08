@@ -1,10 +1,10 @@
 // Terminal compartida por los laboratorios (xterm.js): edición de línea, historial, Tab, heredocs,
 // pegado de varias líneas y preguntas interactivas (y/n, contraseñas) que devuelve el motor.
-// Uso: new CloudLabTerm(elemento, {run, answer, cancel, complete, prompt, history, colorize, after})
+// Uso: new RapaLabTerm(elemento, {run, answer, cancel, complete, prompt, history, colorize, after})
 (()=>{
 const THEME={background:'#10242a',foreground:'#d5e8e3',cursor:'#5fd4bb',cursorAccent:'#10242a',selectionBackground:'#2b5d57',black:'#10242a',red:'#ff8b7e',green:'#7ddcb0',yellow:'#f1cc74',blue:'#7fb6ff',magenta:'#d6a6ff',cyan:'#5fd4bb',white:'#d5e8e3',brightBlack:'#6e8d89',brightRed:'#ffa69b',brightGreen:'#9be8c4',brightYellow:'#f6db99',brightBlue:'#a3cbff',brightMagenta:'#e4c2ff',brightCyan:'#8ae6d2',brightWhite:'#ffffff'};
 
-class CloudLabTerm{
+class RapaLabTerm{
   constructor(el,o){
     this.o=o;
     const term=this.term=new Terminal({convertEol:true,cursorBlink:true,fontFamily:'"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace',fontSize:innerWidth<760?11.5:13,lineHeight:1.25,scrollback:3000,theme:THEME});
@@ -121,5 +121,5 @@ class CloudLabTerm{
     this.prompt();
   }
 }
-window.CloudLabTerm=CloudLabTerm;
+window.RapaLabTerm=RapaLabTerm;
 })();

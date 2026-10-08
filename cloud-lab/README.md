@@ -1,4 +1,4 @@
-# Cloud Lab
+# RapaLab
 Portal de estudio en español de Kubernetes y Azure. Sitio estático sin compilación ni dependencias: inicio, teoría, práctica con terminales simuladas de Kubernetes y Azure CLI, documentación de Kubernetes y simulador de examen AZ-900.
 
 ## Desarrollo local
@@ -33,8 +33,8 @@ En `#azure/practica` hay una terminal que imita Azure CLI 2.91.0 en Azure Cloud 
 - Opciones globales `-o json|jsonc|table|tsv|yaml|yamlc|none`, `--query` (JMESPath: filtros, proyecciones, multiselección, `length`, `sort_by`, `join`…), `--subscription`, `--only-show-errors`.
 - Errores con el formato real: argumentos obligatorios (`the following arguments are required`), argumentos desconocidos, comandos mal escritos con sugerencias, errores de Azure Resource Manager (`(Código) mensaje / Code / Message`), regiones inexistentes, nombres de storage inválidos o ya usados, SKUs de VM inválidas, cuota regional de vCPU, CIDR mal formados o solapados, y preguntas `(y/n)` y de contraseña.
 - Mini shell tipo bash: variables (`RG=rg-lab`, `$RG`), sustitución `$(az ... -o tsv)`, tuberías, `&&`, `;` y redirecciones.
-- Estado compartido con Kubernetes: `az aks get-credentials` añade el contexto al kubeconfig de la terminal de Kubernetes (`cloudlab-aks-bridge` en localStorage). Desde ambas terminales, `kubectl` maneja el mismo clúster AKS (nodos según `az aks scale`, inaccesible si se para o se borra).
-- Memoria de 48 h en localStorage (`cloudlab-az-lab`), `lab reset` para empezar de cero y autocompletado con Tab de comandos, argumentos, grupos, recursos, regiones, imágenes y tamaños.
+- Estado compartido con Kubernetes: `az aks get-credentials` añade el contexto al kubeconfig de la terminal de Kubernetes (`rapalab-aks-bridge` en localStorage). Desde ambas terminales, `kubectl` maneja el mismo clúster AKS (nodos según `az aks scale`, inaccesible si se para o se borra).
+- Memoria de 48 h en localStorage (`rapalab-az-lab`), `lab reset` para empezar de cero y autocompletado con Tab de comandos, argumentos, grupos, recursos, regiones, imágenes y tamaños.
 
 ## Pruebas
 Escenarios del motor de Azure (y del puente con Kubernetes) con un reloj simulado:
