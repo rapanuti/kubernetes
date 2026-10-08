@@ -412,7 +412,7 @@ test('blobs: aviso sin credenciales, rol de datos con --auth-mode login y errore
   assert.match(run('az storage blob upload -c imagenes -f nota.txt --account-name stdatos2026 --auth-mode login').out,/No such file or directory: 'nota.txt'/);
   ok('echo "Hola Azure" > nota.txt');
   r=ok('az storage blob upload -c imagenes -f nota.txt --account-name stdatos2026 --auth-mode login');
-  assert.match(r.out,/Finished\[#+\]  100\.0000%/);
+  assert.match(r.out,/(^|\n)Finished\[#+\]  100\.0000%/);
   assert.match(run('az storage blob upload -c imagenes -f nota.txt --account-name stdatos2026 --auth-mode login').out,/ERROR: The specified blob already exists\.[\s\S]*ErrorCode:BlobAlreadyExists/);
   ok('az storage blob upload -c imagenes -f nota.txt --overwrite --account-name stdatos2026 --auth-mode login -o none');
   const t=ok('az storage blob list -c imagenes --account-name stdatos2026 --auth-mode login -o table').out.split('\n');

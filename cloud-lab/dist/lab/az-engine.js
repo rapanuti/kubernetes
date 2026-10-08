@@ -1549,7 +1549,7 @@ function create(opts={}){
   function render(r){
     const parts=[];
     if(r.text!=null&&r.text!=='')parts.push({out:r.text});
-    if(r.warn&&r.warn.length&&!(r.G&&r.G.onlyErrors))parts.push({out:r.warn.map(w=>w.startsWith('cloudlab:')?w:'WARNING: '+w).join('\n'),warn:true});
+    if(r.warn&&r.warn.length&&!(r.G&&r.G.onlyErrors))parts.push({out:r.warn.map(w=>w.startsWith('cloudlab:')||w.startsWith('Finished[')?w:'WARNING: '+w).join('\n'),warn:true});
     if(r.data!==undefined){const out=format(r,r.G||{});if(out)parts.push({out})}
     return parts;
   }
